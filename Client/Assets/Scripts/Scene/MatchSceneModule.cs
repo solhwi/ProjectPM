@@ -5,6 +5,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class BattleSceneModuleParam : SceneModuleParam
+{
+    public readonly bool isOwner = false;
+
+    public BattleSceneModuleParam(bool isOwner)
+    {
+        this.isOwner = isOwner;
+    }
+}
+
 public class MatchSceneModule : NetworkSceneModule
 {
 #if UNITY_EDITOR

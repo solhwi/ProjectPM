@@ -4,15 +4,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleSessionManager : NetworkRoomManager, ISessionComponent
+public class BattleSessionManager : NetworkRoomManager<BattleSessionManager>, ISessionComponent
 {
-    public void Connect()
+    BattleSceneModuleParam battleParam = null;
+
+    public void Connect(SceneModuleParam param)
     {
-        StartClient();
+        if (param is BattleSceneModuleParam battleParam)
+        {
+            this.battleParam = battleParam;
+
+            if (battleParam.isOwner)
+            {
+                StartHost();
+            }
+            else
+            {
+                StartClient();
+            }
+        }
     }
 
     public void Disconnect()
     {
-        StopClient();
+        if (battleParam.isOwner)
+        {
+            StopHost();
+        }
+        else
+        {
+            StopClient();
+        }
     }
 }

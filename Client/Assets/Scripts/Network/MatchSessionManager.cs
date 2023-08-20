@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public interface ISessionComponent
 {
     void Initialize();
-	void Connect();
+	void Connect(SceneModuleParam param);
 
 	void Disconnect();
 }
@@ -27,7 +27,7 @@ public interface ISessionComponent
 /// 매치 서버는 TCP 기반이다..
 /// </summary>
 
-public class MatchSessionManager : NetworkManager, ISessionComponent
+public class MatchSessionManager : NetworkManager<MatchSessionManager>, ISessionComponent
 {
     /// <summary>
     /// Open matches that are available for joining
@@ -59,7 +59,7 @@ public class MatchSessionManager : NetworkManager, ISessionComponent
     /// </summary>
     private Guid selectedMatch = Guid.Empty;
 
-    public void Connect()
+    public void Connect(SceneModuleParam param)
     {
         StartClient();
     }
@@ -196,7 +196,7 @@ public class MatchSessionManager : NetworkManager, ISessionComponent
         localJoinedMatch = Guid.Empty;
     }
 
-    void OnClientMatchMessage(ClientMatchMessage msg)
+    private void OnClientMatchMessage(ClientMatchMessage msg)
     {
         switch (msg.clientMatchOperation)
         {
@@ -244,10 +244,8 @@ public class MatchSessionManager : NetworkManager, ISessionComponent
         }
     }
 
-    // 매치 세션과의 연결을 끊고, 새 배틀 세션을 시작한다.
-    // 내가 방장이면 배틀 매니저의 StartHost, 방 구성원이면 StartClient를 호출한다.
     private void OnStartGame()
     {
-        
+        SceneManager.Instance.LoadScene(SceneType.Battle, new BattleSceneModuleParam(isOwner));
     }
 }

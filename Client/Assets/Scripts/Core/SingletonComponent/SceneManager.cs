@@ -1,3 +1,4 @@
+using Mono.CecilX;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,8 +28,9 @@ public class SceneManager : SingletonComponent<SceneManager>
 	private SceneType currentSceneType;
 
     private SceneModule currentSceneModule = null;
+	private SceneModuleParam currentParam = null;
 
-	private Coroutine sceneLoadCoroutine = null;
+    private Coroutine sceneLoadCoroutine = null;
 
 	protected override void OnAwakeInstance()
 	{
@@ -53,9 +55,10 @@ public class SceneManager : SingletonComponent<SceneManager>
 			currentSceneModule.OnUpdate();
 	}
 
-	public void LoadScene(SceneType sceneType, Action<float> OnSceneLoading = null)
+	public void LoadScene(SceneType sceneType, SceneModuleParam param = null)
 	{
-        sceneLoadCoroutine = StartCoroutine(OnLoadSceneCoroutine(sceneType, OnSceneLoading));
+		currentParam = param;
+        sceneLoadCoroutine = StartCoroutine(OnLoadSceneCoroutine(sceneType, null));
 	}
 
 	private void OnSceneLoaded(Scene scene, LoadSceneMode sceneMoad)
@@ -63,11 +66,11 @@ public class SceneManager : SingletonComponent<SceneManager>
 		if(Enum.TryParse(scene.name, out currentSceneType))
 		{
             onSceneChanged?.Invoke(currentSceneType);
-            sceneLoadCoroutine = StartCoroutine(OnCompletedSceneCoroutine(null));
+            sceneLoadCoroutine = StartCoroutine(OnCompletedSceneCoroutine());
 		}
     }
 
-    private IEnumerator OnLoadSceneCoroutine(SceneType sceneType, Action<float> OnSceneLoading = null)
+    private IEnumerator OnLoadSceneCoroutine(SceneType sceneType, Action<float> OnSceneLoading)
 	{
 		yield return currentSceneModule?.OnPrepareExitRoutine();
 
@@ -87,13 +90,15 @@ public class SceneManager : SingletonComponent<SceneManager>
         asyncOperation.allowSceneActivation = true;
 	}
 
-	private IEnumerator OnCompletedSceneCoroutine(SceneModuleParam param)
+	private IEnumerator OnCompletedSceneCoroutine()
     {
         currentSceneModule = FindObjectOfType<SceneModule>();
 		if (currentSceneModule == null)
 			yield break;
 
-        yield return currentSceneModule.OnPrepareEnterRoutine(param);
-        currentSceneModule.OnEnter(param);
+        yield return currentSceneModule.OnPrepareEnterRoutine(currentParam);
+        currentSceneModule.OnEnter(currentParam);
+
+        currentParam = null;
     }
 }

@@ -58,5 +58,22 @@ public abstract class NetworkSceneModule : SceneModule
         {
             Debug.LogError($"{e} : {mySceneType}에 네트워크 매니저 혹은 트랜스포트가 존재하지 않습니다.");
         }
+
+        currentSession.Connect(param);
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
+
+        try
+        {
+            currentSession.Disconnect();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"{e} : {mySceneType}의 네트워크 세션이 이미 종료되었습니다.");
+        }
+
     }
 }
