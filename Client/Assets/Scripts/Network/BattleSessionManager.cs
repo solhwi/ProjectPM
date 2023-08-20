@@ -6,12 +6,6 @@ using UnityEngine;
 
 public class BattleSessionManager : NetworkRoomManager, ISessionComponent
 {
-    public override void Initialize()
-    {
-        gameObject.AddComponent<KcpTransport>();
-        base.Initialize();
-    }
-
     public void Connect()
     {
         StartClient();
