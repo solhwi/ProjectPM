@@ -1,0 +1,93 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using Object = UnityEngine.Object;
+
+public class ResourceManager : SingletonComponent<ResourceManager>
+{
+    Dictionary<Type, List<Object>> resourceDictionary = new Dictionary<Type, List<Object>>();
+
+	public T Load<T>() where T : Object
+	{
+		if(resourceDictionary.TryGetValue(typeof(T), out var list))
+		{
+			var obj = list.First();
+			if (obj != null)
+			{
+				return obj as T;
+			}
+		}
+
+		return null;
+	}
+
+	public T LoadForce<T>(string path) where T : Object
+	{
+		return Resources.Load<T>(path);
+	}
+
+	public T InstantiateForce<T>(T prefab) where T : Object
+	{
+		return Instantiate<T>(prefab);
+	}
+
+	public AsyncOperationHandle LoadAsync<T>() where T : Object
+	{
+		string path = AttributeUtil.GetResourcePath<T>();
+		if (string.IsNullOrEmpty(path))
+			return default;
+
+		var resourceType = AttributeUtil.GetResourceType<T>();
+
+		switch(resourceType)
+		{
+			case ResourceType.UnityAsset:
+				return LoadUnityAsset<T>(path);
+
+			case ResourceType.Prefab:
+				return LoadPrefab<T>(path);
+		}
+
+		return default;
+    }
+
+	private AsyncOperationHandle<T> LoadUnityAsset<T>(string path) where T : Object
+	{
+		var handle = Addressables.LoadAssetAsync<T>(path);
+
+		handle.Completed += (op) =>
+		{
+			if (op.IsDone && op.Status == AsyncOperationStatus.Succeeded)
+			{
+                if (resourceDictionary.ContainsKey(typeof(T)) == false)
+					resourceDictionary.Add(typeof(T), new List<Object>());
+
+				resourceDictionary[typeof(T)].Add(op.Result);
+			}
+		};
+
+		return handle;
+	}
+
+	private AsyncOperationHandle LoadPrefab<T>(string path) where T : Object
+	{
+		var handle = Addressables.LoadAssetAsync<GameObject>(path);
+
+		handle.Completed += (op) =>
+		{
+			if (op.IsDone && op.Status == AsyncOperationStatus.Succeeded)
+			{
+				if (resourceDictionary.ContainsKey(typeof(T)) == false)
+					resourceDictionary.Add(typeof(T), new List<Object>());
+
+				resourceDictionary[typeof(T)].Add(op.Result);
+			}
+		};
+
+		return handle;
+	}
+}

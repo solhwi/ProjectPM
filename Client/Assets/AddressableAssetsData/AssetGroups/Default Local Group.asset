@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 9455e584e88c94a438130f4b623e8146
+  m_SerializeEntries:
+  - m_GUID: d2e1fbc656a5f5a45bcbbfe7e88876be
+    m_Address: Assets/Bundle/Prefabs/UI/Popup/SettingPopup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 602b3e60185c25443b17a95f9c13f1dd
+    m_Address: Assets/Bundle/Sprites/Map/CityMap.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a97c105638bdf8b4a8650670310a4cd3
+    m_Address: Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Lit-Default.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3fcaa925fb7e824299ec82da69b3eac
+    m_Address: Assets/Bundle/Prefabs/Map/CityMap.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffea75aa23a1f734c9d0ff4100dae656
+    m_Address: Assets/Bundle/Prefabs/Object/Character/NormalCharacter.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e137da44421689a4d9abe1ecb4e5dbba
+    m_Address: Assets/Bundle/Sprites/Object/Friendly/NormalCharacter.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec536a7718376554185e4a856d5ae230
+    m_Address: Assets/Bundle/Prefabs/UI/Joystick/Variable Joystick.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 265958cf6db97314d8fbc27c7612248c
+    m_Address: Assets/Bundle/Datas/Parser/CharacterStatTable.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 2fbff68df76c9b84baff54fbac5ef644, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: ac2bec8c2e3cece41939982aca136be5, type: 2}
+    - {fileID: 11400000, guid: a34cf20149414434c8c2590c41c6b418, type: 2}
