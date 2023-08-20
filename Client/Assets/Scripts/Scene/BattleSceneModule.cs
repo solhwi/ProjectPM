@@ -35,13 +35,4 @@ public class BattleSceneModule : NetworkSceneModule
         return transport;
     }
 #endif
-
-    public override void OnEnter(SceneModuleParam param)
-    {
-        base.OnEnter(param);
-
-        currentSession.Connect(param);
-    }
-
-
 }

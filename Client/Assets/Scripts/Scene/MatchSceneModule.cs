@@ -46,15 +46,4 @@ public class MatchSceneModule : NetworkSceneModule
     }
 #endif
 
-    public override void OnEnter(SceneModuleParam param)
-    {
-        base.OnEnter(param);
-    }
-
-    public override void OnExit()
-    {
-        base.OnExit();
-    }
-
- 
 }

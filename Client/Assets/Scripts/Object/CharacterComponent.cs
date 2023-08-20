@@ -15,11 +15,10 @@ public enum CharacterState
 	JUMP, // 점프 (하면서 물리적인 이동이 가능)
 	DASH, // 대쉬
 	WEAK, // 약
-	MIDDLE, // 중
 	STRONG, // 강
 	DASH_WEAK, // 대쉬 중 약 공격 상황
-	COMMAND_MIDDLE, // 일부 방향의 MOVE 중 MIDDLE (캐릭터 마다 방향 상이)
 	COMMAND_STRONG, // 일부 방향의 MOVE 중 STRONG (캐릭터 마다 방향 상이)
+	RANGED_WEAPON, // 무기를 든 상태
 	ULTIMATE, // 궁극기
 }
 

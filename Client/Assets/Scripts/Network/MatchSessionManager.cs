@@ -16,6 +16,13 @@ public interface ISessionComponent
 	void Disconnect();
 }
 
+public interface IMatchSessionSubscriber
+{
+    void OnChangedMyMatch(bool isOwner, Guid matchId);
+    void OnChangedMatchList(Dictionary<Guid, MatchInfo> openMatches);
+    void OnChangedPlayerInfos(PlayerInfo[] playerInfos);
+}
+
 /// <summary>
 /// 매칭이 가능한 매치 정보들을 가져온다.
 /// 매치 정보의 guid를 통해 매치 신청이 가능하며, 참가에 성공한 경우 콜백을 뱉는다.
@@ -29,35 +36,15 @@ public interface ISessionComponent
 
 public class MatchSessionManager : NetworkManager<MatchSessionManager>, ISessionComponent
 {
-    /// <summary>
-    /// Open matches that are available for joining
-    /// </summary>
     private Dictionary<Guid, MatchInfo> openMatches = new Dictionary<Guid, MatchInfo>();
-
-    /// <summary>
-    /// Player informations by Network Connection
-    /// </summary>
     private PlayerInfo[] playerInfos = null;
 
-    /// <summary>
-    /// 방장인가?
-    /// </summary>
-    private bool isOwner = false;
-
-    /// <summary>
-    /// GUID of a match the local player has created
-    /// </summary>
     private Guid localPlayerMatch = Guid.Empty;
-
-    /// <summary>
-    /// GUID of a match the local player has joined
-    /// </summary>
-    private Guid localJoinedMatch = Guid.Empty;
-
-    /// <summary>
-    /// GUID of a match the local player has selected in the Toggle Group match list
-    /// </summary>
     private Guid selectedMatch = Guid.Empty;
+
+	private bool isOwner = false;
+
+	private List<IMatchSessionSubscriber> subscribers = new List<IMatchSessionSubscriber>();
 
     public void Connect(SceneModuleParam param)
     {
@@ -68,6 +55,23 @@ public class MatchSessionManager : NetworkManager<MatchSessionManager>, ISession
     {
         StopClient();
     }
+
+    public void SelectMatch(Guid matchId)
+    {
+        selectedMatch = matchId;
+	}
+
+    public void SubscribeMatchInfo(IMatchSessionSubscriber subscriber)
+    {
+        if(subscribers.Contains(subscriber) == false)
+		    subscribers.Add(subscriber);
+	}
+
+    public void UnSubscribeMatchInfo(IMatchSessionSubscriber subscriber)
+    {
+		if (subscribers.Contains(subscriber))
+			subscribers.Remove(subscriber);
+	}
 
     public override void Initialize()
     {
@@ -117,7 +121,6 @@ public class MatchSessionManager : NetworkManager<MatchSessionManager>, ISession
         openMatches.Clear();
         selectedMatch = Guid.Empty;
         localPlayerMatch = Guid.Empty;
-        localJoinedMatch = Guid.Empty;
     }
 
     /// <summary>
@@ -146,9 +149,9 @@ public class MatchSessionManager : NetworkManager<MatchSessionManager>, ISession
     [ClientCallback]
     public void RequestLeaveMatch()
     {
-        if (localJoinedMatch == Guid.Empty) return;
+        if (localPlayerMatch == Guid.Empty) return;
 
-        NetworkClient.Send(new ServerMatchMessage { serverMatchOperation = ServerMatchOperation.Leave, matchId = localJoinedMatch });
+        NetworkClient.Send(new ServerMatchMessage { serverMatchOperation = ServerMatchOperation.Leave, matchId = localPlayerMatch });
     }
 
     /// <summary>
@@ -168,11 +171,9 @@ public class MatchSessionManager : NetworkManager<MatchSessionManager>, ISession
     [ClientCallback]
     public void RequestReadyChange()
     {
-        if (localPlayerMatch == Guid.Empty && localJoinedMatch == Guid.Empty) return;
+        if (localPlayerMatch == Guid.Empty) return;
 
-        Guid matchId = localPlayerMatch == Guid.Empty ? localJoinedMatch : localPlayerMatch;
-
-        NetworkClient.Send(new ServerMatchMessage { serverMatchOperation = ServerMatchOperation.Ready, matchId = matchId });
+        NetworkClient.Send(new ServerMatchMessage { serverMatchOperation = ServerMatchOperation.Ready, matchId = localPlayerMatch });
     }
 
     /// <summary>
@@ -193,7 +194,6 @@ public class MatchSessionManager : NetworkManager<MatchSessionManager>, ISession
     public void OnMatchEnded()
     {
         localPlayerMatch = Guid.Empty;
-        localJoinedMatch = Guid.Empty;
     }
 
     private void OnClientMatchMessage(ClientMatchMessage msg)
@@ -221,14 +221,14 @@ public class MatchSessionManager : NetworkManager<MatchSessionManager>, ISession
                 }
             case ClientMatchOperation.Joined:
                 {
-                    localJoinedMatch = msg.matchId;
+					localPlayerMatch = msg.matchId;
                     playerInfos = msg.playerInfos;
                     isOwner = false;
                     break;
                 }
             case ClientMatchOperation.Departed:
                 {
-                    localJoinedMatch = Guid.Empty;
+					localPlayerMatch = Guid.Empty;
                     break;
                 }
             case ClientMatchOperation.UpdateRoom:

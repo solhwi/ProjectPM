@@ -14,8 +14,8 @@ public abstract class SceneModule : MonoBehaviour
 			case TitleSceneModule:
 				mySceneType = SceneType.Title;
                 break;
-            case SelectSceneModule:
-                mySceneType = SceneType.Select;
+            case LobbySceneModule:
+                mySceneType = SceneType.Lobby;
                 break;
             case BattleSceneModule:
                 mySceneType = SceneType.Battle;

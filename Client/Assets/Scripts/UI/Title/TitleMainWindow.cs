@@ -7,7 +7,7 @@ public class TitleMainWindow : UIMainWindow
 {
 	public void OnClickStart()
 	{
-		SceneManager.Instance.LoadScene(SceneType.Select);
+		SceneManager.Instance.LoadScene(SceneType.Lobby);
 	}
 
 	public void OnClickSetting()

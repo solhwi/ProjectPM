@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public enum SceneType
 {
 	Title = 0,
-	Select = 1,
+	Lobby = 1,
 	Boss = 2,
 	Match = 3,
 	Battle = 4,
