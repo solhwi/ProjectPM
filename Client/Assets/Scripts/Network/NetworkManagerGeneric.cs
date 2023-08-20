@@ -20,7 +20,7 @@ public class NetworkManager<T> : NetworkManager where T : NetworkManager
     }
 }
 
-public class NetworkRoomManager<T> : NetworkRoomManager where T : NetworkManager
+public class NetworkRoomManager<T> : NetworkRoomManager where T : NetworkRoomManager
 {
     private static T instance = null;
     public static T Instance
