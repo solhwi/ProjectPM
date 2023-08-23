@@ -35,7 +35,7 @@ public class ScriptableObjectHelper
 
 public class ScriptParserEditor : AssetPostprocessor
 {
-	public static string ExcelRootPath = "../DrawingBoardManData/ExcelDatas/";
+	public static string ExcelRootPath = "../Design/Excel/";
 	public static string CSRootPath = "Assets/Scripts/Datas/Parser/";
 
 	public static readonly int FixedDataStartRow = 2;

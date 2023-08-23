@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class JumpKeyComponent : InputKeyComponent
+public class DashKeyComponent : InputKeyComponent
 {
 	
 }

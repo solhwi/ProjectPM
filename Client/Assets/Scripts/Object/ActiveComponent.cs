@@ -7,9 +7,17 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class AnimatorComponent<TState> : MonoBehaviour where TState : Enum
 {
-	[SerializeField] protected Animator animator;
+	protected readonly int m_HashHorizontalSpeedParam = Animator.StringToHash("HorizontalSpeed");
+	protected readonly int m_HashVerticalSpeedParam = Animator.StringToHash("VerticalSpeed");
 
-	public bool SetTrigger(TState state)
+	private Animator animator;
+
+	private void Awake()
+	{
+		animator = GetComponent<Animator>();
+	}
+
+	protected bool SetTrigger(TState state)
 	{
 		if (animator.IsInTransition(0))
 			return false;
@@ -18,13 +26,13 @@ public class AnimatorComponent<TState> : MonoBehaviour where TState : Enum
 		return true;
 	}
 
-	public bool ResetTrigger(TState state)
+	protected bool ResetTrigger(TState state)
 	{
 		animator.ResetTrigger(state.ToString());
 		return true;
 	}
 
-	public bool SetBool(TState state, bool value)
+	protected bool SetBool(TState state, bool value)
 	{
 		if (animator.IsInTransition(0))
 			return false;
@@ -33,7 +41,7 @@ public class AnimatorComponent<TState> : MonoBehaviour where TState : Enum
 		return true;
 	}
 
-	public bool SetInteger(TState state, int value)
+	protected bool SetInteger(TState state, int value)
 	{
 		if (animator.IsInTransition(0))
 			return false;
@@ -42,12 +50,22 @@ public class AnimatorComponent<TState> : MonoBehaviour where TState : Enum
 		return true;
 	}
 
-	public bool SetFloat(TState state, float value)
+	protected bool SetFloat(TState state, float value)
 	{
 		if (animator.IsInTransition(0))
 			return false;
 
 		animator.SetFloat(state.ToString(), value);
+		return true;
+	}
+
+	public bool SetDirection(Vector2 move)
+	{
+		if (animator.IsInTransition(0))
+			return false;
+
+		animator.SetFloat(m_HashHorizontalSpeedParam, move.x);
+		animator.SetFloat(m_HashVerticalSpeedParam, move.y);
 		return true;
 	}
 }

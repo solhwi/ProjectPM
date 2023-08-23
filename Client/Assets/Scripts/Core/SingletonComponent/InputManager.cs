@@ -8,9 +8,8 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public enum ENUM_ATTACK_KEY
 {
-	WEAK, // 약
-	MIDDLE, // 중
-	STRONG, // 강
+	WEAK, // 일반 공격
+	SKILL, // 스킬
 	ULTIMATE, // 궁극기
 	MAX 
 }
@@ -38,7 +37,7 @@ public class MoveInputData : FrameInputData
 public class AttackInputData : FrameInputData
 {
 	public readonly ENUM_ATTACK_KEY key;
-	public readonly bool isPress = false; // 점프
+	public readonly bool isPress = false;
 
 	public AttackInputData(ENUM_ATTACK_KEY key, bool isPress, int frameCount) : base(frameCount)
 	{
@@ -47,33 +46,60 @@ public class AttackInputData : FrameInputData
 	}
 }
 
-public class JumpInputData : FrameInputData
+public abstract class PressInputData : FrameInputData
 {
-	public readonly bool isPress = false; // 점프
+	public readonly bool isPress = false; 
 
-	public JumpInputData(bool isPress, int frameCount) : base(frameCount)
+	public PressInputData(bool isPress, int frameCount) : base(frameCount)
 	{
 		this.isPress = isPress;
+	}
+}
+
+public class DashInputData : PressInputData
+{
+	public DashInputData(bool isPress, int frameCount) : base(isPress, frameCount)
+	{
+	}
+}
+
+public class GuardInputData : PressInputData
+{
+	public GuardInputData(bool isPress, int frameCount) : base(isPress, frameCount)
+	{
 	}
 }
 
 public class FrameSyncInputData
 {
 	public readonly Vector2 MoveInput;
-	public readonly bool IsJump;
-	public readonly ENUM_ATTACK_KEY PressedAttackKey;
+	public readonly ENUM_ATTACK_KEY PressedAttackKey; 
+	public readonly bool isDash;
+	public readonly bool isGuard;
+	public readonly int frameCount;
 
-	public FrameSyncInputData(Vector2 moveInput, bool isJump, ENUM_ATTACK_KEY pressedAttackKey)
+	public FrameSyncInputData()
+	{
+		this.MoveInput = default;
+		this.PressedAttackKey = default;
+		this.isDash = default;
+		this.isGuard = default;
+		this.frameCount = default;
+	}
+
+	public FrameSyncInputData(Vector2 moveInput, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int frameCount)
 	{
 		this.MoveInput = moveInput;
-		this.IsJump = isJump;
 		this.PressedAttackKey = pressedAttackKey;
+		this.isDash = isDash;
+		this.isGuard = isGuard;
+		this.frameCount = frameCount;
 	}
 }
 
 public interface IInputReceiver
 {
-	bool OnInput(FrameSyncInputData resultInput);
+	void OnInput(FrameSyncInputData resultInput);
 }
 
 public class InputManager : SingletonComponent<InputManager>
@@ -144,9 +170,13 @@ public class InputManager : SingletonComponent<InputManager>
 				joystick.onInputChanged += OnMoveInputChanged;
 				joystick.SetMode(JoystickType);
 			}
-			else if(inputKeyComponent is JumpKeyComponent)
+			else if(inputKeyComponent is DashKeyComponent)
 			{
-				inputKeyComponent.onInputChanged += OnJumpInputChanged;
+				inputKeyComponent.onInputChanged += OnDashInputChanged;
+			}
+			else if(inputKeyComponent is GuardKeyComponent)
+			{
+				inputKeyComponent.onInputChanged += OnGuardInputChanged;
 			}
 		}
 	}
@@ -160,9 +190,15 @@ public class InputManager : SingletonComponent<InputManager>
 		inputDataQueue.Enqueue(inputData);
 	}
 
-	private void OnJumpInputChanged(bool isJump, int frameCount)
+	private void OnDashInputChanged(bool isPress, int frameCount)
 	{
-		var inputData = new JumpInputData(isJump, frameCount);
+		var inputData = new DashInputData(isPress, frameCount);
+		inputDataQueue.Enqueue(inputData);
+	}
+
+	private void OnGuardInputChanged(bool isPress, int frameCount)
+	{
+		var inputData = new GuardInputData(isPress, frameCount);
 		inputDataQueue.Enqueue(inputData);
 	}
 
@@ -179,8 +215,9 @@ public class InputManager : SingletonComponent<InputManager>
 		int validFrameCount = Time.frameCount;
 
 		Vector2 moveVec = default;
-		bool isJump = false;
 		ENUM_ATTACK_KEY pressedAttackKey = ENUM_ATTACK_KEY.MAX;
+		bool isDash = false;
+		bool isGuard = false;
 
 		while (inputDataQueue.TryDequeue(out var result))
 		{
@@ -198,15 +235,19 @@ public class InputManager : SingletonComponent<InputManager>
 					pressedAttackKey = attackInputResult.key;
 				}
 			}
-			else if (result is JumpInputData jumpInputResult)
+			else if (result is PressInputData jumpInputResult)
 			{
-				isJump = jumpInputResult.isPress;
+				isDash = jumpInputResult.isPress;
+			}
+			else if(result is GuardInputData guardInputData)
+			{
+				isGuard = guardInputData.isPress;
 			}
 		}
 
 		foreach(var receiver in inputReceivers)
 		{
-			receiver.OnInput(new FrameSyncInputData(moveVec, isJump, pressedAttackKey));
+			receiver.OnInput(new FrameSyncInputData(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount));
 		}
 	}
 

@@ -21,11 +21,11 @@ public class PlayerInput : MonoBehaviour, IInputReceiver
 		InputManager.Instance.UnregisterInputReceiver(this);
 	}
 
-	public bool OnInput(FrameSyncInputData input)
+	public void OnInput(FrameSyncInputData input)
 	{
 		if(characterComponent == null)
-			return false;
+			return;
 
-		return characterComponent.TryAction(input);
+		characterComponent.Play(input);
 	}
 }
