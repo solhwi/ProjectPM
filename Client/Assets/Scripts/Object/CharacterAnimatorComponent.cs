@@ -1,9 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using StateMachine;
+using System;
 
 public class CharacterAnimatorComponent : AnimatorComponent<CharacterState>
 {
+    public event Action<CharacterState> OnCharacterStateEnter;
+	public event Action<CharacterState> OnCharacterStateUpdate;
+	public event Action<CharacterState> OnCharacterStateExit;
+    
+	protected override void Awake()
+	{
+        base.Awake();
+		SceneLinkedSMB<CharacterAnimatorComponent>.Initialize(animator, this);
+	}
+
 	public void TryChangeState(CharacterParam param, CharacterState prevState, out CharacterState currentState)
 	{
         if (CanTransition() == false)
@@ -82,11 +94,26 @@ public class CharacterAnimatorComponent : AnimatorComponent<CharacterState>
             }
         }
 
-        if (prevState != currentState)
-        {
-            SetBool(prevState, false);
-        }
+		SetBool(prevState, false);
 
-        SetBool(currentState, true);
-    }
+		if (prevState != currentState)
+        {
+			SetBool(currentState, true);
+		}
+	}
+
+    public void OnStateEnter(CharacterState state)
+    {
+		OnCharacterStateEnter?.Invoke(state);
+	}
+
+    public void OnStateUpdate(CharacterState state)
+    {
+		OnCharacterStateUpdate?.Invoke(state);
+	}
+
+    public void OnStateExit(CharacterState state)
+    {
+		OnCharacterStateExit?.Invoke(state);
+	}
 }

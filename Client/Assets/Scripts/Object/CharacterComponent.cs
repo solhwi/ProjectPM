@@ -62,10 +62,19 @@ public class CharacterComponent : ObjectComponent
 	private FrameSyncInputData prevFrameInputData = null;
 	private FrameSyncInputData currentFrameInputData = new FrameSyncInputData();
 
-	// 인풋과 물리 상황을 애니메이터에게 전달한다.
-	// 애니메이터는 현재 프레임의 스테이트 상황을 분석해서, 행동한다.
+	public override void Initialize()
+	{
+		animatorComponent.OnCharacterStateEnter += OnStateEnter;
+		animatorComponent.OnCharacterStateUpdate += OnStateUpdate;
+		animatorComponent.OnCharacterStateExit += OnStateExit;
+	}
 
-	// 직접적인 행동은 스테이트 머신이 각자 CharacterComponent를 참조하여 수행한다.
+	public override void Clear()
+	{
+		animatorComponent.OnCharacterStateEnter -= OnStateEnter;
+		animatorComponent.OnCharacterStateUpdate -= OnStateUpdate;
+		animatorComponent.OnCharacterStateExit -= OnStateExit;
+	}
 
 	public void Play(FrameSyncInputData inputData)
 	{
@@ -74,7 +83,38 @@ public class CharacterComponent : ObjectComponent
 
 		var param = new CharacterParam(inputData, physicsComponent.IsGrounded, physicsComponent.Velocity);
 		animatorComponent.TryChangeState(param, currentState, out currentState);
+
+		Debug.Log($"현재 프레임 : {currentFrameInputData.frameCount}, 스테이트 : {currentState}");
 	}
+
+	private void OnStateEnter(CharacterState state)
+	{
+		switch (state)
+		{
+			case CharacterState.Move:
+				break;
+		}
+	}
+
+	private void OnStateUpdate(CharacterState state)
+	{
+		switch(state)
+		{
+			case CharacterState.Move:
+				OnMove();
+				break;
+		}
+	}
+
+	private void OnStateExit(CharacterState state)
+	{
+		switch (state)
+		{
+			case CharacterState.Move:
+				break;
+		}
+	}
+
 
 	public void OnMove()
 	{

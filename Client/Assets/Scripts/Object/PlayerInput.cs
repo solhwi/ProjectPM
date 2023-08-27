@@ -22,36 +22,6 @@ public class PlayerInput : MonoBehaviour, IInputReceiver
 		InputManager.Instance.UnregisterInputReceiver(this);
 	}
 
-	private void OnCollisionEnter2D(Collision2D collision)
-	{
-		
-	}
-
-	private void OnCollisionStay2D(Collision2D collision)
-	{
-		
-	}
-
-	private void OnCollisionExit2D(Collision2D collision)
-	{
-		
-	}
-
-	private void OnTriggerEnter2D(Collider2D collision)
-	{
-		
-	}
-
-	private void OnTriggerStay2D(Collider2D collision)
-	{
-		
-	}
-
-	private void OnTriggerExit2D(Collider2D collision)
-	{
-		
-	}
-
 	public void OnInput(FrameSyncInputData input)
 	{
 		if(characterComponent == null)

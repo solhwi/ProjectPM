@@ -42,6 +42,7 @@ public class ObjectManager : SingletonComponent<ObjectManager>
             yield break;
 
         PlayerCharacter = character;
+        PlayerCharacter.Initialize();
         PlayerCharacter.SetOrder(0, ENUM_TEAM_TYPE.Friendly);
 
         PlayerCharacter.transform.SetParent(transform);

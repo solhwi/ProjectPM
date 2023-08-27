@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterHitState : SceneLinkedSMB<CharacterComponent>
+	public class CharacterHitState : SceneLinkedSMB<CharacterAnimatorComponent>
 	{
 
 	}

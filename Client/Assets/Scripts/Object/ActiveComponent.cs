@@ -10,9 +10,9 @@ public class AnimatorComponent<TState> : MonoBehaviour where TState : Enum
 	protected readonly int m_HashHorizontalSpeedParam = Animator.StringToHash("HorizontalSpeed");
 	protected readonly int m_HashVerticalSpeedParam = Animator.StringToHash("VerticalSpeed");
 
-	private Animator animator;
+	protected Animator animator;
 
-	private void Awake()
+	protected virtual void Awake()
 	{
 		animator = GetComponent<Animator>();
 	}

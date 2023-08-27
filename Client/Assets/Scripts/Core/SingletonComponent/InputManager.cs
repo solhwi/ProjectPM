@@ -29,6 +29,11 @@ public class MoveInputData : FrameInputData
 {
 	public readonly Vector2 moveVector = Vector2.zero; // 전후좌우 이동
 
+	public MoveInputData() : base(0)
+	{
+		this.moveVector = default;
+	}
+
 	public MoveInputData(Vector2 moveVector, int frameCount) : base(frameCount)
 	{
 		this.moveVector = moveVector;
@@ -117,6 +122,8 @@ public class InputManager : SingletonComponent<InputManager>
 
 	private List<IInputReceiver> inputReceivers = new List<IInputReceiver>();
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
+
+	private FrameSyncInputData prevInputData = new FrameSyncInputData();
 
 	protected override void OnAwakeInstance()
 	{
@@ -215,7 +222,7 @@ public class InputManager : SingletonComponent<InputManager>
 	{
 		int validFrameCount = Time.frameCount;
 
-		Vector2 moveVec = default;
+		Vector2 moveVec = prevInputData?.MoveInput ?? default;
 		ENUM_ATTACK_KEY pressedAttackKey = ENUM_ATTACK_KEY.MAX;
 		bool isDash = false;
 		bool isGuard = false;
@@ -246,9 +253,11 @@ public class InputManager : SingletonComponent<InputManager>
 			}
 		}
 
-		foreach(var receiver in inputReceivers)
+		prevInputData = new FrameSyncInputData(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount);
+
+		foreach (var receiver in inputReceivers)
 		{
-			receiver.OnInput(new FrameSyncInputData(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount));
+			receiver.OnInput(prevInputData);
 		}
 	}
 

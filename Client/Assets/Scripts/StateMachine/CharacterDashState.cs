@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterDashState : SceneLinkedSMB<CharacterComponent>
+	public class CharacterDashState : SceneLinkedSMB<CharacterAnimatorComponent>
 	{
 
 	}

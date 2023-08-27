@@ -186,4 +186,34 @@ public class PhysicsComponent : MonoBehaviour
             m_HitBuffer[i] = new RaycastHit2D();
         }
     }
+
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+
+	}
+
+	private void OnCollisionStay2D(Collision2D collision)
+	{
+
+	}
+
+	private void OnCollisionExit2D(Collision2D collision)
+	{
+
+	}
+
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+
+	}
+
+	private void OnTriggerStay2D(Collider2D collision)
+	{
+
+	}
+
+	private void OnTriggerExit2D(Collider2D collision)
+	{
+
+	}
 }

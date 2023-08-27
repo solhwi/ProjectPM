@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterGuardSkillState : SceneLinkedSMB<CharacterComponent>
+	public class CharacterGuardSkillState : SceneLinkedSMB<CharacterAnimatorComponent>
 	{
 
 	}
