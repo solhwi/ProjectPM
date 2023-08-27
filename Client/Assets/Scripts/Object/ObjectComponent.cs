@@ -27,6 +27,7 @@ public class ObjectComponent : MonoBehaviour
 {
     [SerializeField] private ENUM_OBJECT_TYPE objectType = ENUM_OBJECT_TYPE.Object;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private new Collider2D collider;
 
     public ENUM_TEAM_TYPE TeamType { get; private set; } = ENUM_TEAM_TYPE.None;
     public bool IsBoss { get; private set; } = false;

@@ -8,7 +8,8 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public enum ENUM_ATTACK_KEY
 {
-	WEAK, // 일반 공격
+	NONE, // 공격 안함
+	ATTACK, // 일반 공격
 	SKILL, // 스킬
 	ULTIMATE, // 궁극기
 	MAX 

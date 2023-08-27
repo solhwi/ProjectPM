@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 
 public class PhysicsManager : SingletonComponent<PhysicsManager>
 {
-    Dictionary<Collider2D, PlatformEffector2D> m_PlatformEffectorCache = new Dictionary<Collider2D, PlatformEffector2D>();
+    Dictionary<Collider2D, ObjectComponent> objectColliderCache = new Dictionary<Collider2D, ObjectComponent>();
 
     protected override void OnAwakeInstance()
     {
@@ -21,7 +21,7 @@ public class PhysicsManager : SingletonComponent<PhysicsManager>
 
     private void PopulateCollider(SceneType type)
     {
-        PopulateColliderDictionary(ref m_PlatformEffectorCache);
+        PopulateColliderDictionary(ref objectColliderCache);
     }
 
     private void PopulateColliderDictionary<TComponent>(ref Dictionary<Collider2D, TComponent> dict)
@@ -44,11 +44,11 @@ public class PhysicsManager : SingletonComponent<PhysicsManager>
 
     public bool ColliderHasPlatformEffector(Collider2D collider)
     {
-        return Instance.m_PlatformEffectorCache.ContainsKey(collider);
+        return objectColliderCache.ContainsKey(collider);
     }
 
-    public bool TryGetPlatformEffector(Collider2D collider, out PlatformEffector2D platformEffector)
+    public bool TryGetPlatformEffector(Collider2D collider, out ObjectComponent objectComponent)
     {
-        return Instance.m_PlatformEffectorCache.TryGetValue(collider, out platformEffector);
+        return objectColliderCache.TryGetValue(collider, out objectComponent);
     }
 }

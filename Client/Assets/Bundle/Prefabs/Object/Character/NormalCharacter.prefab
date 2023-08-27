@@ -192,6 +192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectType: 11
   spriteRenderer: {fileID: 8229111070538132344}
+  collider: {fileID: 1567925571384664050}
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
   physicsComponent: {fileID: 2725238379644671886}
   animatorComponent: {fileID: 2207896231629970980}
@@ -206,7 +207,7 @@ Animator:
   m_GameObject: {fileID: 3984707968245006999}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: fa4d9864c8d945b48999d240456bad65, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -229,4 +230,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49f3474962d1a1a49bb3c0c35b6cd782, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 1550911840502356393}

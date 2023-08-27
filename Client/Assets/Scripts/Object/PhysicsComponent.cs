@@ -23,7 +23,6 @@ public class PhysicsComponent : MonoBehaviour
     Vector2[] m_RaycastPositions = new Vector2[3];
 
     public bool IsGrounded { get; protected set; }
-    public bool IsCeilinged { get; protected set; }
     public Vector2 Velocity { get; protected set; }
 
 
@@ -140,21 +139,6 @@ public class PhysicsComponent : MonoBehaviour
             {
                 m_FoundHits[i] = count > 0 ? m_HitBuffer[0] : new RaycastHit2D();
                 m_GroundColliders[i] = m_FoundHits[i].collider;
-            }
-            else
-            {
-                IsCeilinged = false;
-
-                for (int j = 0; j < m_HitBuffer.Length; j++)
-                {
-                    if (m_HitBuffer[j].collider != null)
-                    {
-                        if (!PhysicsManager.Instance.ColliderHasPlatformEffector(m_HitBuffer[j].collider))
-                        {
-                            IsCeilinged = true;
-                        }
-                    }
-                }
             }
         }
 

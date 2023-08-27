@@ -11,26 +11,25 @@ public enum ENUM_CHARACTER_TYPE
 
 public enum CharacterState
 {
-	IDLE, // 멈춤
-	MOVE, // 좌, 우
-	JUMP, // 점프 (하면서 물리적인 이동이 가능)
-	DASH, // 대쉬
-	DOWN, // 다운
-	LANDING, // 착지
-	RECOVERY, // 기상
-	HIT, // 데미지 입음
+	Idle, // 멈춤
+	Move, // 좌, 우
+	Jump, // 점프 (하면서 물리적인 이동이 가능)
+	Dash, // 대쉬
+	Down, // 다운
+	Landing, // 착지
+	Recovery, // 기상
+	Hit, // 데미지 입음
 
-	ATTACK, // 공격
-	DASH_ATTACK, // 대쉬 공격
-	JUMP_ATTACK, // 점프 공격
+	Attack, // 공격
+	DashAttack, // 대쉬 공격
+	JumpAttack, // 점프 공격
 
-	SKILL, // 스킬 공격
-	DASH_SKILL, // 대쉬 스킬
-	JUMP_SKILL, // 점프 스킬
+	Skill, // 스킬 공격
+	DashSkill, // 대쉬 스킬
+	JumpSkill, // 점프 스킬
 
-	GUARD, // 가드
-	GUARD_SKILL, // 패링 시 나가는 반격 스킬
-	ULTIMATE, // 궁극기
+	Guard, // 가드
+	Ultimate, // 궁극기
 }
 
 public class CharacterParam
@@ -41,16 +40,13 @@ public class CharacterParam
 	public readonly bool IsCeilinged = false;
 	public readonly Vector2 Velocity = default;
 
-	public CharacterParam(FrameSyncInputData inputData, bool isGrounded, bool isCeilinged, Vector2 velocity)
+	public CharacterParam(FrameSyncInputData inputData, bool isGrounded, Vector2 velocity)
 	{
 		InputData = inputData;
 		IsGrounded = isGrounded;
-		IsCeilinged = isCeilinged;
 		Velocity = velocity;
 	}
 }
-
-
 
 [RequireComponent(typeof(PhysicsComponent))]
 [RequireComponent(typeof(CharacterAnimatorComponent))]
@@ -76,8 +72,8 @@ public class CharacterComponent : ObjectComponent
 		prevFrameInputData = currentFrameInputData;
 		currentFrameInputData = inputData;
 
-		var param = new CharacterParam(inputData, physicsComponent.IsGrounded, physicsComponent.IsCeilinged, physicsComponent.Velocity);
-		animatorComponent.TryChangeState(param, out currentState);
+		var param = new CharacterParam(inputData, physicsComponent.IsGrounded, physicsComponent.Velocity);
+		animatorComponent.TryChangeState(param, currentState, out currentState);
 	}
 
 	public void OnMove()
