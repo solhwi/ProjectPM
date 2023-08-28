@@ -1,12 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
+public class FrameColliderData
+{
+    public readonly AttackableComponent attacker;
+	public readonly DamageableComponent defender;
+    public readonly int frameCount;
+
+    public FrameColliderData(AttackableComponent attacker, DamageableComponent defender, int frameCount)
+    {
+        this.attacker = attacker;
+        this.defender = defender;
+        this.frameCount = frameCount;
+    }
+}
 
 public class PhysicsManager : SingletonComponent<PhysicsManager>
 {
-    Dictionary<Collider2D, ObjectComponent> objectColliderCache = new Dictionary<Collider2D, ObjectComponent>();
+    Dictionary<Collider2D, AttackableComponent> attackableCache = new Dictionary<Collider2D, AttackableComponent>();
+    Queue<FrameColliderData> inputDataQueue = new Queue<FrameColliderData>();
 
     protected override void OnAwakeInstance()
     {
@@ -21,7 +34,7 @@ public class PhysicsManager : SingletonComponent<PhysicsManager>
 
     private void PopulateCollider(SceneType type)
     {
-        PopulateColliderDictionary(ref objectColliderCache);
+        PopulateColliderDictionary(ref attackableCache);
     }
 
     private void PopulateColliderDictionary<TComponent>(ref Dictionary<Collider2D, TComponent> dict)
@@ -42,13 +55,41 @@ public class PhysicsManager : SingletonComponent<PhysicsManager>
         }
     }
 
-    public bool ColliderHasPlatformEffector(Collider2D collider)
-    {
-        return objectColliderCache.ContainsKey(collider);
-    }
+	private void Update()
+	{
+		int validFrameCount = Time.frameCount;
 
-    public bool TryGetPlatformEffector(Collider2D collider, out ObjectComponent objectComponent)
-    {
-        return objectColliderCache.TryGetValue(collider, out objectComponent);
-    }
+        Dictionary<DamageableComponent, List<AttackableComponent>> damageableDictionary = new Dictionary<DamageableComponent, List<AttackableComponent>>();
+		
+        while (inputDataQueue.TryDequeue(out var result))
+		{
+			if (result.frameCount < validFrameCount)
+				continue;
+
+            if (damageableDictionary.ContainsKey(result.defender))
+            {
+				damageableDictionary[result.defender].Add(result.attacker);
+			}
+            else
+            {
+				damageableDictionary.Add(result.defender, new List<AttackableComponent> { result.attacker });
+			}
+		}
+
+		foreach(var damagePair in damageableDictionary)
+        {
+            var damageable = damagePair.Key;
+            var attackers = damagePair.Value;
+
+            damageable.OnDamage(attackers);
+        }
+	}
+
+	public void OnTrigger(Collider2D attackerCollider, DamageableComponent defender)
+	{
+        if(attackableCache.TryGetValue(attackerCollider, out var attacker))
+        {
+            inputDataQueue.Enqueue(new FrameColliderData(attacker, defender, Time.frameCount));
+		}
+	}
 }

@@ -76,7 +76,7 @@ public class CharacterComponent : ObjectComponent
 		animatorComponent.OnCharacterStateExit -= OnStateExit;
 	}
 
-	public void Play(FrameSyncInputData inputData)
+	public void OnInput(FrameSyncInputData inputData)
 	{
 		prevFrameInputData = currentFrameInputData;
 		currentFrameInputData = inputData;
@@ -85,6 +85,11 @@ public class CharacterComponent : ObjectComponent
 		animatorComponent.TryChangeState(param, currentState, out currentState);
 
 		Debug.Log($"현재 프레임 : {currentFrameInputData.frameCount}, 스테이트 : {currentState}");
+	}
+
+	public void OnDamageInput(IEnumerable<AttackableComponent> attackers)
+	{
+		// 본인의 방어력과 함께 사용 
 	}
 
 	private void OnStateEnter(CharacterState state)
@@ -118,6 +123,6 @@ public class CharacterComponent : ObjectComponent
 
 	public void OnMove()
 	{
-		physicsComponent.Move(currentFrameInputData.MoveInput);
+		physicsComponent.Move(currentFrameInputData.MoveInput * Time.deltaTime);
 	}
 }

@@ -27,6 +27,6 @@ public class PlayerInput : MonoBehaviour, IInputReceiver
 		if(characterComponent == null)
 			return;
 
-		characterComponent.Play(input);
+		characterComponent.OnInput(input);
 	}
 }
