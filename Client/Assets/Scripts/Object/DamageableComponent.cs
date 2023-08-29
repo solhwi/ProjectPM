@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class DamageableComponent : MonoBehaviour
 {
-	CharacterComponent characterComponent = null;
+	ObjectComponent targetObject = null;
 
 	private void Awake()
 	{
-		characterComponent = GetComponent<CharacterComponent>();
+		targetObject = GetComponent<ObjectComponent>();
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -28,6 +28,6 @@ public class DamageableComponent : MonoBehaviour
 
 	public void OnDamage(IEnumerable<AttackableComponent> attackers)
 	{
-		characterComponent.OnDamageInput(attackers);
+		targetObject.OnDamageInput(attackers);
 	}
 }

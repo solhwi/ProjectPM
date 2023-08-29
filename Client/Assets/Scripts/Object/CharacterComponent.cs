@@ -87,7 +87,7 @@ public class CharacterComponent : ObjectComponent
 		Debug.Log($"현재 프레임 : {currentFrameInputData.frameCount}, 스테이트 : {currentState}");
 	}
 
-	public void OnDamageInput(IEnumerable<AttackableComponent> attackers)
+	public override void OnDamageInput(IEnumerable<AttackableComponent> attackers)
 	{
 		// 본인의 방어력과 함께 사용 
 	}

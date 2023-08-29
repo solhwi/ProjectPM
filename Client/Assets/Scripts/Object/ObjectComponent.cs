@@ -42,6 +42,11 @@ public class ObjectComponent : MonoBehaviour
         
     }
 
+	public virtual void OnDamageInput(IEnumerable<AttackableComponent> attackers)
+	{
+		
+	}
+
 	public void SetOrder(int orderIndex, ENUM_TEAM_TYPE teamType = ENUM_TEAM_TYPE.None, bool isBoss = false)
     {
         if(objectType == ENUM_OBJECT_TYPE.Object && teamType == ENUM_TEAM_TYPE.Enemy)
