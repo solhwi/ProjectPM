@@ -218,7 +218,7 @@ public class InputManager : SingletonComponent<InputManager>
 
 	// 이 업데이트 문에서 인풋 큐를 모두 빼는데, 인풋을 받는 리시버의 상황에 따라 인풋이 무시될 수도 있다.
 	// 프레임에 마지막으로 누른 인풋들만을 넣는 것으로 한다.
-	private void Update()
+	public void OnUpdate()
 	{
 		int validFrameCount = Time.frameCount;
 

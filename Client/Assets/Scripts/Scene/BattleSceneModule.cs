@@ -35,4 +35,10 @@ public class BattleSceneModule : NetworkSceneModule
         return transport;
     }
 #endif
+
+	public override void OnUpdate()
+	{
+		InputManager.Instance.OnUpdate();
+		PhysicsManager.Instance.OnUpdate();
+	}
 }

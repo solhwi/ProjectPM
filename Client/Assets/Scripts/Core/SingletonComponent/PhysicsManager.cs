@@ -55,11 +55,11 @@ public class PhysicsManager : SingletonComponent<PhysicsManager>
         }
     }
 
-	private void Update()
+	public void OnUpdate()
 	{
 		int validFrameCount = Time.frameCount;
 
-        Dictionary<DamageableComponent, List<AttackableComponent>> damageableDictionary = new Dictionary<DamageableComponent, List<AttackableComponent>>();
+        var damageableDictionary = new Dictionary<DamageableComponent, List<AttackableComponent>>();
 		
         while (inputDataQueue.TryDequeue(out var result))
 		{

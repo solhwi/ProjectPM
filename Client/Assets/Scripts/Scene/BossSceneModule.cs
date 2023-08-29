@@ -48,6 +48,7 @@ public class BossSceneModule : SceneModule
 
 	public override void OnUpdate()
 	{
-
+		InputManager.Instance.OnUpdate();
+		PhysicsManager.Instance.OnUpdate();
 	}
 }
