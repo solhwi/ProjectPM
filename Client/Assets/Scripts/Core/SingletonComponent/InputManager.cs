@@ -118,8 +118,6 @@ public class InputManager : SingletonComponent<InputManager>
 	public static bool SnapX { get; private set; } = false;
 	public static bool SnapY { get; private set; } = false;
 
-	private InputKeyComponent[] inputKeyComponents;
-
 	private List<IInputReceiver> inputReceivers = new List<IInputReceiver>();
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
 
@@ -127,12 +125,22 @@ public class InputManager : SingletonComponent<InputManager>
 
 	protected override void OnAwakeInstance()
 	{
-		
+		SceneManager.Instance.onSceneChanged += SetJoystick;
+		SetJoystick();
+	}
+
+	private void SetJoystick(SceneType type = SceneType.Title)
+	{
+		var joyStick = FindObjectOfType<VariableJoystick>();
+		if (joyStick != null)
+		{
+			joyStick.SetMode(JoystickType);
+		}
 	}
 
 	protected override void OnReleaseInstance()
 	{
-
+		SceneManager.Instance.onSceneChanged -= SetJoystick;
 	}
 
 	public void RegisterInputReceiver(IInputReceiver inputReceiver)

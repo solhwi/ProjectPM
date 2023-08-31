@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DamageableComponent : MonoBehaviour
 {
+	public bool isEnable = true;
+
 	ObjectComponent targetObject = null;
 
 	private void Awake()
@@ -13,16 +15,25 @@ public class DamageableComponent : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+		if (!isEnable)
+			return;
+
 		PhysicsManager.Instance.OnTrigger(collision, this);
 	}
 
 	private void OnTriggerStay2D(Collider2D collision)
 	{
+		if (!isEnable)
+			return;
+
 		PhysicsManager.Instance.OnTrigger(collision, this);
 	}
 
 	private void OnTriggerExit2D(Collider2D collision)
 	{
+		if (!isEnable)
+			return;
+
 		PhysicsManager.Instance.OnTrigger(collision, this);
 	}
 
