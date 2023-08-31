@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 물리 콜백도 이 곳에서 한다.
 public class PlayerInput : MonoBehaviour, IInputReceiver
 {
+	public bool isEnable = true;
+
 	CharacterComponent characterComponent = null;
 
 	private void Awake()
@@ -24,7 +25,10 @@ public class PlayerInput : MonoBehaviour, IInputReceiver
 
 	public void OnInput(FrameSyncInputData input)
 	{
-		if(characterComponent == null)
+		if (!isEnable)
+			return;
+
+		if (characterComponent == null)
 			return;
 
 		characterComponent.OnInput(input);
