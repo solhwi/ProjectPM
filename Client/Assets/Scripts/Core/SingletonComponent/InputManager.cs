@@ -127,18 +127,12 @@ public class InputManager : SingletonComponent<InputManager>
 
 	protected override void OnAwakeInstance()
 	{
-		FindInputKeyComponent(SceneManager.Instance.CurrentSceneType);
+		
 	}
 
 	protected override void OnReleaseInstance()
 	{
-		if (inputKeyComponents.IsUnityNull())
-			return;
 
-		foreach(var component in inputKeyComponents)
-		{
-			component.OnClearPointerCallback();
-		}
 	}
 
 	public void RegisterInputReceiver(IInputReceiver inputReceiver)
@@ -157,39 +151,7 @@ public class InputManager : SingletonComponent<InputManager>
 		inputReceivers.Remove(inputReceiver);
 	}
 
-	private void FindInputKeyComponent(SceneType sceneType)
-	{
-		inputKeyComponents = FindObjectsOfType<InputKeyComponent>();
-		if (inputKeyComponents.IsUnityNull())
-		{
-			Debug.LogError($"{sceneType} 씬에 인풋 키 컴포넌트들이 존재하지 않습니다.");
-			return;
-		}
-
-		foreach(var inputKeyComponent in inputKeyComponents)
-		{
-			if (inputKeyComponent is AttackKeyComponent attackKeyComponent)
-			{
-				attackKeyComponent.onInputChanged += OnAttackInputChanged;
-			}
-
-			else if (inputKeyComponent is VariableJoystick joystick)
-			{
-				joystick.onInputChanged += OnMoveInputChanged;
-				joystick.SetMode(JoystickType);
-			}
-			else if(inputKeyComponent is DashKeyComponent)
-			{
-				inputKeyComponent.onInputChanged += OnDashInputChanged;
-			}
-			else if(inputKeyComponent is GuardKeyComponent)
-			{
-				inputKeyComponent.onInputChanged += OnGuardInputChanged;
-			}
-		}
-	}
-
-	private void OnMoveInputChanged(Vector2 input, int frameCount)
+	public void OnMoveInputChanged(Vector2 input, int frameCount)
 	{
 		float x = SnapX ? SnapFloat(input, input.x, AxisOptions.Horizontal) : input.x;
 		float y = SnapY ? SnapFloat(input, input.y, AxisOptions.Vertical) : input.y;
@@ -198,19 +160,19 @@ public class InputManager : SingletonComponent<InputManager>
 		inputDataQueue.Enqueue(inputData);
 	}
 
-	private void OnDashInputChanged(bool isPress, int frameCount)
+	public void OnDashInputChanged(bool isPress, int frameCount)
 	{
 		var inputData = new DashInputData(isPress, frameCount);
 		inputDataQueue.Enqueue(inputData);
 	}
 
-	private void OnGuardInputChanged(bool isPress, int frameCount)
+	public void OnGuardInputChanged(bool isPress, int frameCount)
 	{
 		var inputData = new GuardInputData(isPress, frameCount);
 		inputDataQueue.Enqueue(inputData);
 	}
 
-	private void OnAttackInputChanged(ENUM_ATTACK_KEY key, bool isAttack, int frameCount)
+	public void OnAttackInputChanged(ENUM_ATTACK_KEY key, bool isAttack, int frameCount)
 	{
 		var inputData = new AttackInputData(key, isAttack, frameCount);
 		inputDataQueue.Enqueue(inputData);

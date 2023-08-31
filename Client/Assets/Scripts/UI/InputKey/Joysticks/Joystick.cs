@@ -14,7 +14,6 @@ public class Joystick : InputKeyComponent
     private Camera cam;
 
     private Vector2 input = Vector2.zero;
-    public new event Action<Vector2, int> onInputChanged = null;
 
     protected virtual void Start()
     {
@@ -43,7 +42,7 @@ public class Joystick : InputKeyComponent
         FormatInput();
         HandleInput(input.magnitude, input.normalized, radius, cam);
         
-        onInputChanged?.Invoke(input, Time.frameCount);
+        InputManager.Instance.OnMoveInputChanged(input, Time.frameCount);
 
 		handle.anchoredPosition = input * radius * InputManager.HandleRange;
     }
@@ -75,7 +74,8 @@ public class Joystick : InputKeyComponent
     {
         input = Vector2.zero;
         handle.anchoredPosition = Vector2.zero;
-		onInputChanged?.Invoke(input, Time.frameCount);
+
+		InputManager.Instance.OnMoveInputChanged(input, Time.frameCount);
 	}
 
     protected Vector2 ScreenPointToAnchoredPosition(Vector2 screenPosition)
@@ -87,12 +87,6 @@ public class Joystick : InputKeyComponent
         }
         return Vector2.zero;
     }
-
-	public override void OnClearPointerCallback()
-	{
-		base.OnClearPointerCallback();
-		onInputChanged = null;
-	}
 }
 
 public enum AxisOptions { Both, Horizontal, Vertical }
