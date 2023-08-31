@@ -54,7 +54,7 @@ public class AnimatorComponent<TState> : MonoBehaviour where TState : Enum
 		return true;
 	}
 
-	protected bool CanTransition()
+	protected virtual bool CanTransition()
 	{
 		return true;
 

@@ -16,7 +16,7 @@ public class CharacterAnimatorComponent : AnimatorComponent<CharacterState>
 		SceneLinkedSMB<CharacterAnimatorComponent>.Initialize(animator, this);
 	}
 
-	public void TryChangeState(CharacterParam param, CharacterState prevState, out CharacterState currentState)
+	public void TryChangeState(CharacterInputStateParam param, CharacterState prevState, out CharacterState currentState)
 	{
         if (CanTransition() == false)
         {
@@ -102,7 +102,31 @@ public class CharacterAnimatorComponent : AnimatorComponent<CharacterState>
 		}
 	}
 
-    public void OnStateEnter(CharacterState state)
+    public void TryChangeHitState(CharacterHitStateParam param, CharacterState prevState, out CharacterState currentState)
+    { 
+        // attackers 의 특성과 defender의 특성에 따라 조금 더 바뀔 수 있음
+
+		if (CanTransition() == false)
+		{
+			currentState = prevState;
+			return;
+		}
+        
+        if(prevState == CharacterState.Down || prevState == CharacterState.Recovery || prevState == CharacterState.Guard || prevState == CharacterState.Ultimate)
+        {
+			currentState = prevState;
+			return;
+		}
+
+		currentState = CharacterState.Hit;
+	}
+
+	protected override bool CanTransition()
+	{
+		return true;
+	}
+
+	public void OnStateEnter(CharacterState state)
     {
 		OnCharacterStateEnter?.Invoke(state);
 	}

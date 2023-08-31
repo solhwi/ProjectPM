@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,19 +33,30 @@ public enum CharacterState
 	Ultimate, // 궁극기
 }
 
-public class CharacterParam
+public class CharacterInputStateParam
 {
 	public readonly FrameSyncInputData InputData = null;
 
 	public readonly bool IsGrounded = false;
-	public readonly bool IsCeilinged = false;
 	public readonly Vector2 Velocity = default;
 
-	public CharacterParam(FrameSyncInputData inputData, bool isGrounded, Vector2 velocity)
+	public CharacterInputStateParam(FrameSyncInputData inputData, bool isGrounded, Vector2 velocity)
 	{
 		InputData = inputData;
 		IsGrounded = isGrounded;
 		Velocity = velocity;
+	}
+}
+
+public class CharacterHitStateParam
+{
+	public readonly IEnumerable<AttackableComponent> attackers = null;
+	public readonly ObjectComponent defender = null;
+
+	public CharacterHitStateParam(IEnumerable<AttackableComponent> attackers, ObjectComponent defender)
+	{
+		this.attackers = attackers;
+		this.defender = defender;
 	}
 }
 
@@ -57,6 +69,7 @@ public class CharacterComponent : ObjectComponent
 	[SerializeField] private CharacterAnimatorComponent animatorComponent = null;
 	[SerializeField] private ENUM_CHARACTER_TYPE characterType;
 
+	private CharacterState prevState;
 	private CharacterState currentState;
 
 	private FrameSyncInputData prevFrameInputData = null;
@@ -76,20 +89,29 @@ public class CharacterComponent : ObjectComponent
 		animatorComponent.OnCharacterStateExit -= OnStateExit;
 	}
 
+	// 인풋이 피격보다 먼저 처리된다.
 	public void OnInput(FrameSyncInputData inputData)
 	{
 		prevFrameInputData = currentFrameInputData;
 		currentFrameInputData = inputData;
 
-		var param = new CharacterParam(inputData, physicsComponent.IsGrounded, physicsComponent.Velocity);
-		animatorComponent.TryChangeState(param, currentState, out currentState);
+		prevState = currentState;
 
-		Debug.Log($"현재 프레임 : {currentFrameInputData.frameCount}, 스테이트 : {currentState}");
+		var param = new CharacterInputStateParam(inputData, physicsComponent.IsGrounded, physicsComponent.Velocity);
+		animatorComponent.TryChangeState(param, prevState, out currentState);
+
+		Debug.Log($"현재 프레임 : {currentFrameInputData.frameCount}, 인풋으로 인한 스테이트 변경 : {currentState}");
 	}
 
 	public override void OnDamageInput(IEnumerable<AttackableComponent> attackers)
 	{
-		// 본인의 방어력과 함께 사용 
+		if (attackers.Any() == false)
+			return;
+
+		var param = new CharacterHitStateParam(attackers, this);
+		animatorComponent.TryChangeHitState(param, prevState, out currentState);
+
+		Debug.Log($"현재 프레임 : {currentFrameInputData.frameCount}, 피격으로 인한 최종 스테이트 변경 : {currentState}");
 	}
 
 	private void OnStateEnter(CharacterState state)
