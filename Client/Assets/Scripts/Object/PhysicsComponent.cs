@@ -23,7 +23,9 @@ public class PhysicsComponent : MonoBehaviour
     Vector2[] m_RaycastPositions = new Vector2[3];
 
     public bool IsGrounded { get; protected set; }
-    public Vector2 Velocity { get; protected set; }
+    public Vector2 MoveVector { get; protected set; }
+
+    public float Gravity { get; protected set; }
 
 
     void Awake()
@@ -38,21 +40,24 @@ public class PhysicsComponent : MonoBehaviour
         m_ContactFilter.useLayerMask = true;
         m_ContactFilter.useTriggers = false;
 
-        Physics2D.queriesStartInColliders = false;
+		Physics2D.queriesStartInColliders = false;
     }
 
     void FixedUpdate()
     {
         m_PreviousPosition = m_Rigidbody2D.position;
         m_CurrentPosition = m_PreviousPosition + m_NextMovement;
-        Velocity = (m_CurrentPosition - m_PreviousPosition) / Time.deltaTime;
+        MoveVector = (m_CurrentPosition - m_PreviousPosition) / Time.deltaTime;
 
         m_Rigidbody2D.MovePosition(m_CurrentPosition);
         m_NextMovement = Vector2.zero;
 
         CheckCapsuleEndCollisions(true);
         CheckCapsuleEndCollisions(false);
-    }
+
+        Gravity = 0.98f;
+
+	}
 
     /// <summary>
     /// This moves a rigidbody and so should only be called from FixedUpdate or other Physics messages.
@@ -167,7 +172,7 @@ public class PhysicsComponent : MonoBehaviour
             }
             else
             {
-                IsGrounded = Velocity.y <= 0f;
+                IsGrounded = MoveVector.y <= 0f;
 
                 if (m_BoxColider2D != null)
                 {

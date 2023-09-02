@@ -59,10 +59,14 @@ public class CharacterAnimatorComponent : AnimatorComponent<CharacterState>
             }
         }
 
-        if (param.InputData.MoveInput.y > 0.0f || param.IsGrounded == false)
+        if (param.InputData.MoveInput.y > 0.0f && param.IsGrounded)
         {
-            currentState = param.Velocity.y >= 0.0f ? CharacterState.Jump : CharacterState.Landing;
+            currentState = CharacterState.Jump;
         }
+        else if(param.IsGrounded == false)
+        {
+			currentState = param.Velocity.y >= 0.0f ? CharacterState.Jump : CharacterState.Landing;
+		}
 
         if (prevState == CharacterState.Dash) // 전 프레임에 대쉬 중이었다면,
         {

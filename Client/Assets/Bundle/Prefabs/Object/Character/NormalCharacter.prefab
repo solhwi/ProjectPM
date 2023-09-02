@@ -107,7 +107,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -199,6 +199,7 @@ MonoBehaviour:
   physicsComponent: {fileID: 2725238379644671886}
   animatorComponent: {fileID: 2207896231629970980}
   characterType: 0
+  gravity: 500
 --- !u!95 &1550911840502356393
 Animator:
   serializedVersion: 5
@@ -244,6 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ac417eaf776c0a48b44d76d14ba10fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEnable: 1
 --- !u!114 &2681883021875001821
 MonoBehaviour:
   m_ObjectHideFlags: 0
