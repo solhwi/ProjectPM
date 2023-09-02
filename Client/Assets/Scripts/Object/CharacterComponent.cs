@@ -75,6 +75,10 @@ public class CharacterComponent : ObjectComponent
 	private FrameSyncInputData prevFrameInputData = null;
 	private FrameSyncInputData currentFrameInputData = new FrameSyncInputData();
 
+	private Vector2 frameMoveVec = Vector2.zero;
+	
+	public float gravity = 50f;
+
 	public override void Initialize()
 	{
 		animatorComponent.OnCharacterStateEnter += OnStateEnter;
@@ -97,7 +101,7 @@ public class CharacterComponent : ObjectComponent
 
 		prevState = currentState;
 
-		var param = new CharacterInputStateParam(inputData, physicsComponent.IsGrounded, physicsComponent.Velocity);
+		var param = new CharacterInputStateParam(inputData, physicsComponent.IsGrounded, physicsComponent.MoveVector);
 		animatorComponent.TryChangeState(param, prevState, out currentState);
 
 		Debug.Log($"현재 프레임 : {currentFrameInputData.frameCount}, 인풋으로 인한 스테이트 변경 : {currentState}");
@@ -119,18 +123,30 @@ public class CharacterComponent : ObjectComponent
 		switch (state)
 		{
 			case CharacterState.Move:
+				frameMoveVec = new Vector2(currentFrameInputData.MoveInput.x, 0);
+				break;
+			case CharacterState.Jump:
+				frameMoveVec = new Vector2(currentFrameInputData.MoveInput.x, currentFrameInputData.MoveInput.y * 105.0f * Time.deltaTime);
 				break;
 		}
 	}
 
 	private void OnStateUpdate(CharacterState state)
 	{
-		switch(state)
+		switch (state)
 		{
 			case CharacterState.Move:
-				OnMove();
+
+				frameMoveVec = new Vector2(currentFrameInputData.MoveInput.x, 0);
+				break;
+
+			case CharacterState.Jump:
+			case CharacterState.Landing:
+				frameMoveVec.y -= physicsComponent.Gravity * Time.deltaTime;
 				break;
 		}
+
+		physicsComponent.Move(frameMoveVec * Time.deltaTime);
 	}
 
 	private void OnStateExit(CharacterState state)
@@ -140,11 +156,5 @@ public class CharacterComponent : ObjectComponent
 			case CharacterState.Move:
 				break;
 		}
-	}
-
-
-	public void OnMove()
-	{
-		physicsComponent.Move(currentFrameInputData.MoveInput * Time.deltaTime);
 	}
 }
