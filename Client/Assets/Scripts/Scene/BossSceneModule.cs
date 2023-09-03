@@ -17,10 +17,7 @@ public class BossSceneModule : SceneModule
 {
     public override void OnEnter(SceneModuleParam param)
 	{
-		// 여기서 이렇게 하는 부분이 꼴 보기 싫어성... 
-		// 여기에 Damageable, Attackable도 넣고 싶은데 async await로 해보자.
-        MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, ObjectManager.Instance.PlayerCharacter);
-		ObjectManager.Instance.PlayerCharacter.AddComponent<PlayerInput>();
+        MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, ObjectManager.Instance.PlayerObject);
 	}
 
 	public override IEnumerator OnPrepareEnterRoutine(SceneModuleParam param)

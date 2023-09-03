@@ -32,14 +32,26 @@ public class ObjectComponent : MonoBehaviour
     public ENUM_TEAM_TYPE TeamType { get; private set; } = ENUM_TEAM_TYPE.None;
     public bool IsBoss { get; private set; } = false;
 
+    public int Guid
+    {
+        get
+        {
+            if (guid == default)
+                guid = this.GetInstanceID();
+
+            return guid;
+        }
+    }
+    private int guid;
+
     public virtual void Initialize()
     {
-
+        ObjectManager.Instance.RegisterObject(Guid, this);
     }
 
     public virtual void Clear()
     {
-        
+        ObjectManager.Instance.UnRegisterObject(Guid);
     }
 
 	public virtual void OnOtherInput(IEnumerable<AttackableComponent> attackers)

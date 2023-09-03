@@ -1,15 +1,29 @@
+using NPOI.HPSF;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class ObjectManager : SingletonComponent<ObjectManager>
 {
-    public CharacterComponent PlayerCharacter
+    public ObjectComponent PlayerObject
     {
-        get;
-        private set;
+        get
+        {
+            if (objectDictionary.TryGetValue(playerObjectGuid, out var component))
+            {
+                return component;
+            }
+
+            Debug.LogError($"플레이어 오브젝트가 생성되기 전입니다. GUID : {playerObjectGuid}");
+            return null;
+        }
     }
+
+    private int playerObjectGuid = 0;
+    private Dictionary<int, ObjectComponent> objectDictionary = new Dictionary<int, ObjectComponent>();
 
     public IEnumerator LoadAsyncPlayer(ENUM_CHARACTER_TYPE characterType)
     {
@@ -41,13 +55,16 @@ public class ObjectManager : SingletonComponent<ObjectManager>
         if (character == null)
             yield break;
 
-        PlayerCharacter = character;
-        PlayerCharacter.Initialize();
-        PlayerCharacter.SetOrder(0, ENUM_TEAM_TYPE.Friendly);
+        character.Initialize();
+        character.SetOrder(0, ENUM_TEAM_TYPE.Friendly);
 
-        PlayerCharacter.transform.SetParent(transform);
-        PlayerCharacter.transform.SetPositionAndRotation(default, default);
-        PlayerCharacter.transform.SetAsLastSibling();
+        character.transform.SetParent(transform);
+        character.transform.SetPositionAndRotation(default, default);
+        character.transform.SetAsLastSibling();
+
+        character.AddComponent<PlayerInput>();
+
+        playerObjectGuid = character.Guid;
     }
 
     public IEnumerator LoadAsyncMonsters()
@@ -86,14 +103,29 @@ public class ObjectManager : SingletonComponent<ObjectManager>
     }
 
 	public override void OnPostUpdate(int deltaFrameCount, float deltaTime)
-	{
-        if (PlayerCharacter != null)
-            PlayerCharacter.OnPostInput();
+    {
+        foreach(var obj in objectDictionary.Values)
+        {
+            obj.OnPostInput();
+        }
 	}
 
     public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
     {
-        if (PlayerCharacter != null)
-            PlayerCharacter.OnUpdateAnimation();
+        foreach (var obj in objectDictionary.Values)
+        {
+            obj.OnUpdateAnimation();
+        }
+    }
+
+    public void RegisterObject(int Guid, ObjectComponent objectComponent)
+    {
+        objectDictionary[Guid] = objectComponent;
+    }
+
+    public void UnRegisterObject(int Guid)
+    {
+        if(objectDictionary.ContainsKey(Guid))
+            objectDictionary.Remove(Guid);
     }
 }

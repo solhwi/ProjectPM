@@ -11,7 +11,7 @@ public class PhysicsComponent : MonoBehaviour
     [Tooltip("The distance down to check for ground.")]
     [SerializeField] private float groundedRaycastDistance = 0.1f;
 
-    [SerializeField] private float gravity = 1.0f;
+    [SerializeField] private float gravityScale = 9.8f;
 
     Rigidbody2D m_Rigidbody2D;
     BoxCollider2D m_BoxColider2D;
@@ -23,9 +23,11 @@ public class PhysicsComponent : MonoBehaviour
     RaycastHit2D[] m_FoundHits = new RaycastHit2D[3];
     Collider2D[] m_GroundColliders = new Collider2D[3];
     Vector2[] m_RaycastPositions = new Vector2[3];
+    float jumpDeltaTime = 0.0f;
 
     public bool IsGrounded { get; protected set; }
     public Vector2 Velocity => m_NextMovement;
+
 
 	void Awake()
     {
@@ -67,7 +69,13 @@ public class PhysicsComponent : MonoBehaviour
     {
         if (IsGrounded == false)
         {
-            Move(Vector2.down * gravity * Time.deltaTime);
+            float totalGravityPower = gravityScale + (gravityScale * jumpDeltaTime);
+            Move(Vector2.down * totalGravityPower * Time.deltaTime);
+            jumpDeltaTime += Time.deltaTime;
+        }
+        else
+        {
+            jumpDeltaTime = 0.0f;
         }
     }
 

@@ -83,16 +83,6 @@ public class CharacterComponent : ObjectComponent
 	private FrameSyncCharacterInputData inputData = new();
     private FrameSyncCharacterOutputData outputData = new();
 
-	public override void Initialize()
-	{
-		
-	}
-
-	public override void Clear()
-	{
-		
-	}
-
 	public void OnPlayerInput(FrameSyncInputData frameData)
 	{
 		inputData ??= new();
@@ -123,11 +113,14 @@ public class CharacterComponent : ObjectComponent
 		outputData = output;
     }
 
+	// 물리 처리를 시도한다.
 	public override void OnUpdateAnimation()
 	{
 		if (outputData == null)
 			return;
 
 		physicsComponent.Move(outputData.moveVec);
-	}
+		outputData = null;
+
+    }
 }

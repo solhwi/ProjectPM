@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class AttackableComponent : MonoBehaviour
 {
-   
+    public ObjectComponent attackOwner;
 }
