@@ -33,32 +33,43 @@ public enum CharacterState
 	Ultimate, // 궁극기
 }
 
-public class CharacterInputStateParam
+public interface IStateParam
 {
-	public readonly FrameSyncInputData InputData = null;
 
-	public readonly bool IsGrounded = false;
-	public readonly Vector2 Velocity = default;
+}
 
-	public CharacterInputStateParam(FrameSyncInputData inputData, bool isGrounded, Vector2 velocity)
+
+/// <summary>
+/// 인풋 > 인풋에 자신의 데이터를 더함 > FSM에 넘김 > FSM이 조합한 결과물로 데이터를 수정함 > 레이트 업데이트에서 뷰를 수정함
+/// 
+/// 
+/// </summary>
+public class FrameSyncCharacterInputData : IStateParam
+{
+	public FrameSyncInputData frameData = null;
+
+	public bool IsGrounded = false;
+	public Vector2 Velocity = default;
+
+    public IEnumerable<AttackableComponent> attackers = null;
+    public ObjectComponent defender = null;
+}
+
+public class FrameSyncCharacterOutputData : IStateParam
+{
+	public readonly Vector2 moveVec = default;
+
+	public FrameSyncCharacterOutputData()
 	{
-		InputData = inputData;
-		IsGrounded = isGrounded;
-		Velocity = velocity;
+		moveVec = default;
+    }
+
+	public FrameSyncCharacterOutputData(Vector2 moveVec)
+	{
+		this.moveVec = moveVec;
 	}
 }
 
-public class CharacterHitStateParam
-{
-	public readonly IEnumerable<AttackableComponent> attackers = null;
-	public readonly ObjectComponent defender = null;
-
-	public CharacterHitStateParam(IEnumerable<AttackableComponent> attackers, ObjectComponent defender)
-	{
-		this.attackers = attackers;
-		this.defender = defender;
-	}
-}
 
 [RequireComponent(typeof(PhysicsComponent))]
 [RequireComponent(typeof(CharacterAnimatorComponent))]
@@ -69,106 +80,54 @@ public class CharacterComponent : ObjectComponent
 	[SerializeField] private CharacterAnimatorComponent animatorComponent = null;
 	[SerializeField] private ENUM_CHARACTER_TYPE characterType;
 
-	private CharacterState prevState;
-	private CharacterState currentState;
-
-	private FrameSyncInputData currentFrameInputData = new FrameSyncInputData();
-	
-	private CharacterInputStateParam currentFrameInputParam = null;
-	private CharacterHitStateParam currentFrameHitParam = null;
-
-	private int jumpLastFrame = 0;
+	private FrameSyncCharacterInputData inputData = new();
+    private FrameSyncCharacterOutputData outputData = new();
 
 	public override void Initialize()
 	{
-		animatorComponent.OnCharacterStateEnter += OnStateEnter;
-		animatorComponent.OnCharacterStateUpdate += OnStateUpdate;
-		animatorComponent.OnCharacterStateExit += OnStateExit;
+		
 	}
 
 	public override void Clear()
 	{
-		animatorComponent.OnCharacterStateEnter -= OnStateEnter;
-		animatorComponent.OnCharacterStateUpdate -= OnStateUpdate;
-		animatorComponent.OnCharacterStateExit -= OnStateExit;
+		
 	}
 
-	public void OnPlayerInput(FrameSyncInputData inputData)
+	public void OnPlayerInput(FrameSyncInputData frameData)
 	{
-		prevState = currentState;
-
-		currentFrameInputData = inputData;
-		currentFrameInputParam = new CharacterInputStateParam(inputData, physicsComponent.IsGrounded, physicsComponent.Velocity);
-	}
+		inputData ??= new();
+        inputData.frameData = frameData;
+    }
 
 	public override void OnOtherInput(IEnumerable<AttackableComponent> attackers)
 	{
 		if (attackers.Any() == false)
 			return;
 
-		currentFrameHitParam = new CharacterHitStateParam(attackers, this);
-	}
+        inputData ??= new();
+        inputData.attackers = attackers;
+		inputData.defender = this;
+    }
 
 	public override void OnPostInput()
 	{
- 		animatorComponent.TryChangeState(currentFrameInputParam, currentFrameHitParam, prevState, out currentState);
+        inputData ??= new();
+        inputData.Velocity = physicsComponent.Velocity;
+		inputData.IsGrounded = physicsComponent.IsGrounded;
 
-		if (prevState != currentState)
-		{
-			Debug.Log($"현재 프레임 : {currentFrameInputData.frameCount}, {prevState} -> {currentState}");
-			animatorComponent.Play(currentState);
-		}
-	}
+		animatorComponent.TryChangeState(inputData);
+    }
 
-	private void OnStateEnter(CharacterState state, int frameDeltaCount)
+	public void OnPostStateUpdate(FrameSyncCharacterOutputData output)
 	{
-		var frameMoveVec = currentFrameInputData.MoveInput;
+		outputData = output;
+    }
 
-		switch (state)
-		{
-			case CharacterState.Move:
-				frameMoveVec = new Vector2(frameMoveVec.x, 0);
-				physicsComponent.Move(frameMoveVec * Time.deltaTime);
-
-				break;
-			case CharacterState.Jump:
-				physicsComponent.Move(frameMoveVec * Time.deltaTime);
-				break;
-		}
-
-	}
-
-	private void OnStateUpdate(CharacterState state, int frameDeltaCount)
+	public override void OnUpdateAnimation()
 	{
-		var frameMoveVec = currentFrameInputData.MoveInput;
+		if (outputData == null)
+			return;
 
-		switch (state)
-		{
-			case CharacterState.Move:
-
-				frameMoveVec = new Vector2(frameMoveVec.x, 0);
-				physicsComponent.Move(frameMoveVec * Time.deltaTime);
-				break;
-
-			case CharacterState.Jump:
-				frameMoveVec = new Vector2(frameMoveVec.x, 1 - (physicsComponent.Gravity * (frameDeltaCount)));
-				physicsComponent.Move(frameMoveVec * Time.deltaTime);
-				break;
-
-			case CharacterState.Landing:
-				frameMoveVec = new Vector2(frameMoveVec.x, 1 - (physicsComponent.Gravity * (frameDeltaCount + jumpLastFrame)));
-				physicsComponent.Move(frameMoveVec * Time.deltaTime);
-				break;
-		}
-	}
-
-	private void OnStateExit(CharacterState state, int frameDeltaCount)
-	{
-		switch (state)
-		{
-			case CharacterState.Jump:
-				jumpLastFrame = frameDeltaCount;
-				break;
-		}
+		physicsComponent.Move(outputData.moveVec);
 	}
 }

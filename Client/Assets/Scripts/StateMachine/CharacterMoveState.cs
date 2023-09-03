@@ -5,11 +5,15 @@ using UnityEngine.Animations;
 
 namespace StateMachine
 {
-	public class CharacterMoveState : SceneLinkedSMB<CharacterAnimatorComponent>
-	{
+	public class CharacterMoveState : CharacterLinkedSMB
+    {
 		public override void OnSLStateNoTransitionUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
 		{
-			m_MonoBehaviour.OnStateUpdate(CharacterState.Move, frameDeltaCount);
+			if (currStateParam == null)
+				return;
+
+			var outputParam = new FrameSyncCharacterOutputData(new Vector2(currStateParam.frameData.MoveInput.x * Time.deltaTime, 0));
+			owner.OnPostStateUpdate(outputParam);
 		}
 	}
 

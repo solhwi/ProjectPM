@@ -73,4 +73,9 @@ public class ObjectComponent : MonoBehaviour
     {
 
     }
+
+    public virtual void OnUpdateAnimation()
+    {
+
+    }
 }

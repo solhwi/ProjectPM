@@ -1,14 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
 
 namespace StateMachine
 {
-    public class SceneLinkedSMB<TMonoBehaviour> : SealedSMB
+    public class SceneLinkedSMB<TMonoBehaviour, TParam, TState> : SealedSMB
         where TMonoBehaviour : MonoBehaviour
+        where TParam : IStateParam
+        where TState : Enum
     {
-        protected TMonoBehaviour m_MonoBehaviour;
+        private static SceneLinkedSMB<TMonoBehaviour, TParam, CharacterState>[] sceneLinkedSMBs = null;
+
+        protected TMonoBehaviour owner;
+        protected TParam currStateParam;
+
+        private TState prevState;
+        private TState currState;
 
         bool m_FirstFrameHappened;
         bool m_LastFrameHappened;
@@ -17,7 +27,7 @@ namespace StateMachine
 
 		public static void Initialize(Animator animator, TMonoBehaviour monoBehaviour)
         {
-            SceneLinkedSMB<TMonoBehaviour>[] sceneLinkedSMBs = animator.GetBehaviours<SceneLinkedSMB<TMonoBehaviour>>();
+            sceneLinkedSMBs = animator.GetBehaviours<SceneLinkedSMB<TMonoBehaviour, TParam, CharacterState>>();
 
             for (int i = 0; i < sceneLinkedSMBs.Length; i++)
             {
@@ -25,9 +35,17 @@ namespace StateMachine
             }
         }
 
+        public static void TryChangeState(TParam param)
+        {
+            for (int i = 0; i < sceneLinkedSMBs.Length; i++)
+            {
+                sceneLinkedSMBs[i].currStateParam = param;
+            }
+        }
+
         protected void InternalInitialize(Animator animator, TMonoBehaviour monoBehaviour)
         {
-            m_MonoBehaviour = monoBehaviour;
+            owner = monoBehaviour;
             OnStart(animator);
         }
 
@@ -36,7 +54,7 @@ namespace StateMachine
             m_FirstFrameHappened = false;
             frameDeltaCount = 0;
 
-			OnSLStateEnter(animator, stateInfo, layerIndex);
+            OnSLStateEnter(animator, stateInfo, layerIndex);
             OnSLStateEnter(animator, stateInfo, layerIndex, controller);
         }
 
@@ -80,6 +98,20 @@ namespace StateMachine
                 OnSLTransitionFromStateUpdate(animator, stateInfo, layerIndex);
                 OnSLTransitionFromStateUpdate(animator, stateInfo, layerIndex, controller);
             }
+
+            if (TryChangeState(currStateParam, prevState, out currState))
+            {
+                Debug.LogWarning($"스테이트 변경 : {prevState} -> {currState}");
+                animator.Play(currState.ToString());
+                prevState = currState;
+            }
+        }
+
+        protected virtual bool TryChangeState(TParam inputParam, TState prevState, out TState currentState)
+        {
+            currentState = prevState;
+
+            return currState.Equals(prevState) == false;
         }
 
         public sealed override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)

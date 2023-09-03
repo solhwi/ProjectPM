@@ -14,4 +14,9 @@ public class TrainingSceneModule : SceneModule
 	{
 		ObjectManager.Instance.OnPostUpdate(deltaFrameCount, deltaTime);
 	}
+
+	public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
+	{
+        ObjectManager.Instance.OnLateUpdate(deltaFrameCount, deltaTime);
+	}
 }

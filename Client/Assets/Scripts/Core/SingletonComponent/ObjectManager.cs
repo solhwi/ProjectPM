@@ -90,4 +90,10 @@ public class ObjectManager : SingletonComponent<ObjectManager>
         if (PlayerCharacter != null)
             PlayerCharacter.OnPostInput();
 	}
+
+    public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
+    {
+        if (PlayerCharacter != null)
+            PlayerCharacter.OnUpdateAnimation();
+    }
 }

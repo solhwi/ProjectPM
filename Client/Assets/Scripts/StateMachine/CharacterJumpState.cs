@@ -5,20 +5,27 @@ using UnityEngine.Animations;
 
 namespace StateMachine
 {
-	public class CharacterJumpState : SceneLinkedSMB<CharacterAnimatorComponent>
-	{
+	public class CharacterJumpState : CharacterLinkedSMB
+    {
 		public override void OnSLStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
 		{
-			m_MonoBehaviour.OnStateEnter(CharacterState.Jump, frameDeltaCount);
+			
 		}
 
 		public override void OnSLStateNoTransitionUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
 		{
-			m_MonoBehaviour.OnStateUpdate(CharacterState.Jump, frameDeltaCount);
-		}
+            if (currStateParam == null)
+                return;
+
+			currStateParam.frameData.MoveInput.Normalize();
+
+            var outputParam = new FrameSyncCharacterOutputData(currStateParam.frameData.MoveInput * Time.deltaTime);
+            owner.OnPostStateUpdate(outputParam);
+        }
+
 		public override void OnSLStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
 		{
-			m_MonoBehaviour.OnStateExit(CharacterState.Jump, frameDeltaCount);
+			
 		}
 	}
 

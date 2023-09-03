@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace StateMachine
 {
-	public class CharacterSkillState : SceneLinkedSMB<CharacterAnimatorComponent>
-	{
+	public class CharacterSkillState : CharacterLinkedSMB
+    {
 
 	}
 

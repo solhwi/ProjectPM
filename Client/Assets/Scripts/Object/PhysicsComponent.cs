@@ -27,10 +27,6 @@ public class PhysicsComponent : MonoBehaviour
     public bool IsGrounded { get; protected set; }
     public Vector2 Velocity => m_NextMovement;
 
-    public float Gravity => gravity;
-
-
-
 	void Awake()
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
@@ -65,6 +61,14 @@ public class PhysicsComponent : MonoBehaviour
     public void Move(Vector2 movement)
     {
         m_NextMovement += movement;
+    }
+
+    private void Update()
+    {
+        if (IsGrounded == false)
+        {
+            Move(Vector2.down * gravity * Time.deltaTime);
+        }
     }
 
     /// <summary>

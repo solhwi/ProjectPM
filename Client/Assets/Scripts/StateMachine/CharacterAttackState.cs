@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterAttackState : SceneLinkedSMB<CharacterAnimatorComponent>
-	{
+	public class CharacterAttackState : CharacterLinkedSMB
+    {
 
 	}
 
