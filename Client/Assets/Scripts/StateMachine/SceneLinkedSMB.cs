@@ -13,7 +13,9 @@ namespace StateMachine
         bool m_FirstFrameHappened;
         bool m_LastFrameHappened;
 
-        public static void Initialize(Animator animator, TMonoBehaviour monoBehaviour)
+		protected int frameDeltaCount = 0;
+
+		public static void Initialize(Animator animator, TMonoBehaviour monoBehaviour)
         {
             SceneLinkedSMB<TMonoBehaviour>[] sceneLinkedSMBs = animator.GetBehaviours<SceneLinkedSMB<TMonoBehaviour>>();
 
@@ -32,8 +34,9 @@ namespace StateMachine
         public sealed override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
         {
             m_FirstFrameHappened = false;
+            frameDeltaCount = 0;
 
-            OnSLStateEnter(animator, stateInfo, layerIndex);
+			OnSLStateEnter(animator, stateInfo, layerIndex);
             OnSLStateEnter(animator, stateInfo, layerIndex, controller);
         }
 
@@ -42,7 +45,9 @@ namespace StateMachine
             if (!animator.gameObject.activeSelf)
                 return;
 
-            if (animator.IsInTransition(layerIndex) && animator.GetNextAnimatorStateInfo(layerIndex).fullPathHash == stateInfo.fullPathHash)
+            frameDeltaCount++;
+
+			if (animator.IsInTransition(layerIndex) && animator.GetNextAnimatorStateInfo(layerIndex).fullPathHash == stateInfo.fullPathHash)
             {
                 OnSLTransitionToStateUpdate(animator, stateInfo, layerIndex);
                 OnSLTransitionToStateUpdate(animator, stateInfo, layerIndex, controller);
@@ -80,10 +85,13 @@ namespace StateMachine
         public sealed override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
         {
             m_LastFrameHappened = false;
+            frameDeltaCount++;
 
-            OnSLStateExit(animator, stateInfo, layerIndex);
+			OnSLStateExit(animator, stateInfo, layerIndex);
             OnSLStateExit(animator, stateInfo, layerIndex, controller);
-        }
+
+            frameDeltaCount = 0;
+		}
 
         /// <summary>
         /// Called by a MonoBehaviour in the scene during its Start function.

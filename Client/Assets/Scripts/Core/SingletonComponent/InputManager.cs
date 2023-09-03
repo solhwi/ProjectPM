@@ -115,8 +115,8 @@ public class InputManager : SingletonComponent<InputManager>
 	public static float HandleRange { get; private set; } = 1;
 	public static float DeadZone { get; private set; } = 0;
 	public static AxisOptions AxisOptions { get; private set; } = AxisOptions.Both;
-	public static bool SnapX { get; private set; } = false;
-	public static bool SnapY { get; private set; } = false;
+	public static bool SnapX { get; private set; } = true;
+	public static bool SnapY { get; private set; } = true;
 
 	private List<IInputReceiver> inputReceivers = new List<IInputReceiver>();
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
@@ -188,7 +188,7 @@ public class InputManager : SingletonComponent<InputManager>
 
 	// 이 업데이트 문에서 인풋 큐를 모두 빼는데, 인풋을 받는 리시버의 상황에 따라 인풋이 무시될 수도 있다.
 	// 프레임에 마지막으로 누른 인풋들만을 넣는 것으로 한다.
-	public void OnUpdate()
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
 		int validFrameCount = Time.frameCount;
 

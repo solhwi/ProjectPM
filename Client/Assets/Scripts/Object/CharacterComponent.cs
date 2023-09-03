@@ -72,12 +72,12 @@ public class CharacterComponent : ObjectComponent
 	private CharacterState prevState;
 	private CharacterState currentState;
 
-	private FrameSyncInputData prevFrameInputData = null;
 	private FrameSyncInputData currentFrameInputData = new FrameSyncInputData();
-
-	private Vector2 frameMoveVec = Vector2.zero;
 	
-	public float gravity = 50f;
+	private CharacterInputStateParam currentFrameInputParam = null;
+	private CharacterHitStateParam currentFrameHitParam = null;
+
+	private int jumpLastFrame = 0;
 
 	public override void Initialize()
 	{
@@ -93,67 +93,81 @@ public class CharacterComponent : ObjectComponent
 		animatorComponent.OnCharacterStateExit -= OnStateExit;
 	}
 
-	// 인풋이 피격보다 먼저 처리된다.
-	public void OnInput(FrameSyncInputData inputData)
+	public void OnPlayerInput(FrameSyncInputData inputData)
 	{
-		prevFrameInputData = currentFrameInputData;
-		currentFrameInputData = inputData;
-
 		prevState = currentState;
 
-		var param = new CharacterInputStateParam(inputData, physicsComponent.IsGrounded, physicsComponent.MoveVector);
-		animatorComponent.TryChangeState(param, prevState, out currentState);
-
-		Debug.Log($"현재 프레임 : {currentFrameInputData.frameCount}, 인풋으로 인한 스테이트 변경 : {currentState}");
+		currentFrameInputData = inputData;
+		currentFrameInputParam = new CharacterInputStateParam(inputData, physicsComponent.IsGrounded, physicsComponent.Velocity);
 	}
 
-	public override void OnDamageInput(IEnumerable<AttackableComponent> attackers)
+	public override void OnOtherInput(IEnumerable<AttackableComponent> attackers)
 	{
 		if (attackers.Any() == false)
 			return;
 
-		var param = new CharacterHitStateParam(attackers, this);
-		animatorComponent.TryChangeHitState(param, prevState, out currentState);
-
-		Debug.Log($"현재 프레임 : {currentFrameInputData.frameCount}, 피격으로 인한 최종 스테이트 변경 : {currentState}");
+		currentFrameHitParam = new CharacterHitStateParam(attackers, this);
 	}
 
-	private void OnStateEnter(CharacterState state)
+	public override void OnPostInput()
 	{
-		switch (state)
+ 		animatorComponent.TryChangeState(currentFrameInputParam, currentFrameHitParam, prevState, out currentState);
+
+		if (prevState != currentState)
 		{
-			case CharacterState.Move:
-				frameMoveVec = new Vector2(currentFrameInputData.MoveInput.x, 0);
-				break;
-			case CharacterState.Jump:
-				frameMoveVec = new Vector2(currentFrameInputData.MoveInput.x, currentFrameInputData.MoveInput.y * 105.0f * Time.deltaTime);
-				break;
+			Debug.Log($"현재 프레임 : {currentFrameInputData.frameCount}, {prevState} -> {currentState}");
+			animatorComponent.Play(currentState);
 		}
 	}
 
-	private void OnStateUpdate(CharacterState state)
+	private void OnStateEnter(CharacterState state, int frameDeltaCount)
 	{
+		var frameMoveVec = currentFrameInputData.MoveInput;
+
+		switch (state)
+		{
+			case CharacterState.Move:
+				frameMoveVec = new Vector2(frameMoveVec.x, 0);
+				physicsComponent.Move(frameMoveVec * Time.deltaTime);
+
+				break;
+			case CharacterState.Jump:
+				physicsComponent.Move(frameMoveVec * Time.deltaTime);
+				break;
+		}
+
+	}
+
+	private void OnStateUpdate(CharacterState state, int frameDeltaCount)
+	{
+		var frameMoveVec = currentFrameInputData.MoveInput;
+
 		switch (state)
 		{
 			case CharacterState.Move:
 
-				frameMoveVec = new Vector2(currentFrameInputData.MoveInput.x, 0);
+				frameMoveVec = new Vector2(frameMoveVec.x, 0);
+				physicsComponent.Move(frameMoveVec * Time.deltaTime);
 				break;
 
 			case CharacterState.Jump:
+				frameMoveVec = new Vector2(frameMoveVec.x, 1 - (physicsComponent.Gravity * (frameDeltaCount)));
+				physicsComponent.Move(frameMoveVec * Time.deltaTime);
+				break;
+
 			case CharacterState.Landing:
-				frameMoveVec.y -= physicsComponent.Gravity * Time.deltaTime;
+				frameMoveVec = new Vector2(frameMoveVec.x, 1 - (physicsComponent.Gravity * (frameDeltaCount + jumpLastFrame)));
+				physicsComponent.Move(frameMoveVec * Time.deltaTime);
 				break;
 		}
-
-		physicsComponent.Move(frameMoveVec * Time.deltaTime);
 	}
 
-	private void OnStateExit(CharacterState state)
+	private void OnStateExit(CharacterState state, int frameDeltaCount)
 	{
 		switch (state)
 		{
-			case CharacterState.Move:
+			case CharacterState.Jump:
+				jumpLastFrame = frameDeltaCount;
 				break;
 		}
 	}

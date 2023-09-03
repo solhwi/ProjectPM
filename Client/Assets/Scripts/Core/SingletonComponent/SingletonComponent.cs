@@ -4,7 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class SingletonComponent : MonoBehaviour
+public class SingletonComponent : MonoBehaviour, IUpdater
 {
 	public void Initialize()
 	{
@@ -25,6 +25,22 @@ public class SingletonComponent : MonoBehaviour
 	protected virtual void OnReleaseInstance()
 	{
 		
+	}
+
+
+	public virtual void OnLateUpdate(int deltaFrameCount, float deltaTime)
+	{
+
+	}
+
+	public virtual void OnPostUpdate(int deltaFrameCount, float deltaTime)
+	{
+
+	}
+
+	public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
+	{
+
 	}
 }
 

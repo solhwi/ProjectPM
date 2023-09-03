@@ -52,7 +52,16 @@ public class SceneManager : SingletonComponent<SceneManager>
 	private void Update()
 	{
 		if (currentSceneModule != null)
-			currentSceneModule.OnUpdate();
+			currentSceneModule.OnUpdate(Time.frameCount, Time.deltaTime);
+
+		if (currentSceneModule != null)
+			currentSceneModule.OnPostUpdate(Time.frameCount, Time.deltaTime);
+	}
+
+	private void LateUpdate()
+	{
+		if (currentSceneModule != null)
+			currentSceneModule.OnLateUpdate(Time.frameCount, Time.deltaTime);
 	}
 
 	public void LoadScene(SceneType sceneType, SceneModuleParam param = null)

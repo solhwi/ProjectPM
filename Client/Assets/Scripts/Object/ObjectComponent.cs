@@ -42,7 +42,7 @@ public class ObjectComponent : MonoBehaviour
         
     }
 
-	public virtual void OnDamageInput(IEnumerable<AttackableComponent> attackers)
+	public virtual void OnOtherInput(IEnumerable<AttackableComponent> attackers)
 	{
 		
 	}
@@ -67,5 +67,10 @@ public class ObjectComponent : MonoBehaviour
 
 		gameObject.layer = (int)objectType;
 		spriteRenderer.sortingOrder = LayerHelper.GetSortingLayer(objectType, orderIndex);
+    }
+
+    public virtual void OnPostInput()
+    {
+
     }
 }

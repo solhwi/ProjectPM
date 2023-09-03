@@ -9,7 +9,7 @@ namespace StateMachine
 	{
 		public override void OnSLStateNoTransitionUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
 		{
-			m_MonoBehaviour.OnStateUpdate(CharacterState.Move);
+			m_MonoBehaviour.OnStateUpdate(CharacterState.Move, frameDeltaCount);
 		}
 	}
 

@@ -84,4 +84,10 @@ public class ObjectManager : SingletonComponent<ObjectManager>
     {
         yield return null;
     }
+
+	public override void OnPostUpdate(int deltaFrameCount, float deltaTime)
+	{
+        if (PlayerCharacter != null)
+            PlayerCharacter.OnPostInput();
+	}
 }

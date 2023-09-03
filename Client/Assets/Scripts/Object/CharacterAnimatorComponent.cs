@@ -6,9 +6,9 @@ using System;
 
 public class CharacterAnimatorComponent : AnimatorComponent<CharacterState>
 {
-    public event Action<CharacterState> OnCharacterStateEnter;
-	public event Action<CharacterState> OnCharacterStateUpdate;
-	public event Action<CharacterState> OnCharacterStateExit;
+    public event Action<CharacterState, int> OnCharacterStateEnter;
+	public event Action<CharacterState, int> OnCharacterStateUpdate;
+	public event Action<CharacterState, int> OnCharacterStateExit;
     
 	protected override void Awake()
 	{
@@ -16,7 +16,7 @@ public class CharacterAnimatorComponent : AnimatorComponent<CharacterState>
 		SceneLinkedSMB<CharacterAnimatorComponent>.Initialize(animator, this);
 	}
 
-	public void TryChangeState(CharacterInputStateParam param, CharacterState prevState, out CharacterState currentState)
+	public void TryChangeState(CharacterInputStateParam inputParam, CharacterHitStateParam hitParam, CharacterState prevState, out CharacterState currentState)
 	{
         if (CanTransition() == false)
         {
@@ -26,122 +26,106 @@ public class CharacterAnimatorComponent : AnimatorComponent<CharacterState>
 
         currentState = CharacterState.Idle;
 
-        if (param == null)
+        if (inputParam == null)
 			return;
 
-		if (param.InputData == null)
+		if (inputParam.InputData == null)
 			return;
 
-		SetDirection(param.InputData.MoveInput);
-
-        if (param.IsGrounded)
+        if (inputParam.IsGrounded)
         {
-            if (param.InputData.MoveInput.x != 0.0f)
+            if (inputParam.InputData.MoveInput.x != 0.0f)
             {
-                currentState = param.InputData.isDash ? CharacterState.Dash : CharacterState.Move;
+                currentState = inputParam.InputData.isDash ? CharacterState.Dash : CharacterState.Move;
             }
 
-            if (param.InputData.PressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
+            if (inputParam.InputData.PressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
             {
                 currentState = CharacterState.Attack;
             }
-            else if (param.InputData.PressedAttackKey == ENUM_ATTACK_KEY.SKILL)
+            else if (inputParam.InputData.PressedAttackKey == ENUM_ATTACK_KEY.SKILL)
             {
                 currentState = CharacterState.Skill;
             }
-            else if (param.InputData.PressedAttackKey == ENUM_ATTACK_KEY.ULTIMATE)
+            else if (inputParam.InputData.PressedAttackKey == ENUM_ATTACK_KEY.ULTIMATE)
             {
                 currentState = CharacterState.Ultimate;
             }
-            else if (param.InputData.isGuard)
+            else if (inputParam.InputData.isGuard)
             {
                 currentState = CharacterState.Guard;
             }
         }
 
-        if (param.InputData.MoveInput.y > 0.0f && param.IsGrounded)
+        if (inputParam.InputData.MoveInput.y > 0.0f && inputParam.IsGrounded)
         {
             currentState = CharacterState.Jump;
         }
-        else if(param.IsGrounded == false)
+        else if(inputParam.IsGrounded == false)
         {
-			currentState = param.Velocity.y >= 0.0f ? CharacterState.Jump : CharacterState.Landing;
+            if (inputParam.Velocity.y > 0.01f)
+            {
+                currentState = CharacterState.Jump;
+            }
+            else if (inputParam.Velocity.y < -1 * 0.01f)
+            {
+				currentState = CharacterState.Landing;
+			}
+            else
+            {
+                currentState = prevState == CharacterState.Jump || prevState == CharacterState.Landing ? prevState : CharacterState.Landing;
+            }
 		}
 
         if (prevState == CharacterState.Dash) // 전 프레임에 대쉬 중이었다면,
         {
-            if (param.InputData.PressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
+            if (inputParam.InputData.PressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
             {
                 currentState = CharacterState.DashAttack;
             }
-            else if (param.InputData.PressedAttackKey == ENUM_ATTACK_KEY.SKILL)
+            else if (inputParam.InputData.PressedAttackKey == ENUM_ATTACK_KEY.SKILL)
             {
                 currentState = CharacterState.DashSkill;
             }
         }
         else if (prevState == CharacterState.Jump || prevState == CharacterState.Landing) // 전 프레임에 점프 중이었다면
         {
-            if (param.InputData.PressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
+            if (inputParam.InputData.PressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
             {
                 currentState = CharacterState.JumpAttack;
             }
-            else if (param.InputData.PressedAttackKey == ENUM_ATTACK_KEY.SKILL)
+            else if (inputParam.InputData.PressedAttackKey == ENUM_ATTACK_KEY.SKILL)
             {
                 currentState = CharacterState.JumpSkill;
             }
         }
         else if (prevState == CharacterState.Attack) // 전 프레임에 공격 중이었다면
         {
-            if (param.InputData.PressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
+            if (inputParam.InputData.PressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
             {
                 currentState = CharacterState.Attack;
             }
         }
-
-		SetBool(prevState, false);
-
-		if (prevState != currentState)
-        {
-			SetBool(currentState, true);
-		}
-	}
-
-    public void TryChangeHitState(CharacterHitStateParam param, CharacterState prevState, out CharacterState currentState)
-    { 
-        // attackers 의 특성과 defender의 특성에 따라 조금 더 바뀔 수 있음
-
-		if (CanTransition() == false)
-		{
-			currentState = prevState;
-			return;
-		}
-        
-        if(prevState == CharacterState.Down || prevState == CharacterState.Recovery || prevState == CharacterState.Guard || prevState == CharacterState.Ultimate)
-        {
-			currentState = prevState;
-			return;
-		}
-
-		currentState = CharacterState.Hit;
 	}
 
 	protected override bool CanTransition()
 	{
+        // animator.GetCurrentAnimatorStateInfo(0).IsName()
 		return true;
 	}
 
-	public void OnStateEnter(CharacterState state)
+	public void OnStateEnter(CharacterState state, int frameCount)
     {
-		OnCharacterStateEnter?.Invoke(state);
+		OnCharacterStateEnter?.Invoke(state, frameCount);
 	}
 
-    public void OnStateUpdate(CharacterState state)
+    public void OnStateUpdate(CharacterState state, int frameCount)
     {
-		OnCharacterStateUpdate?.Invoke(state);
+		OnCharacterStateUpdate?.Invoke(state, frameCount);
 	}
 
-    public void OnStateExit(CharacterState state)
+    public void OnStateExit(CharacterState state, int frameCount)
     {
-		OnCharacterStateExit?.Invoke(state);
+		OnCharacterStateExit?.Invoke(state, frameCount);
 	}
 }

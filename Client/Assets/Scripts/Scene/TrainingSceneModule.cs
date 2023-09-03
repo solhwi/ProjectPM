@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class TrainingSceneModule : SceneModule
 {
-	public override void OnUpdate()
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
-		InputManager.Instance.OnUpdate();
-		PhysicsManager.Instance.OnUpdate();
+		InputManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
+		PhysicsManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
+	}
+
+	public override void OnPostUpdate(int deltaFrameCount, float deltaTime)
+	{
+		ObjectManager.Instance.OnPostUpdate(deltaFrameCount, deltaTime);
 	}
 }

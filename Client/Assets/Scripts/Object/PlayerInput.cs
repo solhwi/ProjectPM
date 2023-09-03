@@ -31,6 +31,6 @@ public class PlayerInput : MonoBehaviour, IInputReceiver
 		if (characterComponent == null)
 			return;
 
-		characterComponent.OnInput(input);
+		characterComponent.OnPlayerInput(input);
 	}
 }

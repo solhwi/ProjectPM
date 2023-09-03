@@ -55,7 +55,7 @@ public class PhysicsManager : SingletonComponent<PhysicsManager>
         }
     }
 
-	public void OnUpdate()
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
 		int validFrameCount = Time.frameCount;
 

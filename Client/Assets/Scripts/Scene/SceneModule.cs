@@ -2,7 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class SceneModule : MonoBehaviour
+
+public interface IUpdater
+{
+	void OnUpdate(int deltaFrameCount, float deltaTime);
+	void OnPostUpdate(int deltaFrameCount, float deltaTime);
+	void OnLateUpdate(int deltaFrameCount, float deltaTime);
+}
+
+public abstract class SceneModule : MonoBehaviour, IUpdater
 {
 	[SerializeField] protected SceneType mySceneType = SceneType.Title;
 
@@ -53,8 +61,18 @@ public abstract class SceneModule : MonoBehaviour
 		yield return null;
 	}
 
-	public virtual void OnUpdate()
+	public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
+		
+	}
 
+	public virtual void OnPostUpdate(int deltaFrameCount, float deltaTime)
+	{
+		
+	}
+
+	public virtual void OnLateUpdate(int deltaFrameCount, float deltaTime)
+	{
+		
 	}
 }

@@ -9,12 +9,16 @@ namespace StateMachine
 	{
 		public override void OnSLStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
 		{
-			m_MonoBehaviour.OnStateEnter(CharacterState.Jump);
+			m_MonoBehaviour.OnStateEnter(CharacterState.Jump, frameDeltaCount);
 		}
 
 		public override void OnSLStateNoTransitionUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
 		{
-			m_MonoBehaviour.OnStateUpdate(CharacterState.Jump);
+			m_MonoBehaviour.OnStateUpdate(CharacterState.Jump, frameDeltaCount);
+		}
+		public override void OnSLStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
+		{
+			m_MonoBehaviour.OnStateExit(CharacterState.Jump, frameDeltaCount);
 		}
 	}
 
