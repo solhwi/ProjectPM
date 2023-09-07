@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 public class AttackKeyComponent : InputKeyComponent
 {
     [SerializeField] private ENUM_ATTACK_KEY keyType = ENUM_ATTACK_KEY.MAX;
-	
+
+
 	public override void OnDrag(PointerEventData eventData)
 	{
 		base.OnDrag(eventData);

@@ -55,8 +55,7 @@ public class ObjectManager : SingletonComponent<ObjectManager>
         if (character == null)
             yield break;
 
-        character.Initialize();
-        character.SetOrder(0, ENUM_TEAM_TYPE.Friendly);
+        character.Initialize(ENUM_TEAM_TYPE.Friendly, false);
 
         character.transform.SetParent(transform);
         character.transform.SetPositionAndRotation(default, default);
@@ -118,10 +117,11 @@ public class ObjectManager : SingletonComponent<ObjectManager>
         }
     }
 
-    public void RegisterObject(int Guid, ObjectComponent objectComponent)
+    public int RegisterObject(int Guid, ObjectComponent objectComponent)
     {
         objectDictionary[Guid] = objectComponent;
-    }
+        return objectDictionary.Count; // 현재 자신이 몇 번째 등록인 지 알려준다.
+	}
 
     public void UnRegisterObject(int Guid)
     {

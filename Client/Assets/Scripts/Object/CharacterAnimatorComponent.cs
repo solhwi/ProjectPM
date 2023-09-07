@@ -1,32 +1,34 @@
+using StateMachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMachine;
-using System;
-using System.ComponentModel;
 
-public class CharacterAnimatorComponent : AnimatorComponent<CharacterState>
+[RequireComponent(typeof(Animator))]
+public class CharacterAnimatorComponent : MonoBehaviour
 {
-	protected CharacterComponent component = null;
+    private CharacterComponent owner;
+	private Animator animator;
 
-	protected override void Awake()
+    public void Initialize(CharacterComponent owner)
 	{
-        base.Awake();
+		animator = GetComponent<Animator>();
 
-        component = GetComponent<CharacterComponent>();
-        CharacterLinkedSMB.Initialize(animator, this);
+		this.owner = owner;
+        switch (owner)
+        {
+            case NormalCharacterComponent:
+				CharacterLinkedSMB.Initialize(animator, owner);
+                break;
+		}
 	}
 
-	public void TryChangeState(FrameSyncCharacterInputData inputData)
-	{
-        CharacterLinkedSMB.TryChangeState(inputData);
-    }
-
-	public void OnPostStateUpdate(FrameSyncCharacterOutputData outputData)
-	{
-		if (component == null)
-			return;
-
-		component.OnPostStateUpdate(outputData);
-    }
+    public void TryChangeState(FrameSyncCharacterInputData inputData)
+    {
+		switch (owner)
+		{
+			case NormalCharacterComponent:
+				CharacterLinkedSMB.TryChangeState(inputData);
+				break;
+		}
+	}
 }

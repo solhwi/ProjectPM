@@ -23,63 +23,58 @@ public enum ENUM_TEAM_TYPE
     Enemy = 1,
 }
 
-public class ObjectComponent : MonoBehaviour
+[RequireComponent(typeof(SpriteRenderer))]
+public abstract class ObjectComponent : MonoBehaviour
 {
-    [SerializeField] private ENUM_OBJECT_TYPE objectType = ENUM_OBJECT_TYPE.Object;
-    [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private new Collider2D collider;
+    private SpriteRenderer spriteRenderer;
 
-    public ENUM_TEAM_TYPE TeamType { get; private set; } = ENUM_TEAM_TYPE.None;
+	public ENUM_OBJECT_TYPE ObjectType { get; private set; } = ENUM_OBJECT_TYPE.Object;
+
+	public ENUM_TEAM_TYPE TeamType { get; private set; } = ENUM_TEAM_TYPE.None;
     public bool IsBoss { get; private set; } = false;
 
-    public int Guid
-    {
-        get
-        {
-            if (guid == default)
-                guid = this.GetInstanceID();
+    public int Guid { get; private set; } = 0;
 
-            return guid;
-        }
-    }
-    private int guid;
+    public virtual void Initialize(ENUM_TEAM_TYPE teamType, bool isBoss)
+	{
+		TeamType = teamType;
+		IsBoss = isBoss;
 
-    public virtual void Initialize()
-    {
-        ObjectManager.Instance.RegisterObject(Guid, this);
+		if (isBoss)
+		{
+			ObjectType = ENUM_OBJECT_TYPE.Boss;
+		}
+		else if (teamType == ENUM_TEAM_TYPE.Enemy)
+		{
+			ObjectType = ENUM_OBJECT_TYPE.Enemy;
+		}
+		else if (teamType == ENUM_TEAM_TYPE.Friendly)
+		{
+			ObjectType = ENUM_OBJECT_TYPE.Friendly;
+		}
+
+		gameObject.layer = (int)ObjectType;
+
+        Guid = GetInstanceID();
+		int orderIndex = ObjectManager.Instance.RegisterObject(Guid, this);
+
+		spriteRenderer = GetComponent<SpriteRenderer>();
+		spriteRenderer.sortingOrder = LayerHelper.GetSortingLayer(ObjectType, orderIndex);
     }
 
     public virtual void Clear()
     {
-        ObjectManager.Instance.UnRegisterObject(Guid);
-    }
+        spriteRenderer = null; 
+
+		ObjectManager.Instance.UnRegisterObject(Guid);
+		Guid = 0;
+
+	}
 
 	public virtual void OnOtherInput(IEnumerable<AttackableComponent> attackers)
 	{
 		
 	}
-
-	public void SetOrder(int orderIndex, ENUM_TEAM_TYPE teamType = ENUM_TEAM_TYPE.None, bool isBoss = false)
-    {
-        if(objectType == ENUM_OBJECT_TYPE.Object && teamType == ENUM_TEAM_TYPE.Enemy)
-        {
-			objectType = ENUM_OBJECT_TYPE.Enemy;
-		}
-        else if(objectType == ENUM_OBJECT_TYPE.Object && teamType == ENUM_TEAM_TYPE.Friendly)
-        {
-			objectType = ENUM_OBJECT_TYPE.Friendly;
-		}
-        else if(objectType == ENUM_OBJECT_TYPE.Object && isBoss)
-        {
-            objectType = ENUM_OBJECT_TYPE.Boss;
-        }
-
-        TeamType = teamType;
-		IsBoss = isBoss;
-
-		gameObject.layer = (int)objectType;
-		spriteRenderer.sortingOrder = LayerHelper.GetSortingLayer(objectType, orderIndex);
-    }
 
     public virtual void OnPostInput()
     {

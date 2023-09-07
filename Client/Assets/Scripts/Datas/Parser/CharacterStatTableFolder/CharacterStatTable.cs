@@ -22,10 +22,10 @@ public partial class CharacterStatTable : ScriptParser
 	public class CharacterStat
 	{
 		public int key;
+		public int jumpPower;
+		public int mass;
 		public int moveSpeed;
 		public int attackSpeed;
-		public int jumpPower;
-		public int damage;
 	}
 
 	public List<CharacterStat> CharacterStatList = new List<CharacterStat>();

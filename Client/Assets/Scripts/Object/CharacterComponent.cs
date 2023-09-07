@@ -1,9 +1,11 @@
+using StateMachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using static CharacterStatTable;
 
 public enum ENUM_CHARACTER_TYPE
 {
@@ -22,6 +24,8 @@ public enum CharacterState
 	Hit, // 데미지 입음
 
 	Attack, // 공격
+	Attack2,
+	Attack3,
 	DashAttack, // 대쉬 공격
 	JumpAttack, // 점프 공격
 
@@ -46,7 +50,7 @@ public interface IStateParam
 /// </summary>
 public class FrameSyncCharacterInputData : IStateParam
 {
-	public FrameSyncInputData frameData = null;
+	public FrameSyncInputData frameData;
 
 	public bool IsGrounded = false;
 	public Vector2 Velocity = default;
@@ -55,33 +59,29 @@ public class FrameSyncCharacterInputData : IStateParam
     public ObjectComponent defender = null;
 }
 
-public class FrameSyncCharacterOutputData : IStateParam
-{
-	public readonly Vector2 moveVec = default;
-
-	public FrameSyncCharacterOutputData()
-	{
-		moveVec = default;
-    }
-
-	public FrameSyncCharacterOutputData(Vector2 moveVec)
-	{
-		this.moveVec = moveVec;
-	}
-}
-
-
 [RequireComponent(typeof(PhysicsComponent))]
 [RequireComponent(typeof(CharacterAnimatorComponent))]
-public class CharacterComponent : ObjectComponent
+public abstract class CharacterComponent : ObjectComponent
 {
-    [SerializeField] private CharacterStatTable characterStatTable = null;
-	[SerializeField] private PhysicsComponent physicsComponent = null;
-	[SerializeField] private CharacterAnimatorComponent animatorComponent = null;
-	[SerializeField] private ENUM_CHARACTER_TYPE characterType;
+	private PhysicsComponent physicsComponent = null;
+	private CharacterAnimatorComponent animatorComponent = null;
+
+	public abstract ENUM_CHARACTER_TYPE CharacterType
+	{
+		get;
+	}
 
 	private FrameSyncCharacterInputData inputData = new();
-    private FrameSyncCharacterOutputData outputData = new();
+
+	public override void Initialize(ENUM_TEAM_TYPE teamType, bool isBoss)
+	{
+		base.Initialize(teamType, isBoss);
+
+		physicsComponent = GetComponent<PhysicsComponent>();
+
+		animatorComponent = GetComponent<CharacterAnimatorComponent>();
+		animatorComponent.Initialize(this);
+	}
 
 	public void OnPlayerInput(FrameSyncInputData frameData)
 	{
@@ -106,21 +106,20 @@ public class CharacterComponent : ObjectComponent
 		inputData.IsGrounded = physicsComponent.IsGrounded;
 
 		animatorComponent.TryChangeState(inputData);
-    }
+	}
 
-	public void OnPostStateUpdate(FrameSyncCharacterOutputData output)
+	public void OnPostMove(Vector2 moveVec)
 	{
-		outputData = output;
-    }
+		physicsComponent.Move(moveVec);
+	}
 
-	// 물리 처리를 시도한다.
+	public void OnChangeDamageBox(Vector2 damageBox)
+	{
+		physicsComponent.SetCollisionBox(damageBox);
+	}
+
 	public override void OnUpdateAnimation()
 	{
-		if (outputData == null)
-			return;
 
-		physicsComponent.Move(outputData.moveVec);
-		outputData = null;
-
-    }
+	}
 }
