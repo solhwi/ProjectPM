@@ -15,10 +15,10 @@ namespace StateMachine
 
 			if (isChangeable)
 			{
-				var attackKey = inputParam.frameData.PressedAttackKey;
+				var attackKey = inputParam.frameData.pressedAttackKey;
 				if (attackKey == ENUM_ATTACK_KEY.ATTACK)
 				{
-					currentState = CharacterState.Attack2;
+					// currentState = CharacterState.Attack2;
 				}
 				else
 				{

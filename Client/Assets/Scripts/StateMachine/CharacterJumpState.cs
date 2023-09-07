@@ -25,7 +25,7 @@ namespace StateMachine
                 return;
 
             jumpYPower = stat.jumpPower;
-			jumpVector = new Vector2(currStateParam.frameData.MoveInput.x, currStateParam.frameData.MoveInput.y * jumpYPower);
+			jumpVector = new Vector2(currStateParam.frameData.moveInput.x, currStateParam.frameData.moveInput.y * jumpYPower);
 
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }

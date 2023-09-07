@@ -78,16 +78,16 @@ public class GuardInputData : PressInputData
 
 public struct FrameSyncInputData
 {
-	public readonly Vector2 MoveInput;
-	public readonly ENUM_ATTACK_KEY PressedAttackKey; 
+	public readonly Vector2 moveInput;
+	public readonly ENUM_ATTACK_KEY pressedAttackKey; 
 	public readonly bool isDash;
 	public readonly bool isGuard;
 	public readonly int frameCount;
 
 	public FrameSyncInputData(Vector2 moveInput, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int frameCount)
 	{
-		this.MoveInput = moveInput;
-		this.PressedAttackKey = pressedAttackKey;
+		this.moveInput = moveInput;
+		this.pressedAttackKey = pressedAttackKey;
 		this.isDash = isDash;
 		this.isGuard = isGuard;
 		this.frameCount = frameCount;
@@ -183,7 +183,7 @@ public class InputManager : SingletonComponent<InputManager>
 	{
 		int validFrameCount = Time.frameCount;
 
-		Vector2 moveVec = prevInputData.MoveInput;
+		Vector2 moveVec = prevInputData.moveInput;
 		ENUM_ATTACK_KEY pressedAttackKey = ENUM_ATTACK_KEY.MAX;
 		bool isDash = false;
 		bool isGuard = false;

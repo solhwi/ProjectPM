@@ -15,20 +15,20 @@ namespace StateMachine
 
             if (inputParam.IsGrounded)
             {
-                if (inputParam.frameData.MoveInput.x != 0.0f)
+                if (inputParam.frameData.moveInput.x != 0.0f)
                 {
                     currentState = inputParam.frameData.isDash ? CharacterState.Dash : CharacterState.Move;
                 }
 
-                if (inputParam.frameData.PressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
+                if (inputParam.frameData.pressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
                 {
                     currentState = CharacterState.Attack;
                 }
-                else if (inputParam.frameData.PressedAttackKey == ENUM_ATTACK_KEY.SKILL)
+                else if (inputParam.frameData.pressedAttackKey == ENUM_ATTACK_KEY.SKILL)
                 {
                     currentState = CharacterState.Skill;
                 }
-                else if (inputParam.frameData.PressedAttackKey == ENUM_ATTACK_KEY.ULTIMATE)
+                else if (inputParam.frameData.pressedAttackKey == ENUM_ATTACK_KEY.ULTIMATE)
                 {
                     currentState = CharacterState.Ultimate;
                 }
@@ -38,7 +38,7 @@ namespace StateMachine
                 }
             }
 
-            if (inputParam.frameData.MoveInput.y > 0.0f && inputParam.IsGrounded)
+            if (inputParam.frameData.moveInput.y > 0.0f && inputParam.IsGrounded)
             {
                 currentState = CharacterState.Jump;
             }

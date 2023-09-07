@@ -14,11 +14,11 @@ namespace StateMachine
     {
         private static SceneLinkedSMB<TMonoBehaviour, TParam, CharacterState>[] sceneLinkedSMBs = null;
 
-        protected TMonoBehaviour owner;
-        protected TParam currStateParam;
+		private static TState prevState;
+		private static TState currState;
 
-        private TState prevState;
-        private TState currState;
+		protected TMonoBehaviour owner;
+        protected TParam currStateParam;
 
         bool m_FirstFrameHappened;
         bool m_LastFrameHappened;

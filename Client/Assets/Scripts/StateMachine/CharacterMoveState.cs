@@ -12,7 +12,7 @@ namespace StateMachine
 			if (currStateParam == null)
 				return;
 
-			Move(currStateParam.frameData.MoveInput.x);
+			Move(currStateParam.frameData.moveInput.x);
 		}
 
 		public override void OnSLStateNoTransitionUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
@@ -20,7 +20,7 @@ namespace StateMachine
 			if (currStateParam == null)
 				return;
 
-			Move(currStateParam.frameData.MoveInput.x);
+			Move(currStateParam.frameData.moveInput.x);
 		}
 
 		private void Move(float x)

@@ -17,6 +17,7 @@ public enum CharacterState
 	Idle, // 멈춤
 	Move, // 좌, 우
 	Jump, // 점프 (하면서 물리적인 이동이 가능)
+	JumpDown, // 점프 다운
 	Dash, // 대쉬
 	Down, // 다운
 	Landing, // 착지
@@ -63,13 +64,13 @@ public class FrameSyncCharacterInputData : IStateParam
 [RequireComponent(typeof(CharacterAnimatorComponent))]
 public abstract class CharacterComponent : ObjectComponent
 {
-	private PhysicsComponent physicsComponent = null;
-	private CharacterAnimatorComponent animatorComponent = null;
-
 	public abstract ENUM_CHARACTER_TYPE CharacterType
 	{
 		get;
 	}
+
+	private PhysicsComponent physicsComponent = null;
+	private CharacterAnimatorComponent animatorComponent = null;
 
 	private FrameSyncCharacterInputData inputData = new();
 
