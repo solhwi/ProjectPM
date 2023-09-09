@@ -7,17 +7,15 @@ namespace StateMachine
 {
 	public class CharacterJumpState : CharacterLinkedSMB
     {
-		[SerializeField] private CharacterStatTable characterStatTable = null;
-
 		private float jumpYPower = 0.0f;
         private Vector2 jumpVector = new Vector2 (0, 0);
 		
-		public override void OnSLStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
+		public override void OnSLStateEnter(CharacterComponent owner, FrameSyncCharacterInputData param, AnimatorStateInfo stateInfo, AnimatorControllerPlayable controller)
 		{
             if (owner == null)
                 return;
 
-            if (currStateParam == null)
+            if (param == null)
                 return;
 
             var stat = characterStatTable.GetStat(owner.CharacterType);
@@ -25,17 +23,17 @@ namespace StateMachine
                 return;
 
             jumpYPower = stat.jumpPower;
-			jumpVector = new Vector2(currStateParam.frameData.moveInput.x, currStateParam.frameData.moveInput.y * jumpYPower);
+			jumpVector = new Vector2(param.frameData.moveInput.x, param.frameData.moveInput.y * jumpYPower);
 
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateNoTransitionUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
+		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameSyncCharacterInputData param, AnimatorStateInfo stateInfo, AnimatorControllerPlayable controller)
 		{
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
+		public override void OnSLStateExit(CharacterComponent owner, FrameSyncCharacterInputData param, AnimatorStateInfo stateInfo, AnimatorControllerPlayable controller)
 		{
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }

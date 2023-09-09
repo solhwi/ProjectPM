@@ -7,23 +7,23 @@ namespace StateMachine
 {
 	public class CharacterMoveState : CharacterLinkedSMB
     {
-		public override void OnSLStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
+		public override void OnSLStateEnter(CharacterComponent owner, FrameSyncCharacterInputData param, AnimatorStateInfo stateInfo, AnimatorControllerPlayable controller)
 		{
-			if (currStateParam == null)
+			if (param == null)
 				return;
 
-			Move(currStateParam.frameData.moveInput.x);
+			Move(owner, param.frameData.moveInput.x);
 		}
 
-		public override void OnSLStateNoTransitionUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
+		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameSyncCharacterInputData param, AnimatorStateInfo stateInfo, AnimatorControllerPlayable controller)
 		{
-			if (currStateParam == null)
+			if (param == null)
 				return;
 
-			Move(currStateParam.frameData.moveInput.x);
+			Move(owner, param.frameData.moveInput.x);
 		}
 
-		private void Move(float x)
+		private void Move(CharacterComponent owner, float x)
 		{
 			var moveVec = new Vector2(x * Time.deltaTime, 0);
 			owner.OnPostMove(moveVec);

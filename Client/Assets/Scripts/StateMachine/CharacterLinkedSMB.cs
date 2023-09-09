@@ -1,11 +1,22 @@
+using Mono.CecilX;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace StateMachine
 {
     public class CharacterLinkedSMB : SceneLinkedSMB<CharacterComponent, FrameSyncCharacterInputData, CharacterState>
     {
+        [SerializeField] protected CharacterStatTable characterStatTable = null;
+
+#if UNITY_EDITOR
+        protected virtual void Reset()
+        {
+            characterStatTable = AssetDatabase.LoadAssetAtPath<CharacterStatTable>("Assets/Bundle/Datas/Parser/CharacterStatTable.asset");
+        }
+#endif
+
         protected override bool TryChangeState(FrameSyncCharacterInputData inputParam, CharacterState prevState, out CharacterState currentState)
         {
             currentState = CharacterState.Idle;
@@ -50,11 +61,11 @@ namespace StateMachine
                 }
                 else if (inputParam.Velocity.y < -1 * 0.01f)
                 {
-                    currentState = CharacterState.Landing;
+                    currentState = CharacterState.JumpDown;
                 }
                 else
                 {
-                    currentState = prevState == CharacterState.Jump || prevState == CharacterState.Landing ? prevState : CharacterState.Landing;
+                    currentState = prevState == CharacterState.Jump || prevState == CharacterState.JumpDown ? prevState : CharacterState.JumpDown;
                 }
             }
 
