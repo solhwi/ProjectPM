@@ -11,10 +11,10 @@ public partial class CharacterStatTable : ScriptParser
 {
 	public override void Parser()
 	{
-		CharacterStatDictionary.Clear();
-		foreach(var value in CharacterStatList)
+		characterStatDictionary.Clear();
+		foreach(var value in characterStatList)
 		{
-			CharacterStatDictionary.Add(value.key, value);
+			characterStatDictionary.Add(value.key, value);
 		}
 	}
 
@@ -28,10 +28,10 @@ public partial class CharacterStatTable : ScriptParser
 		public int attackSpeed;
 	}
 
-	public List<CharacterStat> CharacterStatList = new List<CharacterStat>();
+	public List<CharacterStat> characterStatList = new List<CharacterStat>();
 	[System.Serializable]
-	public class SCharacterStatDictionary : SerializableDictionary<int, CharacterStat> {}
-	public SCharacterStatDictionary CharacterStatDictionary = new SCharacterStatDictionary();
+	public class CharacterStatDictionary : SerializableDictionary<int, CharacterStat> {}
+	public CharacterStatDictionary characterStatDictionary = new CharacterStatDictionary();
 
 
 }

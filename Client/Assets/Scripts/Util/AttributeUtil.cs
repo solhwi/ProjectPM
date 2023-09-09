@@ -63,6 +63,20 @@ public enum ResourceType
 
 public static class AttributeUtil
 {
+	public static IEnumerable<Type> GetSubClassTypes<T>()
+	{
+		foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+		{
+			foreach(var type in assembly.GetTypes())
+			{
+				if (type.IsSubclassOf(typeof(T)))
+				{
+					yield return type;
+				}
+			}
+		}
+	}
+
 	public static string GetResourcePath<T>() where T : UnityEngine.Object
 	{
 		Type type = typeof(T);

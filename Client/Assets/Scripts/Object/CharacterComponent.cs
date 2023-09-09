@@ -38,20 +38,24 @@ public enum CharacterState
 	Ultimate, // ±Ã±Ø±â
 }
 
-public interface IStateInput
+public struct FrameSyncStateParam
 {
-
-}
-
-public struct FrameSyncCharacterStateInput : IStateInput
-{
-	public FrameSyncInputData frameData;
+	public FrameSyncInputData userInput;
 
 	public bool IsGrounded;
 	public Vector2 Velocity;
 
     public IEnumerable<AttackableComponent> attackers;
     public ObjectComponent defender;
+
+	public void Clear()
+	{
+		userInput = default;
+		IsGrounded = false;
+		Velocity = default;
+		attackers = null;
+		defender = null;
+	}
 }
 
 [RequireComponent(typeof(PhysicsComponent))]
@@ -66,7 +70,7 @@ public abstract class CharacterComponent : ObjectComponent
 	private PhysicsComponent physicsComponent = null;
 	private CharacterAnimatorComponent animatorComponent = null;
 
-	private FrameSyncCharacterStateInput inputData = new();
+	private FrameSyncStateParam stateParam = new();
 
 	public override void Initialize(ENUM_TEAM_TYPE teamType, bool isBoss)
 	{
@@ -80,8 +84,8 @@ public abstract class CharacterComponent : ObjectComponent
 
 	public void OnPlayerInput(FrameSyncInputData frameData)
 	{
-		inputData = new();
-        inputData.frameData = frameData;
+		stateParam.Clear();
+		stateParam.userInput = frameData;
     }
 
 	public override void OnOtherInput(IEnumerable<AttackableComponent> attackers)
@@ -89,26 +93,21 @@ public abstract class CharacterComponent : ObjectComponent
 		if (attackers.Any() == false)
 			return;
 
-        inputData.attackers = attackers;
-		inputData.defender = this;
+        stateParam.attackers = attackers;
+		stateParam.defender = this;
     }
 
 	public override void OnPostInput()
 	{
-        inputData.Velocity = physicsComponent.Velocity;
-		inputData.IsGrounded = physicsComponent.IsGrounded;
+        stateParam.Velocity = physicsComponent.Velocity;
+		stateParam.IsGrounded = physicsComponent.IsGrounded;
 
-		animatorComponent.TryChangeState(inputData);
+		animatorComponent.TryChangeState(stateParam);
 	}
 
 	public void OnPostMove(Vector2 moveVec)
 	{
 		physicsComponent.Move(moveVec);
-	}
-
-	public void OnChangeDamageBox(Vector2 damageBox)
-	{
-		physicsComponent.SetCollisionBox(damageBox);
 	}
 
 	public override void OnUpdateAnimation()

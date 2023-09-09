@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterRecoveryState : CharacterLinkedSMB
+	public class CharacterRecoveryState : CharacterAnimatorState
     {
 
 }

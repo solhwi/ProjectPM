@@ -7,61 +7,68 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations;
 
+public interface IStateInfo
+{
+
+}
+
+public struct AnimationStateInfo<TParam> : IStateInfo
+{
+	public readonly TParam stateParam;
+	public readonly int currentAnimationKeyFrame;
+	public readonly int frameDeltaCount;
+
+	public readonly float normalizedTime;
+	public readonly bool isFinished;
+
+	public AnimationStateInfo(TParam stateParam, int currentAnimationKeyFrame, int frameDeltaCount, float normalizedTime)
+	{
+		this.stateParam = stateParam;
+		this.currentAnimationKeyFrame = currentAnimationKeyFrame;
+		this.frameDeltaCount = frameDeltaCount;
+		this.normalizedTime = normalizedTime;
+		this.isFinished = normalizedTime >= 1.0f;
+	}
+}
+
 namespace StateMachine
 {
-    public struct SceneLinkedAnimatorStateInfo
-    {
-        public readonly int currentAnimationKeyFrame;
-        public readonly int frameDeltaCount;
-
-        public readonly float normalizedTime;
-        public readonly bool isFinished;
-
-        public SceneLinkedAnimatorStateInfo(int currentAnimationKeyFrame, int frameDeltaCount, float normalizedTime)
-        {
-            this.currentAnimationKeyFrame = currentAnimationKeyFrame;
-            this.frameDeltaCount = frameDeltaCount;
-            this.normalizedTime = normalizedTime;
-            this.isFinished = normalizedTime >= 1.0f;
-        }
-    }
-    
-    public class SceneLinkedSMB<TMonoBehaviour, TInput, TState> : SealedSMB
+	public class AnimatorState<TMonoBehaviour, TParam, TState> : SealedStateMachineBehaviour
         where TMonoBehaviour : MonoBehaviour
-        where TInput : IStateInput
         where TState : Enum
     {
-        private static TState prevState;
-        private static TState currentState;
+		
+		private TMonoBehaviour owner;
+		private TParam stateParam;
 
-        private static TMonoBehaviour owner;
-        private static TInput currentFrameInput;
+		private TState prevState;
+		private TState currentState;
 
-        bool m_FirstFrameHappened;
-        bool m_LastFrameHappened;
+		private bool m_FirstFrameHappened;
+		private bool m_LastFrameHappened;
 
 		private int frameDeltaCount = 0;
 
-        public static void Initialize(Animator animator, TMonoBehaviour monoBehaviour)
-        {
-            owner = monoBehaviour;
+		public void InternalInitialize(Animator animator, TMonoBehaviour owner)
+		{
+			this.owner = owner;
 
-            var sceneLinkedSMBs = animator.GetBehaviours<SceneLinkedSMB<TMonoBehaviour, TInput, CharacterState>>();
-            foreach (var smb in sceneLinkedSMBs)
-            {
-                smb.OnInitialize(owner);
-            }
-        }
+			var states = animator.GetBehaviours<AnimatorState<TMonoBehaviour, TParam, TState>>();
+			foreach (var state in states)
+			{
+				state.OnInitialize(owner);
+			}
+		}
 
-        public static void TryChangeState(TInput input)
-        {
-            currentFrameInput = input;
-        }
+		public void TryInternalChangeState(TParam stateParam)
+		{
+			this.stateParam = stateParam;
+		}
 
-        private SceneLinkedAnimatorStateInfo MakeAnimationStateInfo(Animator animator, AnimatorStateInfo stateInfo)
+		private AnimationStateInfo<TParam> MakeAnimationStateInfo(Animator animator, AnimatorStateInfo stateInfo)
         {
             int currentKeyFrame = GetCurrentKeyFrame(animator, stateInfo);
-            return new SceneLinkedAnimatorStateInfo(currentKeyFrame, frameDeltaCount, stateInfo.normalizedTime);
+            return new AnimationStateInfo<TParam>(stateParam, currentKeyFrame, frameDeltaCount, stateInfo.normalizedTime);
         }
 
         private int GetCurrentKeyFrame(Animator animator, AnimatorStateInfo stateInfo)
@@ -79,7 +86,7 @@ namespace StateMachine
             frameDeltaCount = 0;
 
             var animationStateInfo = MakeAnimationStateInfo(animator, stateInfo);
-            OnSLStateEnter(owner, currentFrameInput, animationStateInfo);
+            OnSLStateEnter(owner, animationStateInfo);
         }
 
         public sealed override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
@@ -93,34 +100,34 @@ namespace StateMachine
 
             if (animator.IsInTransition(layerIndex) && animator.GetNextAnimatorStateInfo(layerIndex).fullPathHash == stateInfo.fullPathHash)
             {
-                OnSLTransitionToStateUpdate(owner, currentFrameInput, animationStateInfo);
+                OnSLTransitionToStateUpdate(owner, animationStateInfo);
             }
 
             if (!animator.IsInTransition(layerIndex) && m_FirstFrameHappened)
             {
-                OnSLStateNoTransitionUpdate(owner, currentFrameInput, animationStateInfo);
+                OnSLStateNoTransitionUpdate(owner, animationStateInfo);
             }
 
             if (animator.IsInTransition(layerIndex) && !m_LastFrameHappened && m_FirstFrameHappened)
             {
                 m_LastFrameHappened = true;
 
-                OnSLStatePreExit(owner, currentFrameInput, animationStateInfo);
+                OnSLStatePreExit(owner, animationStateInfo);
             }
 
             if (!animator.IsInTransition(layerIndex) && !m_FirstFrameHappened)
             {
                 m_FirstFrameHappened = true;
 
-                OnSLStatePostEnter(owner, currentFrameInput, animationStateInfo);
+                OnSLStatePostEnter(owner, animationStateInfo);
             }
 
             if (animator.IsInTransition(layerIndex) && animator.GetCurrentAnimatorStateInfo(layerIndex).fullPathHash == stateInfo.fullPathHash)
             {
-                OnSLTransitionFromStateUpdate(owner, currentFrameInput, animationStateInfo);
+                OnSLTransitionFromStateUpdate(owner, animationStateInfo);
             }
 
-            if (TryChangeState(currentFrameInput, prevState, out currentState))
+            if (TryChangeState(stateParam, prevState, out currentState))
             {
                 Debug.LogWarning($"스테이트 변경 : {prevState} -> {currentState}");
                 animator.Play(currentState.ToString());
@@ -128,7 +135,7 @@ namespace StateMachine
             }
         }
 
-        protected virtual bool TryChangeState(TInput input, TState prevState, out TState currentState)
+        protected virtual bool TryChangeState(TParam input, TState prevState, out TState currentState)
         {
             currentState = prevState;
             return false;
@@ -140,7 +147,7 @@ namespace StateMachine
             frameDeltaCount++;
 
             var animationStateInfo = MakeAnimationStateInfo(animator, stateInfo);
-            OnSLStateExit(owner, currentFrameInput, animationStateInfo);
+            OnSLStateExit(owner, animationStateInfo);
 
             frameDeltaCount = 0;
 		}
@@ -153,44 +160,44 @@ namespace StateMachine
         /// <summary>
         /// Called before Updates when execution of the state first starts (on transition to the state).
         /// </summary>
-        public virtual void OnSLStateEnter(TMonoBehaviour animator, TInput input, SceneLinkedAnimatorStateInfo stateInfo) { }
+        public virtual void OnSLStateEnter(TMonoBehaviour animator, AnimationStateInfo<TParam> stateInfo) { }
 
         /// <summary>
         /// Called after OnSLStateEnter every frame during transition to the state.
         /// </summary>
-        public virtual void OnSLTransitionToStateUpdate(TMonoBehaviour animator, TInput input, SceneLinkedAnimatorStateInfo stateInfo) { }
+        public virtual void OnSLTransitionToStateUpdate(TMonoBehaviour animator, AnimationStateInfo<TParam> stateInfo) { }
 
         /// <summary>
         /// Called on the first frame after the transition to the state has finished.
         /// </summary>
-        public virtual void OnSLStatePostEnter(TMonoBehaviour animator, TInput input, SceneLinkedAnimatorStateInfo stateInfo) { }
+        public virtual void OnSLStatePostEnter(TMonoBehaviour animator, AnimationStateInfo<TParam> stateInfo) { }
 
         /// <summary>
         /// Called every frame after PostEnter when the state is not being transitioned to or from.
         /// </summary>
-        public virtual void OnSLStateNoTransitionUpdate(TMonoBehaviour animator, TInput input, SceneLinkedAnimatorStateInfo stateInfo) { }
+        public virtual void OnSLStateNoTransitionUpdate(TMonoBehaviour animator, AnimationStateInfo<TParam> stateInfo) { }
 
         /// <summary>
         /// Called on the first frame after the transition from the state has started.  Note that if the transition has a duration of less than a frame, this will not be called.
         /// </summary>
-        public virtual void OnSLStatePreExit(TMonoBehaviour animator, TInput input, SceneLinkedAnimatorStateInfo stateInfo) { }
+        public virtual void OnSLStatePreExit(TMonoBehaviour animator, AnimationStateInfo<TParam> stateInfo) { }
 
         /// <summary>
         /// Called after OnSLStatePreExit every frame during transition to the state.
         /// </summary>
-        public virtual void OnSLTransitionFromStateUpdate(TMonoBehaviour animator, TInput input, SceneLinkedAnimatorStateInfo stateInfo) { }
+        public virtual void OnSLTransitionFromStateUpdate(TMonoBehaviour animator, AnimationStateInfo<TParam> stateInfo) { }
 
         /// <summary>
         /// Called after Updates when execution of the state first finshes (after transition from the state).
         /// </summary>
-        public virtual void OnSLStateExit(TMonoBehaviour animator, TInput input, SceneLinkedAnimatorStateInfo stateInfo) { }
+        public virtual void OnSLStateExit(TMonoBehaviour animator, AnimationStateInfo<TParam> stateInfo) { }
 
     }
 
     //This class repalce normal StateMachineBehaviour. It add the possibility of having direct reference to the object
     //the state is running on, avoiding the cost of retrienving it through a GetComponent every time.
     //c.f. Documentation for more in depth explainations.
-    public abstract class SealedSMB : StateMachineBehaviour
+    public abstract class SealedStateMachineBehaviour : StateMachineBehaviour
     {
         public sealed override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) { }
 

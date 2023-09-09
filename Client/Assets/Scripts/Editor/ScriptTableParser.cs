@@ -92,10 +92,13 @@ public class ScriptParserEditor : AssetPostprocessor
 			ISheet sheet = workBook[i];
 			string className = sheet.SheetName;
 
-			builder.Append($"\t\t{className}Dictionary.Clear();\n");
-			builder.Append($"\t\tforeach(var value in {className}List)\n");
+			var firstChar = className.FirstOrDefault();
+			var classFieldName = className.Replace(firstChar, Char.ToLower(firstChar));
+
+			builder.Append($"\t\t{classFieldName}Dictionary.Clear();\n");
+			builder.Append($"\t\tforeach(var value in {classFieldName}List)\n");
 			builder.Append("\t\t{\n");
-			builder.Append($"\t\t\t{className}Dictionary.Add(value.key, value);\n");
+			builder.Append($"\t\t\t{classFieldName}Dictionary.Add(value.key, value);\n");
 			builder.Append("\t\t}\n");
 		}
 
@@ -138,6 +141,9 @@ public class ScriptParserEditor : AssetPostprocessor
 
 	private static void SheetToClass(string className, IRow typeRow, IRow nameRow, ref StringBuilder builder)
 	{
+		var firstChar = className.FirstOrDefault();
+		var classFieldName = className.Replace(firstChar, Char.ToLower(firstChar));
+
 		builder.Append("\t[Serializable]\n");
 		builder.Append($"\tpublic class {className}\n");
 		builder.Append("\t{\n");
@@ -157,10 +163,10 @@ public class ScriptParserEditor : AssetPostprocessor
 
 		builder.Append("\t}\n\n");
 
-		builder.Append($"\tpublic List<{className}> {className}List = new List<{className}>();\n");
+		builder.Append($"\tpublic List<{className}> {classFieldName}List = new List<{className}>();\n");
 		builder.Append("\t[System.Serializable]\n");
-		builder.Append($"\tpublic class S{className}Dictionary : SerializableDictionary<{typeRow.GetCell(0)}, {className}> " + "{}\n");
-		builder.Append($"\tpublic S{className}Dictionary {className}Dictionary = new S{className}Dictionary();\n\n");
+		builder.Append($"\tpublic class {className}Dictionary : SerializableDictionary<{typeRow.GetCell(0)}, {className}> " + "{}\n");
+		builder.Append($"\tpublic {className}Dictionary {classFieldName}Dictionary = new {className}Dictionary();\n\n");
 	}
 
 	private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)

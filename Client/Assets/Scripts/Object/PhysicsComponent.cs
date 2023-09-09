@@ -11,6 +11,8 @@ public class PhysicsComponent : MonoBehaviour
     [Tooltip("The distance down to check for ground.")]
     [SerializeField] private float groundedRaycastDistance = 0.1f;
 
+    [SerializeField] private Vector2 hitOffset = new Vector2 (0, 0);
+    [SerializeField] private Vector2 hitBox = new Vector2(2.56f, 2.56f);
 
     Rigidbody2D m_Rigidbody2D;
     BoxCollider2D m_BoxColider2D;
@@ -53,7 +55,10 @@ public class PhysicsComponent : MonoBehaviour
         m_Rigidbody2D.MovePosition(m_CurrentPosition);
         m_NextMovement = Vector2.zero;
 
-        CheckCapsuleEndCollisions(true);
+        SetCollsionOffset(hitOffset);
+		SetCollisionBox(hitBox);
+
+		CheckCapsuleEndCollisions(true);
         CheckCapsuleEndCollisions(false);
 	}
 
@@ -66,12 +71,20 @@ public class PhysicsComponent : MonoBehaviour
         m_NextMovement += movement;
     }
 
-    public void SetCollisionBox(Vector2 box)
+    private void SetCollsionOffset(Vector2 offset) 
     {
-        if (m_BoxColider2D.size == box)
-            return;
+		if (m_BoxColider2D.offset != offset)
+        {
+			m_BoxColider2D.offset = offset;
+		}
+	}
 
-        m_BoxColider2D.size = box;
+    private void SetCollisionBox(Vector2 box)
+    {
+        if (m_BoxColider2D.size != box)
+        {
+			m_BoxColider2D.size = box;
+		}
 	}
 
     private void Update()

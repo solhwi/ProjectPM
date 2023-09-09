@@ -35,6 +35,26 @@ public class ResourceManager : SingletonComponent<ResourceManager>
 		return Instantiate<T>(prefab);
 	}
 
+	public AsyncOperationHandle LoadAsync<TParentClass>(Type subclassType) where TParentClass : Object
+	{
+		string path = AttributeUtil.GetResourcePath(subclassType);
+		if (string.IsNullOrEmpty(path))
+			return default;
+
+		var resourceType = AttributeUtil.GetResourceType(subclassType);
+
+		switch (resourceType)
+		{
+			case ResourceType.UnityAsset:
+				return LoadUnityAsset<TParentClass>(path);
+
+			case ResourceType.Prefab:
+				return LoadPrefab<TParentClass>(path);
+		}
+
+		return default;
+	}
+
 	public AsyncOperationHandle LoadAsync<T>() where T : Object
 	{
 		string path = AttributeUtil.GetResourcePath<T>();

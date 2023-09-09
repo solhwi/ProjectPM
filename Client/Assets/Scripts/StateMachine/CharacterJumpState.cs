@@ -5,12 +5,12 @@ using UnityEngine.Animations;
 
 namespace StateMachine
 {
-	public class CharacterJumpState : CharacterLinkedSMB
+	public class CharacterJumpState : CharacterAnimatorState
     {
 		private float jumpYPower = 0.0f;
         private Vector2 jumpVector = new Vector2 (0, 0);
 		
-		public override void OnSLStateEnter(CharacterComponent owner, FrameSyncCharacterStateInput input, SceneLinkedAnimatorStateInfo stateInfo)
+		public override void OnSLStateEnter(CharacterComponent owner, AnimationStateInfo<FrameSyncStateParam> stateInfo)
 		{
             if (owner == null)
                 return;
@@ -20,17 +20,17 @@ namespace StateMachine
                 return;
 
             jumpYPower = stat.jumpPower;
-			jumpVector = new Vector2(input.frameData.moveInput.x, input.frameData.moveInput.y * jumpYPower);
+            jumpVector = new Vector2(stateInfo.stateParam.userInput.moveInput.x, stateInfo.stateParam.userInput.moveInput.y * jumpYPower);
 
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameSyncCharacterStateInput input, SceneLinkedAnimatorStateInfo stateInfo)
+		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, AnimationStateInfo<FrameSyncStateParam> stateInfo)
 		{
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateExit(CharacterComponent owner, FrameSyncCharacterStateInput input, SceneLinkedAnimatorStateInfo stateInfo)
+		public override void OnSLStateExit(CharacterComponent owner, AnimationStateInfo<FrameSyncStateParam> stateInfo)
 		{
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }

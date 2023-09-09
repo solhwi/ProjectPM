@@ -21,4 +21,5 @@ public abstract class ScriptParser : ScriptableObject
 {
 	// 기본 Parser, List, Dictionary를 만들어 줌
 	public abstract void Parser();
+	public virtual void RuntimeParser() { }
 }

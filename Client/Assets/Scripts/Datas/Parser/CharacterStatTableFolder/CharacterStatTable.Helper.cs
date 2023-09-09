@@ -4,7 +4,7 @@ public partial class CharacterStatTable : ScriptParser
 {
 	public CharacterStat GetStat(ENUM_CHARACTER_TYPE type)
 	{
-		if (CharacterStatDictionary.TryGetValue((int)type, out var stat))
+		if (characterStatDictionary.TryGetValue((int)type, out var stat))
 		{
 			return stat;
 		}

@@ -12,11 +12,11 @@ public class CharacterAnimatorComponent : MonoBehaviour
     public void Initialize(CharacterComponent owner)
 	{
 		animator = GetComponent<Animator>();
-        CharacterLinkedSMB.Initialize(animator, owner);
+		CharacterAnimatorStateMachine.Initialize(animator, owner);
     }
 
-    public void TryChangeState(FrameSyncCharacterStateInput inputData)
+    public void TryChangeState(FrameSyncStateParam stateParam)
     {
-		CharacterLinkedSMB.TryChangeState(inputData);
+		CharacterAnimatorStateMachine.TryChangeState(stateParam);
 	}
 }

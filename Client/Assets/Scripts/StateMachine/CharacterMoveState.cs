@@ -5,16 +5,16 @@ using UnityEngine.Animations;
 
 namespace StateMachine
 {
-	public class CharacterMoveState : CharacterLinkedSMB
+	public class CharacterMoveState : CharacterAnimatorState
     {
-		public override void OnSLStateEnter(CharacterComponent owner, FrameSyncCharacterStateInput input, SceneLinkedAnimatorStateInfo stateInfo)
+		public override void OnSLStateEnter(CharacterComponent owner, AnimationStateInfo<FrameSyncStateParam> stateInfo)
 		{
-			Move(owner, input.frameData.moveInput.x);
+			Move(owner, stateInfo.stateParam.userInput.moveInput.x);
 		}
 
-		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameSyncCharacterStateInput input, SceneLinkedAnimatorStateInfo stateInfo)
+		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner,AnimationStateInfo<FrameSyncStateParam> stateInfo)
         {
-			Move(owner, input.frameData.moveInput.x);
+			Move(owner, stateInfo.stateParam.userInput.moveInput.x);
 		}
 
 		private void Move(CharacterComponent owner, float x)
