@@ -9,16 +9,16 @@ namespace StateMachine
     {
 		private bool isChangeable = false;
 
-		protected override bool TryChangeState(FrameSyncCharacterInputData inputParam, CharacterState prevState, out CharacterState currentState)
+		protected override bool TryChangeState(FrameSyncCharacterStateInput input, CharacterState prevState, out CharacterState currentState)
 		{
 			currentState = prevState;
 
 			if (isChangeable)
 			{
-				var attackKey = inputParam.frameData.pressedAttackKey;
+				var attackKey = input.frameData.pressedAttackKey;
 				if (attackKey == ENUM_ATTACK_KEY.ATTACK)
 				{
-					// currentState = CharacterState.Attack2;
+					currentState = CharacterState.Attack2;
 				}
 				else
 				{
@@ -29,17 +29,17 @@ namespace StateMachine
 			return currentState != prevState;
 		}
 
-		public override void OnSLStateEnter(CharacterComponent owner, FrameSyncCharacterInputData param, AnimatorStateInfo stateInfo, AnimatorControllerPlayable controller)
+		public override void OnSLStateEnter(CharacterComponent owner, FrameSyncCharacterStateInput input, SceneLinkedAnimatorStateInfo stateInfo)
 		{
-			isChangeable = stateInfo.normalizedTime >= 1.0f;
+			isChangeable = stateInfo.isFinished;
 		}
 
-		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameSyncCharacterInputData param, AnimatorStateInfo stateInfo, AnimatorControllerPlayable controller)
+		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameSyncCharacterStateInput input, SceneLinkedAnimatorStateInfo stateInfo)
 		{
-			isChangeable = stateInfo.normalizedTime >= 1.0f;
-		}
+			isChangeable = stateInfo.isFinished;
+        }
 
-		public override void OnSLStateExit(CharacterComponent owner, FrameSyncCharacterInputData param, AnimatorStateInfo stateInfo, AnimatorControllerPlayable controller)
+		public override void OnSLStateExit(CharacterComponent owner, FrameSyncCharacterStateInput input, SceneLinkedAnimatorStateInfo stateInfo)
 		{
 
 		}

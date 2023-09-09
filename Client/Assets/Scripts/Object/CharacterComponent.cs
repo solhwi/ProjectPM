@@ -38,26 +38,20 @@ public enum CharacterState
 	Ultimate, // 궁극기
 }
 
-public interface IStateParam
+public interface IStateInput
 {
 
 }
 
-
-/// <summary>
-/// 인풋 > 인풋에 자신의 데이터를 더함 > FSM에 넘김 > FSM이 조합한 결과물로 데이터를 수정함 > 레이트 업데이트에서 뷰를 수정함
-/// 
-/// 
-/// </summary>
-public class FrameSyncCharacterInputData : IStateParam
+public struct FrameSyncCharacterStateInput : IStateInput
 {
 	public FrameSyncInputData frameData;
 
-	public bool IsGrounded = false;
-	public Vector2 Velocity = default;
+	public bool IsGrounded;
+	public Vector2 Velocity;
 
-    public IEnumerable<AttackableComponent> attackers = null;
-    public ObjectComponent defender = null;
+    public IEnumerable<AttackableComponent> attackers;
+    public ObjectComponent defender;
 }
 
 [RequireComponent(typeof(PhysicsComponent))]
@@ -72,7 +66,7 @@ public abstract class CharacterComponent : ObjectComponent
 	private PhysicsComponent physicsComponent = null;
 	private CharacterAnimatorComponent animatorComponent = null;
 
-	private FrameSyncCharacterInputData inputData = new();
+	private FrameSyncCharacterStateInput inputData = new();
 
 	public override void Initialize(ENUM_TEAM_TYPE teamType, bool isBoss)
 	{
@@ -86,7 +80,7 @@ public abstract class CharacterComponent : ObjectComponent
 
 	public void OnPlayerInput(FrameSyncInputData frameData)
 	{
-		inputData ??= new();
+		inputData = new();
         inputData.frameData = frameData;
     }
 
@@ -95,14 +89,12 @@ public abstract class CharacterComponent : ObjectComponent
 		if (attackers.Any() == false)
 			return;
 
-        inputData ??= new();
         inputData.attackers = attackers;
 		inputData.defender = this;
     }
 
 	public override void OnPostInput()
 	{
-        inputData ??= new();
         inputData.Velocity = physicsComponent.Velocity;
 		inputData.IsGrounded = physicsComponent.IsGrounded;
 

@@ -10,12 +10,9 @@ namespace StateMachine
 		private float jumpYPower = 0.0f;
         private Vector2 jumpVector = new Vector2 (0, 0);
 		
-		public override void OnSLStateEnter(CharacterComponent owner, FrameSyncCharacterInputData param, AnimatorStateInfo stateInfo, AnimatorControllerPlayable controller)
+		public override void OnSLStateEnter(CharacterComponent owner, FrameSyncCharacterStateInput input, SceneLinkedAnimatorStateInfo stateInfo)
 		{
             if (owner == null)
-                return;
-
-            if (param == null)
                 return;
 
             var stat = characterStatTable.GetStat(owner.CharacterType);
@@ -23,17 +20,17 @@ namespace StateMachine
                 return;
 
             jumpYPower = stat.jumpPower;
-			jumpVector = new Vector2(param.frameData.moveInput.x, param.frameData.moveInput.y * jumpYPower);
+			jumpVector = new Vector2(input.frameData.moveInput.x, input.frameData.moveInput.y * jumpYPower);
 
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameSyncCharacterInputData param, AnimatorStateInfo stateInfo, AnimatorControllerPlayable controller)
+		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameSyncCharacterStateInput input, SceneLinkedAnimatorStateInfo stateInfo)
 		{
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateExit(CharacterComponent owner, FrameSyncCharacterInputData param, AnimatorStateInfo stateInfo, AnimatorControllerPlayable controller)
+		public override void OnSLStateExit(CharacterComponent owner, FrameSyncCharacterStateInput input, SceneLinkedAnimatorStateInfo stateInfo)
 		{
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }

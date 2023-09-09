@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace StateMachine
 {
-    public class CharacterLinkedSMB : SceneLinkedSMB<CharacterComponent, FrameSyncCharacterInputData, CharacterState>
+    public class CharacterLinkedSMB : SceneLinkedSMB<CharacterComponent, FrameSyncCharacterStateInput, CharacterState>
     {
         [SerializeField] protected CharacterStatTable characterStatTable = null;
 
@@ -17,49 +17,46 @@ namespace StateMachine
         }
 #endif
 
-        protected override bool TryChangeState(FrameSyncCharacterInputData inputParam, CharacterState prevState, out CharacterState currentState)
+        protected override bool TryChangeState(FrameSyncCharacterStateInput input, CharacterState prevState, out CharacterState currentState)
         {
             currentState = CharacterState.Idle;
 
-            if (inputParam == null)
-                return prevState != currentState;
-
-            if (inputParam.IsGrounded)
+            if (input.IsGrounded)
             {
-                if (inputParam.frameData.moveInput.x != 0.0f)
+                if (input.frameData.moveInput.x != 0.0f)
                 {
-                    currentState = inputParam.frameData.isDash ? CharacterState.Dash : CharacterState.Move;
+                    currentState = input.frameData.isDash ? CharacterState.Dash : CharacterState.Move;
                 }
 
-                if (inputParam.frameData.pressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
+                if (input.frameData.pressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
                 {
                     currentState = CharacterState.Attack;
                 }
-                else if (inputParam.frameData.pressedAttackKey == ENUM_ATTACK_KEY.SKILL)
+                else if (input.frameData.pressedAttackKey == ENUM_ATTACK_KEY.SKILL)
                 {
                     currentState = CharacterState.Skill;
                 }
-                else if (inputParam.frameData.pressedAttackKey == ENUM_ATTACK_KEY.ULTIMATE)
+                else if (input.frameData.pressedAttackKey == ENUM_ATTACK_KEY.ULTIMATE)
                 {
                     currentState = CharacterState.Ultimate;
                 }
-                else if (inputParam.frameData.isGuard)
+                else if (input.frameData.isGuard)
                 {
                     currentState = CharacterState.Guard;
                 }
             }
 
-            if (inputParam.frameData.moveInput.y > 0.0f && inputParam.IsGrounded)
+            if (input.frameData.moveInput.y > 0.0f && input.IsGrounded)
             {
                 currentState = CharacterState.Jump;
             }
-            else if (inputParam.IsGrounded == false)
+            else if (input.IsGrounded == false)
             {
-                if (inputParam.Velocity.y > 0.01f)
+                if (input.Velocity.y > 0.01f)
                 {
                     currentState = CharacterState.Jump;
                 }
-                else if (inputParam.Velocity.y < -1 * 0.01f)
+                else if (input.Velocity.y < -1 * 0.01f)
                 {
                     currentState = CharacterState.JumpDown;
                 }

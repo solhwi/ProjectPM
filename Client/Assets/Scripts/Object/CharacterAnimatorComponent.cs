@@ -15,7 +15,7 @@ public class CharacterAnimatorComponent : MonoBehaviour
         CharacterLinkedSMB.Initialize(animator, owner);
     }
 
-    public void TryChangeState(FrameSyncCharacterInputData inputData)
+    public void TryChangeState(FrameSyncCharacterStateInput inputData)
     {
 		CharacterLinkedSMB.TryChangeState(inputData);
 	}
