@@ -4,7 +4,7 @@ using UnityEngine;
 
 public partial class ConditionTable : ScriptParser
 {
-	[SerializeField] private List<ICompositeCondition> compositeConditions = new List<ICompositeCondition>();
+	private List<ICompositeStateCondition> compositeConditions = new List<ICompositeStateCondition>();
 
 	public override void RuntimeParser()
 	{
@@ -24,16 +24,16 @@ public partial class ConditionTable : ScriptParser
 		}
 	}
 
-	private ICompositeCondition MakeCondition(string conditionName)
+	private ICompositeStateCondition MakeCondition(string conditionName)
 	{
 		var type = Type.GetType(conditionName);
 
 		if (type == null)
 			return null;
 
-		if (type.IsSubclassOf(typeof(ICompositeCondition)) == false)
+		if (type.IsSubclassOf(typeof(ICompositeStateCondition)) == false)
 			return null;
 
-		return (ICompositeCondition)Activator.CreateInstance(type);
+		return (ICompositeStateCondition)Activator.CreateInstance(type);
 	}
 }

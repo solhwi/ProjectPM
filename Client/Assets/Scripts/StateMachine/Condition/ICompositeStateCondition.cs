@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static ConditionTable;
 
-public abstract class ICompositeCondition
+public abstract class ICompositeStateCondition
 {
 	protected List<IStateCondition> conditions = new List<IStateCondition>();
 
@@ -25,7 +25,7 @@ public abstract class ICompositeCondition
 	public abstract bool Parse(RawCondition rawCondition);
 }
 
-public class ComboCondition : ICompositeCondition
+public class ComboCondition : ICompositeStateCondition
 {
 	public override bool Parse(RawCondition rawCondition)
 	{
