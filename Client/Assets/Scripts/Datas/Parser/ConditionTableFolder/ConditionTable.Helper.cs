@@ -18,7 +18,6 @@ public enum CharacterStateConditionType
 
 	// 새로 정의된 타입
 	Combo = 100,
-	AnimationAllWait,
 }
 
 public class ConditionHelper
@@ -75,9 +74,6 @@ public class ConditionHelper
 			case "[Combo]":
 				return CharacterStateConditionType.Combo;
 
-			case "[AnimationAllWait]":
-				return CharacterStateConditionType.AnimationAllWait;
-
 			default:
 				return CharacterStateConditionType.None;
 		}
@@ -88,7 +84,6 @@ public class ConditionHelper
 		switch (stateType)
 		{
 			case CharacterStateConditionType.Combo:
-			case CharacterStateConditionType.AnimationAllWait:
 				return new CompositeStateCondition();
 
 			case CharacterStateConditionType.AnimationWait:
