@@ -7,18 +7,13 @@ using static ConditionTable;
 
 public interface IStateCondition
 {
-	public bool Parse(RawCondition rawCondition);
+	public bool Parse(string rawCondition);
 	public bool IsSatisfied(IStateInfo stateInfo);
 }
 
 public class AnimationCondition : IStateCondition
 {
 	private float changeableTime = 0.0f;
-
-	public AnimationCondition(float changeableTime)
-	{
-		this.changeableTime = changeableTime;
-	}
 
 	public bool IsSatisfied(IStateInfo stateInfo)
 	{
@@ -30,7 +25,7 @@ public class AnimationCondition : IStateCondition
 		return false;
 	}
 
-	public bool Parse(RawCondition rawCondition)
+	public bool Parse(string rawCondition)
 	{
 		return true;
 	}
@@ -38,10 +33,6 @@ public class AnimationCondition : IStateCondition
 
 public class DashCondition : MoveCondition
 {
-	public DashCondition(float moveVelocity) : base(moveVelocity)
-	{
-	}
-
 	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
 		bool isSatisfied = base.IsSatisfied(stateInfo);
@@ -69,7 +60,7 @@ public class GuardCondition : IStateCondition
 		return isSatisfied;
 	}
 
-	public bool Parse(RawCondition rawCondition)
+	public bool Parse(string rawCondition)
 	{
 		return true;
 	}
@@ -109,11 +100,6 @@ public class MoveCondition : IStateCondition
 {
 	private float moveVelocity;
 
-	public MoveCondition(float moveVelocity)
-	{
-		this.moveVelocity = moveVelocity;
-	}
-
 	public virtual bool IsSatisfied(IStateInfo stateInfo)
 	{
 		bool isSatisfied = false;
@@ -128,7 +114,7 @@ public class MoveCondition : IStateCondition
 		return isSatisfied;
 	}
 
-	public bool Parse(RawCondition rawCondition)
+	public bool Parse(string rawCondition)
 	{
 		return true;
 	}
@@ -146,7 +132,7 @@ public class JumpCondition : IStateCondition
 		return false;
 	}
 
-	public bool Parse(RawCondition rawCondition)
+	public bool Parse(string rawCondition)
 	{
 		return true;
 	}
@@ -155,11 +141,6 @@ public class JumpCondition : IStateCondition
 public class AttackCondition : IStateCondition
 {
 	private ENUM_ATTACK_KEY key = ENUM_ATTACK_KEY.NONE;
-
-	public AttackCondition(ENUM_ATTACK_KEY key)
-	{
-		this.key = key;
-	}
 
 	public bool IsSatisfied(IStateInfo stateInfo)
 	{
@@ -171,32 +152,8 @@ public class AttackCondition : IStateCondition
 		return false;
 	}
 
-	public bool Parse(RawCondition rawCondition)
+	public bool Parse(string rawCondition)
 	{
 		return true;
-	}
-}
-
-public class NormalAttackCondition : AttackCondition
-{
-	public NormalAttackCondition() : base(ENUM_ATTACK_KEY.ATTACK)
-	{
-		
-	}
-}
-
-public class SkillAttackCondition : AttackCondition
-{
-	public SkillAttackCondition() : base(ENUM_ATTACK_KEY.SKILL)
-	{
-
-	}
-}
-
-public class UltimateAttackCondition : AttackCondition
-{
-	public UltimateAttackCondition() : base(ENUM_ATTACK_KEY.ULTIMATE)
-	{
-
 	}
 }
