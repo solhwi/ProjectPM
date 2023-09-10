@@ -14,19 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rawConditionList:
   - key: ComboCondition
-    animationCondition: 0
-    inputCondition: 
+    condition: '[Animation]:1/[Attack]'
   - key: WaitCondition
-    animationCondition: 0
-    inputCondition: 
+    condition: '[Animation]:1'
   rawConditionDictionary:
     m_keys:
     - ComboCondition
     - WaitCondition
     m_values:
     - key: ComboCondition
-      animationCondition: 0
-      inputCondition: 
+      condition: '[Animation]:1/[Attack]'
     - key: WaitCondition
-      animationCondition: 0
-      inputCondition: 
+      condition: '[Animation]:1'

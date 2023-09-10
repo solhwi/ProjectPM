@@ -44,7 +44,7 @@ public class CompositeStateCondition : IStateCondition
 
 	private IEnumerable<IStateCondition> ParseStateConditions(string rawConditions)
 	{
-		foreach (var rawCondition in rawConditions.Split(conditionSeparator))
+		foreach (var rawCondition in rawConditions.Trim().Split(conditionSeparator))
 		{
 			yield return MakeInputCondition(rawCondition);
 		}
