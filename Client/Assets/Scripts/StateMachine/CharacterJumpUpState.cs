@@ -5,7 +5,7 @@ using UnityEngine.Animations;
 
 namespace StateMachine
 {
-	public class CharacterJumpState : CharacterAnimatorState
+	public class CharacterJumpUpState : CharacterAnimatorState
     {
 		private float jumpYPower = 0.0f;
         private Vector2 jumpVector = new Vector2 (0, 0);

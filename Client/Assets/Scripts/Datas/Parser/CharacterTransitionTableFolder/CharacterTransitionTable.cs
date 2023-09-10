@@ -22,8 +22,8 @@ public partial class CharacterTransitionTable : ScriptParser
 	public class Transition
 	{
 		public int key;
-		public string prevState;
-		public string nextState;
+		public CharacterState prevState;
+		public CharacterState nextState;
 		public string conditionType;
 	}
 

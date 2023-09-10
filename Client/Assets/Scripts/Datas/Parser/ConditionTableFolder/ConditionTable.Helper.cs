@@ -2,16 +2,14 @@ using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static ConditionTable;
 
-public enum StateConditionType
+public enum CharacterStateConditionType
 {
 	None = -1,
 
 	// 디폴트 타입
 	AnimationWait,
 	Attack,
-	Jump,
 	JumpUp,
 	JumpDown,
 	Guard,
@@ -33,7 +31,7 @@ public class ConditionHelper
 		foreach (var rawCondition in compositeRawCondition.Split(ConditionSeparator))
 		{
 			var type = ConvertStateConditionType(rawCondition);
-			if (type == StateConditionType.None)
+			if (type == CharacterStateConditionType.None)
 				continue;
 
 			var stateCondition = MakeStateCondition(type);
@@ -46,7 +44,7 @@ public class ConditionHelper
 		}
 	}
 
-	public static StateConditionType ConvertStateConditionType(string rawCondition)
+	public static CharacterStateConditionType ConvertStateConditionType(string rawCondition)
 	{
 		string[] rawConditions = rawCondition.Split(ParameterSeparator);
 
@@ -54,73 +52,67 @@ public class ConditionHelper
 		switch (inputRawConditionType)
 		{
 			case "[AnimationWait]":
-				return StateConditionType.AnimationWait;
+				return CharacterStateConditionType.AnimationWait;
 
 			case "[Attack]":
-				return StateConditionType.Attack;
-
-			case "[Jump]":
-				return StateConditionType.Jump;
+				return CharacterStateConditionType.Attack;
 
 			case "[JumpUp]":
-				return StateConditionType.JumpUp;
+				return CharacterStateConditionType.JumpUp;
 
 			case "[JumpDown]":
-				return StateConditionType.JumpDown;
+				return CharacterStateConditionType.JumpDown;
 
 			case "[Guard]":
-				return StateConditionType.Guard;
+				return CharacterStateConditionType.Guard;
 
 			case "[Move]":
-				return StateConditionType.Move;
+				return CharacterStateConditionType.Move;
 
 			case "[Dash]":
-				return StateConditionType.Dash;
+				return CharacterStateConditionType.Dash;
 
 			case "[Combo]":
-				return StateConditionType.Combo;
+				return CharacterStateConditionType.Combo;
 
 			case "[AnimationAllWait]":
-				return StateConditionType.AnimationAllWait;
+				return CharacterStateConditionType.AnimationAllWait;
 
 			default:
-				return StateConditionType.None;
+				return CharacterStateConditionType.None;
 		}
 	}
 
-	public static IStateCondition MakeStateCondition(StateConditionType stateType)
+	public static IStateCondition MakeStateCondition(CharacterStateConditionType stateType)
 	{
 		switch (stateType)
 		{
-			case StateConditionType.Combo:
-			case StateConditionType.AnimationAllWait:
+			case CharacterStateConditionType.Combo:
+			case CharacterStateConditionType.AnimationAllWait:
 				return new CompositeStateCondition();
 
-			case StateConditionType.AnimationWait:
+			case CharacterStateConditionType.AnimationWait:
 				return new AnimationCondition();
 
-			case StateConditionType.Attack:
+			case CharacterStateConditionType.Attack:
 				return new AttackCondition();
 
-			case StateConditionType.Jump:
-				return new JumpCondition();
-
-			case StateConditionType.JumpUp:
+			case CharacterStateConditionType.JumpUp:
 				return new JumpUpCondition();
 
-			case StateConditionType.JumpDown:
+			case CharacterStateConditionType.JumpDown:
 				return new JumpDownCondition();
 
-			case StateConditionType.Guard:
+			case CharacterStateConditionType.Guard:
 				return new GuardCondition();
 
-			case StateConditionType.Move:
+			case CharacterStateConditionType.Move:
 				return new MoveCondition();
 
-			case StateConditionType.Dash:
+			case CharacterStateConditionType.Dash:
 				return new DashCondition();
 
-			case StateConditionType.None:
+			case CharacterStateConditionType.None:
 			default:
 				return null;
 		}
@@ -130,7 +122,31 @@ public class ConditionHelper
 
 public partial class ConditionTable : ScriptParser
 {
-	private Dictionary<StateConditionType, IStateCondition> conditionDictionary = new Dictionary<StateConditionType, IStateCondition>();
+	private Dictionary<CharacterStateConditionType, IStateCondition> conditionDictionary = new Dictionary<CharacterStateConditionType, IStateCondition>();
+
+	public IStateCondition GetCondition(CharacterStateConditionType conditionType)
+	{
+		if(conditionDictionary.TryGetValue(conditionType, out var condition))
+		{
+			return condition;
+		}
+
+		Debug.LogError($"존재하지 않는 컨디션 타입 : {conditionType}");
+		return null;
+	}
+
+	public IStateCondition GetCondition(string rawCondition)
+	{
+		var conditionType = ConditionHelper.ConvertStateConditionType(rawCondition);
+		if (conditionDictionary.TryGetValue(conditionType, out var condition))
+		{
+			return condition;
+		}
+
+		Debug.LogError($"존재하지 않는 컨디션 타입 : {conditionType}");
+		return null;
+	}
+
 
 	public override void RuntimeParser()
 	{
@@ -139,7 +155,7 @@ public partial class ConditionTable : ScriptParser
 
 	public void MakeConditions()
 	{
-		foreach (var rawCondition in rawConditionList)
+		foreach (var rawCondition in characterRawconditionList)
 		{
 			var conditionType = ConditionHelper.ConvertStateConditionType(rawCondition.key.Trim());
 

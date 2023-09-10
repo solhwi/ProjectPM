@@ -34,65 +34,39 @@ namespace StateMachine
 	public class CharacterAnimatorState : AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>
     {
         [SerializeField] protected CharacterStatTable characterStatTable = null;
+        [SerializeField] protected TransitionTable transitionTable = null;
+        [SerializeField] protected ConditionTable conditionTable = null;
 
 #if UNITY_EDITOR
-        protected virtual void Reset()
+		protected virtual void Reset()
         {
             characterStatTable = AssetDatabase.LoadAssetAtPath<CharacterStatTable>("Assets/Bundle/Datas/Parser/CharacterStatTable.asset");
-        }
+			transitionTable = AssetDatabase.LoadAssetAtPath<TransitionTable>("Assets/Bundle/Datas/Parser/TransitionTable.asset");
+			conditionTable = AssetDatabase.LoadAssetAtPath<ConditionTable>("Assets/Bundle/Datas/Parser/ConditionTable.asset");
+		}
 #endif
 
-        protected override bool TryChangeState(FrameSyncStateParam input, CharacterState prevState, out CharacterState currentState)
+        protected override bool TryChangeState(AnimationStateInfo<FrameSyncStateParam> stateInfo, CharacterState prevState, out CharacterState currentState)
         {
-            currentState = CharacterState.Idle;
+			foreach (var transition in transitionTable.characterTransitionList)
+			{
+				if (transition.prevState == prevState)
+				{
+					var condition = conditionTable.GetCondition(transition.conditionType);
+					if (condition == null)
+						continue;
 
-            if (input.IsGrounded)
-            {
-                if (input.userInput.moveInput.x != 0.0f)
-                {
-                    currentState = input.userInput.isDash ? CharacterState.Dash : CharacterState.Move;
-                }
+					if (condition.IsSatisfied(stateInfo) == false)
+						continue;
 
-                if (input.userInput.pressedAttackKey == ENUM_ATTACK_KEY.ATTACK)
-                {
-                    currentState = CharacterState.Attack;
-                }
-                else if (input.userInput.pressedAttackKey == ENUM_ATTACK_KEY.SKILL)
-                {
-                    currentState = CharacterState.Skill;
-                }
-                else if (input.userInput.pressedAttackKey == ENUM_ATTACK_KEY.ULTIMATE)
-                {
-                    currentState = CharacterState.Ultimate;
-                }
-                else if (input.userInput.isGuard)
-                {
-                    currentState = CharacterState.Guard;
-                }
-            }
+					currentState = transition.nextState;
+					return true;
+				}
+			}
 
-            if (input.userInput.moveInput.y > 0.0f && input.IsGrounded)
-            {
-                currentState = CharacterState.Jump;
-            }
-            else if (input.IsGrounded == false)
-            {
-                if (input.Velocity.y > 0.01f)
-                {
-                    currentState = CharacterState.Jump;
-                }
-                else if (input.Velocity.y < -1 * 0.01f)
-                {
-                    currentState = CharacterState.JumpDown;
-                }
-                else
-                {
-                    currentState = prevState == CharacterState.Jump || prevState == CharacterState.JumpDown ? prevState : CharacterState.JumpDown;
-                }
-            }
-
-            return prevState != currentState;
-        }
+			currentState = prevState;
+			return false;
+		}
     }
 
 }

@@ -127,7 +127,7 @@ namespace StateMachine
                 OnSLTransitionFromStateUpdate(owner, animationStateInfo);
             }
 
-            if (TryChangeState(stateParam, prevState, out currentState))
+            if (TryChangeState(animationStateInfo, prevState, out currentState))
             {
                 Debug.LogWarning($"스테이트 변경 : {prevState} -> {currentState}");
                 animator.Play(currentState.ToString());
@@ -135,7 +135,7 @@ namespace StateMachine
             }
         }
 
-        protected virtual bool TryChangeState(TParam input, TState prevState, out TState currentState)
+        protected virtual bool TryChangeState(AnimationStateInfo<TParam> stateInfo, TState prevState, out TState currentState)
         {
             currentState = prevState;
             return false;

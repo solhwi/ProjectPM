@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11d24c45b12be47438f6fa11a30b049e, type: 3}
   m_Name: ConditionTable
   m_EditorClassIdentifier: 
-  rawConditionList:
-  - key: ComboCondition
-    condition: '[Animation]:1/[Attack]'
-  - key: WaitCondition
-    condition: '[Animation]:1'
-  rawConditionDictionary:
+  characterRawconditionList:
+  - key: '[Combo]'
+    condition: '[AnimationWait]:1/[Attack]:Normal'
+  - key: '[AnimationAllWait]'
+    condition: '[AnimationWait]:1'
+  characterRawconditionDictionary:
     m_keys:
-    - ComboCondition
-    - WaitCondition
+    - '[Combo]'
+    - '[AnimationAllWait]'
     m_values:
-    - key: ComboCondition
-      condition: '[Animation]:1/[Attack]'
-    - key: WaitCondition
-      condition: '[Animation]:1'
+    - key: '[Combo]'
+      condition: '[AnimationWait]:1/[Attack]:Normal'
+    - key: '[AnimationAllWait]'
+      condition: '[AnimationWait]:1'

@@ -40,7 +40,7 @@ public class ScriptParserEditor : AssetPostprocessor
 
 	public static readonly int FixedDataStartRow = 2;
 
-	[MenuItem("Build/Excellmport")]
+	[MenuItem("Build/BuildExcelData")]
 	public static void ExcelAutoCodeGenerate()
 	{
 		string excelPath = ExcelRootPath;

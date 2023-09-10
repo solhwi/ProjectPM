@@ -11,24 +11,24 @@ public partial class ConditionTable : ScriptParser
 {
 	public override void Parser()
 	{
-		rawConditionDictionary.Clear();
-		foreach(var value in rawConditionList)
+		characterRawconditionDictionary.Clear();
+		foreach(var value in characterRawconditionList)
 		{
-			rawConditionDictionary.Add(value.key, value);
+			characterRawconditionDictionary.Add(value.key, value);
 		}
 	}
 
 	[Serializable]
-	public class RawCondition
+	public class CharacterRawCondition
 	{
 		public string key;
 		public string condition;
 	}
 
-	public List<RawCondition> rawConditionList = new List<RawCondition>();
+	public List<CharacterRawCondition> characterRawconditionList = new List<CharacterRawCondition>();
 	[System.Serializable]
-	public class RawConditionDictionary : SerializableDictionary<string, RawCondition> {}
-	public RawConditionDictionary rawConditionDictionary = new RawConditionDictionary();
+	public class CharacterRawConditionDictionary : SerializableDictionary<string, CharacterRawCondition> {}
+	public CharacterRawConditionDictionary characterRawconditionDictionary = new CharacterRawConditionDictionary();
 
 
 }
