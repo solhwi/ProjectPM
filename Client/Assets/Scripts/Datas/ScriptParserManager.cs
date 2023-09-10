@@ -22,7 +22,7 @@ public class ScriptParserManager : SingletonComponent<ScriptParserManager>
 
 	public IEnumerator LoadAsyncScriptParsers()
 	{
-		var types = AttributeUtil.GetSubClassTypes<ScriptParser>();
+		var types = FMUtil.GetSubClassTypes<ScriptParser>();
 
 		foreach(var type in types)
 		{

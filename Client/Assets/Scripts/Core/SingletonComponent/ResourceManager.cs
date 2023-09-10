@@ -37,11 +37,11 @@ public class ResourceManager : SingletonComponent<ResourceManager>
 
 	public AsyncOperationHandle LoadAsync<TParentClass>(Type subclassType) where TParentClass : Object
 	{
-		string path = AttributeUtil.GetResourcePath(subclassType);
+		string path = FMUtil.GetResourcePath(subclassType);
 		if (string.IsNullOrEmpty(path))
 			return default;
 
-		var resourceType = AttributeUtil.GetResourceType(subclassType);
+		var resourceType = FMUtil.GetResourceType(subclassType);
 
 		switch (resourceType)
 		{
@@ -57,11 +57,11 @@ public class ResourceManager : SingletonComponent<ResourceManager>
 
 	public AsyncOperationHandle LoadAsync<T>() where T : Object
 	{
-		string path = AttributeUtil.GetResourcePath<T>();
+		string path = FMUtil.GetResourcePath<T>();
 		if (string.IsNullOrEmpty(path))
 			return default;
 
-		var resourceType = AttributeUtil.GetResourceType<T>();
+		var resourceType = FMUtil.GetResourceType<T>();
 
 		switch(resourceType)
 		{

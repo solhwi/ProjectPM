@@ -22,8 +22,7 @@ public partial class ConditionTable : ScriptParser
 	public class RawCondition
 	{
 		public string key;
-		public float animationCondition;
-		public string inputCondition;
+		public string condition;
 	}
 
 	public List<RawCondition> rawConditionList = new List<RawCondition>();

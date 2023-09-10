@@ -1,10 +1,11 @@
+using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public partial class ConditionTable : ScriptParser
 {
-	private List<ICompositeStateCondition> compositeConditions = new List<ICompositeStateCondition>();
+	private Dictionary<StateConditionType, IStateCondition> compositeConditionDictionary = new Dictionary<StateConditionType, IStateCondition>();
 
 	public override void RuntimeParser()
 	{
@@ -15,25 +16,31 @@ public partial class ConditionTable : ScriptParser
 	{
 		foreach (var rawCondition in rawConditionList)
 		{
+			if (FMUtil.TryParse(rawCondition.key, out StateConditionType conditionType) == false)
+				continue;
+
 			var condition = MakeCondition(rawCondition.key);
 			if (condition != null)
 			{
 				condition.Parse(rawCondition);
-				compositeConditions.Add(condition);
+				compositeConditionDictionary.Add(conditionType, condition);
 			}
 		}
 	}
 
-	private ICompositeStateCondition MakeCondition(string conditionName)
+	private IStateCondition MakeCondition(string conditionName)
 	{
 		var type = Type.GetType(conditionName);
 
 		if (type == null)
+		{
+			Debug.LogError($"존재하지 않는 컨디션 타입 : {conditionName}");
+			return null;
+		}
+
+		if (type.IsSubclassOf(typeof(IStateCondition)) == false)
 			return null;
 
-		if (type.IsSubclassOf(typeof(ICompositeStateCondition)) == false)
-			return null;
-
-		return (ICompositeStateCondition)Activator.CreateInstance(type);
+		return (IStateCondition)Activator.CreateInstance(type);
 	}
 }

@@ -61,8 +61,18 @@ public enum ResourceType
 	Prefab = 1,
 }
 
-public static class AttributeUtil
+public static class FMUtil
 {
+	public static bool TryParse<TEnum>(string enumValue, out TEnum result) where TEnum : struct, Enum
+	{
+		if (Enum.TryParse(enumValue, out result))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	public static IEnumerable<Type> GetSubClassTypes<T>()
 	{
 		foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
