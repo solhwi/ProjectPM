@@ -3,31 +3,35 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static ConditionTable;
 
 public interface IStateCondition
 {
-	public bool Parse(string rawCondition);
+	public bool Parse(string rawParameter);
 	public bool IsSatisfied(IStateInfo stateInfo);
 }
 
-public class AnimationCondition : IStateCondition
+public class AnimationWaitCondition : IStateCondition
 {
-	private float changeableTime = 0.0f;
+	private float waitNormalizeTime = 0.0f;
 
 	public bool IsSatisfied(IStateInfo stateInfo)
 	{
 		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
-			return animStateInfo.normalizedTime >= changeableTime;
+			return animStateInfo.normalizedTime >= waitNormalizeTime;
 		}
 
 		return false;
 	}
 
-	public bool Parse(string rawCondition)
+	public bool Parse(string rawParameter)
 	{
-		return true;
+		if (float.TryParse(rawParameter, out waitNormalizeTime))
+		{
+			return true;
+		}
+
+		return false;
 	}
 }
 
@@ -60,7 +64,7 @@ public class GuardCondition : IStateCondition
 		return isSatisfied;
 	}
 
-	public bool Parse(string rawCondition)
+	public bool Parse(string rawParameter)
 	{
 		return true;
 	}
@@ -114,9 +118,14 @@ public class MoveCondition : IStateCondition
 		return isSatisfied;
 	}
 
-	public bool Parse(string rawCondition)
+	public bool Parse(string rawParameter)
 	{
-		return true;
+		if (float.TryParse(rawParameter, out moveVelocity))
+		{
+			return true;
+		}
+
+		return false;
 	}
 }
 
@@ -132,7 +141,7 @@ public class JumpCondition : IStateCondition
 		return false;
 	}
 
-	public bool Parse(string rawCondition)
+	public bool Parse(string rawParameter)
 	{
 		return true;
 	}
@@ -152,8 +161,23 @@ public class AttackCondition : IStateCondition
 		return false;
 	}
 
-	public bool Parse(string rawCondition)
+	public bool Parse(string rawParameter)
 	{
-		return true;
+		switch(rawParameter)
+		{
+			case "Normal":
+				key = ENUM_ATTACK_KEY.ATTACK;
+				return true;
+
+			case "Skill":
+				key = ENUM_ATTACK_KEY.SKILL;
+				return true;
+
+			case "Ultimate":
+				key = ENUM_ATTACK_KEY.ULTIMATE;
+				return true;
+		}
+
+		return false;
 	}
 }

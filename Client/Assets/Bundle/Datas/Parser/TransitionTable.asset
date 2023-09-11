@@ -36,7 +36,7 @@ MonoBehaviour:
   - key: 5
     prevState: 0
     nextState: 1
-    conditionType: '[Move]'
+    conditionType: '[MoveAny]'
   - key: 6
     prevState: 0
     nextState: 2
@@ -75,7 +75,7 @@ MonoBehaviour:
     - key: 5
       prevState: 0
       nextState: 1
-      conditionType: '[Move]'
+      conditionType: '[MoveAny]'
     - key: 6
       prevState: 0
       nextState: 2

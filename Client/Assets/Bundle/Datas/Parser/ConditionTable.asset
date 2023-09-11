@@ -13,16 +13,46 @@ MonoBehaviour:
   m_Name: ConditionTable
   m_EditorClassIdentifier: 
   characterRawconditionList:
-  - key: '[Combo]'
-    condition: '[AnimationWait]:1/[Attack]:Normal'
+  - key: '[Dash]'
+    condition: 0
+  - key: '[Guard]'
+    condition: 0
+  - key: '[JumpDown]'
+    condition: 0
+  - key: '[JumpUp]'
+    condition: 0
+  - key: '[MoveAny]'
+    condition: '[Move]:0'
   - key: '[AnimationAllWait]'
     condition: '[AnimationWait]:1'
+  - key: '[NormalAttack]'
+    condition: '[Attack]:Normal'
+  - key: '[Combo]'
+    condition: '[AnimationAllWait]/[NormalAttack]'
   characterRawconditionDictionary:
     m_keys:
-    - '[Combo]'
+    - '[Dash]'
+    - '[Guard]'
+    - '[JumpDown]'
+    - '[JumpUp]'
+    - '[MoveAny]'
     - '[AnimationAllWait]'
+    - '[NormalAttack]'
+    - '[Combo]'
     m_values:
-    - key: '[Combo]'
-      condition: '[AnimationWait]:1/[Attack]:Normal'
+    - key: '[Dash]'
+      condition: 0
+    - key: '[Guard]'
+      condition: 0
+    - key: '[JumpDown]'
+      condition: 0
+    - key: '[JumpUp]'
+      condition: 0
+    - key: '[MoveAny]'
+      condition: '[Move]:0'
     - key: '[AnimationAllWait]'
       condition: '[AnimationWait]:1'
+    - key: '[NormalAttack]'
+      condition: '[Attack]:Normal'
+    - key: '[Combo]'
+      condition: '[AnimationAllWait]/[NormalAttack]'
