@@ -2,11 +2,12 @@ using StateMachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public interface IStateCondition
 {
-	public bool Parse(string rawParameter);
+	public bool Parse(params string[] rawParameters);
 	public bool IsSatisfied(IStateInfo stateInfo);
 }
 
@@ -24,9 +25,9 @@ public class AnimationWaitCondition : IStateCondition
 		return false;
 	}
 
-	public bool Parse(string rawParameter)
+	public bool Parse(params string[] rawParameters)
 	{
-		if (float.TryParse(rawParameter, out waitNormalizeTime))
+		if (float.TryParse(rawParameters[0], out waitNormalizeTime))
 		{
 			return true;
 		}
@@ -64,7 +65,7 @@ public class GuardCondition : IStateCondition
 		return isSatisfied;
 	}
 
-	public bool Parse(string rawParameter)
+	public bool Parse(params string[] rawParameters)
 	{
 		return true;
 	}
@@ -78,7 +79,8 @@ public class JumpUpCondition : JumpCondition
 
 		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
-			isSatisfied |= animStateInfo.stateParam.Velocity.y > Mathf.Epsilon;
+			isSatisfied &= animStateInfo.stateParam.Velocity.y > Mathf.Epsilon;
+			isSatisfied |= animStateInfo.stateParam.userInput.moveInput.y > Mathf.Epsilon;
 		}
 
 		return isSatisfied;
@@ -106,21 +108,21 @@ public class MoveCondition : IStateCondition
 
 	public virtual bool IsSatisfied(IStateInfo stateInfo)
 	{
-		bool isSatisfied = false;
+		bool isSatisfied = true;
 
 		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
-			float currX = animStateInfo.stateParam.Velocity.x;
-			isSatisfied |= Mathf.Abs(currX) > Mathf.Abs(moveVelocity);
-			isSatisfied |= animStateInfo.stateParam.IsGrounded;
+			float currX = animStateInfo.stateParam.userInput.moveInput.x;
+			isSatisfied &= Mathf.Abs(currX) > Mathf.Abs(moveVelocity);
+			isSatisfied &= animStateInfo.stateParam.IsGrounded;
 		}
 
 		return isSatisfied;
 	}
 
-	public bool Parse(string rawParameter)
+	public bool Parse(params string[] rawParameters)
 	{
-		if (float.TryParse(rawParameter, out moveVelocity))
+		if (float.TryParse(rawParameters[0], out moveVelocity))
 		{
 			return true;
 		}
@@ -141,7 +143,7 @@ public class JumpCondition : IStateCondition
 		return false;
 	}
 
-	public bool Parse(string rawParameter)
+	public bool Parse(params string[] rawParameters)
 	{
 		return true;
 	}
@@ -161,9 +163,12 @@ public class AttackCondition : IStateCondition
 		return false;
 	}
 
-	public bool Parse(string rawParameter)
+	public bool Parse(params string[] rawParameters)
 	{
-		switch(rawParameter)
+		if(rawParameters.Any() == false)
+			return false;
+
+		switch(rawParameters[0])
 		{
 			case "Normal":
 				key = ENUM_ATTACK_KEY.ATTACK;

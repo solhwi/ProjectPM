@@ -34,7 +34,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Attack 2
+  m_Name: Attack2
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!114 &-6238785035421609186
 MonoBehaviour:
@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!114 &-6106889926464275310
 MonoBehaviour:
@@ -124,7 +124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!114 &-5679058648883959072
 MonoBehaviour:
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!1102 &-5170291965702049009
 AnimatorState:
@@ -181,7 +181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!1102 &-3843884067365827472
 AnimatorState:
@@ -250,7 +250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!114 &-2462505902637422172
 MonoBehaviour:
@@ -265,7 +265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!1102 &-2012079700079667541
 AnimatorState:
@@ -567,7 +567,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!114 &1378589468719489302
 MonoBehaviour:
@@ -582,7 +582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!1102 &2805511490472992737
 AnimatorState:
@@ -624,7 +624,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!1102 &3234531792504203221
 AnimatorState:
@@ -693,7 +693,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!114 &3452434710779431255
 MonoBehaviour:
@@ -708,7 +708,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!1102 &3490722650354590703
 AnimatorState:
@@ -750,7 +750,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!114 &5238489651162772300
 MonoBehaviour:
@@ -765,7 +765,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!1102 &7069418181832681784
 AnimatorState:
@@ -807,7 +807,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!1102 &7620274213046447446
 AnimatorState:
@@ -849,7 +849,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!114 &8329602665670113450
 MonoBehaviour:
@@ -864,7 +864,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!114 &8960209103788682150
 MonoBehaviour:
@@ -879,7 +879,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}
 --- !u!114 &9214170123913484572
 MonoBehaviour:
@@ -894,5 +894,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStatTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}
-  transitionTable: {fileID: 11400000, guid: a73cf62019a700c4f8dcf0a8feddb75e, type: 2}
+  transitionTable: {fileID: 11400000, guid: 2b9f60bd0b987ab4ab0ece351f1f10f8, type: 2}
   conditionTable: {fileID: 11400000, guid: 206b3dcb795429d47bcf976656974648, type: 2}

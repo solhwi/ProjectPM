@@ -4,11 +4,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static ConditionTable;
 
 public class CompositeStateCondition : IStateCondition
 {
+	private ConditionTable conditionTable;
 	private List<IStateCondition> conditions = new List<IStateCondition>();
+
+	public CompositeStateCondition(ConditionTable table) 
+	{
+		conditionTable = table;
+	}
 
 	public bool IsSatisfied(IStateInfo stateInfo)
 	{
@@ -23,9 +28,12 @@ public class CompositeStateCondition : IStateCondition
 		return true;
 	}
 
-	public bool Parse(string compositeRawCondition)
+	public bool Parse(params string[] compositeRawCondition)
 	{
-		conditions = ConditionHelper.ParseStateConditions(compositeRawCondition).ToList();
+		if(compositeRawCondition.Any() == false)
+			return false;
+
+		conditions = conditionTable.ParseStateConditions(compositeRawCondition[0]).ToList();
 		return true;
 	}
 }

@@ -29,6 +29,9 @@ public class PhysicsComponent : MonoBehaviour
 	float jumpDeltaTime = 0.0f;
 
     public bool IsGrounded { get; protected set; }
+
+    private Queue<Vector2> vectorQueue = new Queue<Vector2>();
+
     public Vector2 Velocity => m_NextMovement;
 
 
@@ -50,10 +53,14 @@ public class PhysicsComponent : MonoBehaviour
     void FixedUpdate()
     {
         m_PreviousPosition = m_Rigidbody2D.position;
-        m_CurrentPosition = m_PreviousPosition + m_NextMovement;
+		m_CurrentPosition = m_PreviousPosition;
+
+		while(vectorQueue.TryDequeue(out var movement))
+        {
+            m_CurrentPosition += movement;
+		}  
 
         m_Rigidbody2D.MovePosition(m_CurrentPosition);
-        m_NextMovement = Vector2.zero;
 
         SetCollsionOffset(hitOffset);
 		SetCollisionBox(hitBox);
@@ -68,7 +75,8 @@ public class PhysicsComponent : MonoBehaviour
     /// <param name="movement">The amount moved in global coordinates relative to the rigidbody2D's position.</param>
     public void Move(Vector2 movement)
     {
-        m_NextMovement += movement;
+        vectorQueue.Enqueue(movement);
+		m_NextMovement += movement;
     }
 
     private void SetCollsionOffset(Vector2 offset) 
@@ -99,13 +107,18 @@ public class PhysicsComponent : MonoBehaviour
         {
             jumpDeltaTime = 0.0f;
         }
-    }
+	}
 
-    /// <summary>
-    /// This moves the character without any implied velocity.
-    /// </summary>
-    /// <param name="position">The new position of the character in global space.</param>
-    public void Teleport(Vector2 position)
+	private void LateUpdate()
+	{
+		m_NextMovement = Vector2.zero;
+	}
+
+	/// <summary>
+	/// This moves the character without any implied velocity.
+	/// </summary>
+	/// <param name="position">The new position of the character in global space.</param>
+	public void Teleport(Vector2 position)
     {
         Vector2 delta = position - m_CurrentPosition;
         m_PreviousPosition += delta;

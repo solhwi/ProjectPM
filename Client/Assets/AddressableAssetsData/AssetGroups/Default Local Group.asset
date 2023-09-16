@@ -57,8 +57,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a73cf62019a700c4f8dcf0a8feddb75e
-    m_Address: Assets/Bundle/Datas/Parser/TransitionTable.asset
+  - m_GUID: 2b9f60bd0b987ab4ab0ece351f1f10f8
+    m_Address: Assets/Bundle/Datas/Parser/CharacterTransitionTable.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

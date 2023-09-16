@@ -5,43 +5,59 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public enum CharacterStateConditionType
+public partial class ConditionTable : ScriptParser
 {
-	None = -1,
-
-	// 디폴트 타입
-	AnimationWait,
-	Attack,
-	JumpUp,
-	JumpDown,
-	Guard,
-	Move,
-	Dash,
-
-	// 새로 정의된 타입
-	Combo = 100,
-}
-
-public class ConditionHelper
-{
+	private Dictionary<string, IStateCondition> conditionDictionary = new Dictionary<string, IStateCondition>();
 	private const char ParameterSeparator = ':';
 	private const char ConditionSeparator = '/';
 
-	public static IEnumerable<IStateCondition> ParseStateConditions(string compositeRawCondition)
+	public IStateCondition GetCondition(string rawConditionType)
+	{
+		if (conditionDictionary.TryGetValue(rawConditionType, out var condition))
+		{
+			return condition;
+		}
+
+		Debug.LogError($"존재하지 않는 컨디션 타입 : {rawConditionType}");
+		return null;
+	}
+
+
+	public override void RuntimeParser()
+	{
+		MakeConditions();
+	}
+
+	public void MakeConditions()
+	{
+		foreach (var rawCondition in characterRawconditionList)
+		{
+			var conditionType = rawCondition.key.Trim();
+			var condition = MakeStateCondition(conditionType, out string[] parameters);
+			if (condition != null)
+			{
+				condition.Parse(rawCondition.condition);
+				conditionDictionary.Add(conditionType, condition);
+			}
+		}
+	}
+
+	public IEnumerable<IStateCondition> ParseStateConditions(string compositeRawCondition)
 	{
 		foreach (var rawCondition in compositeRawCondition.Split(ConditionSeparator))
 		{
-			var stateCondition = MakeStateCondition(rawCondition, out string[] parameters);
+			var stateCondition = GetCondition(rawCondition);
 			if (stateCondition == null)
-				continue;
-
-			stateCondition.Parse(parameters.ToString());
+			{
+				stateCondition = MakeStateCondition(rawCondition, out string[] parameters);
+				stateCondition.Parse(parameters);
+			}
 
 			yield return stateCondition;
 		}
 	}
 
-	public static IStateCondition MakeStateCondition(string rawCondition, out string[] parameters)
+	private IStateCondition MakeStateCondition(string rawCondition, out string[] parameters)
 	{
 		string[] rawConditions = rawCondition.Split(ParameterSeparator);
 
@@ -72,50 +88,10 @@ public class ConditionHelper
 				return new DashCondition();
 
 			case "[Combo]":
-			case "[AnimationAllWait]":
-			case "[NormalAttack]":
-			case "[MoveAny]":
-				return new CompositeStateCondition();
+				return new CompositeStateCondition(this);
 
 			default:
 				return null;
-		}
-	}
-}
-
-
-public partial class ConditionTable : ScriptParser
-{
-	private Dictionary<string, IStateCondition> conditionDictionary = new Dictionary<string, IStateCondition>();
-
-	public IStateCondition GetCondition(string rawConditionType)
-	{
-		if (conditionDictionary.TryGetValue(rawConditionType, out var condition))
-		{
-			return condition;
-		}
-
-		Debug.LogError($"존재하지 않는 컨디션 타입 : {rawConditionType}");
-		return null;
-	}
-
-
-	public override void RuntimeParser()
-	{
-		MakeConditions();
-	}
-
-	public void MakeConditions()
-	{
-		foreach (var rawCondition in characterRawconditionList)
-		{
-			var conditionType = rawCondition.key.Trim();
-			var condition = ConditionHelper.MakeStateCondition(conditionType, out string[] parameters);
-			if (condition != null)
-			{
-				condition.Parse(rawCondition.condition);
-				conditionDictionary.Add(conditionType, condition);
-			}
 		}
 	}
 }

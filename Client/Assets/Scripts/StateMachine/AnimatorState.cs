@@ -41,8 +41,8 @@ namespace StateMachine
 		private TMonoBehaviour owner;
 		private TParam stateParam;
 
-		private TState prevState;
-		private TState currentState;
+		private static TState prevState;
+		private static TState currentState;
 
 		private bool m_FirstFrameHappened;
 		private bool m_LastFrameHappened;

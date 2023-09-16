@@ -21,23 +21,23 @@ MonoBehaviour:
     condition: 0
   - key: '[JumpUp]'
     condition: 0
-  - key: '[MoveAny]'
-    condition: '[Move]:0'
-  - key: '[AnimationAllWait]'
-    condition: '[AnimationWait]:1'
-  - key: '[NormalAttack]'
-    condition: '[Attack]:Normal'
+  - key: '[Move]'
+    condition: 0.1
+  - key: '[AnimationWait]'
+    condition: 1
+  - key: '[Attack]'
+    condition: Normal
   - key: '[Combo]'
-    condition: '[AnimationAllWait]/[NormalAttack]'
+    condition: '[AnimationWait]:0.9/[Attack]'
   characterRawconditionDictionary:
     m_keys:
     - '[Dash]'
     - '[Guard]'
     - '[JumpDown]'
     - '[JumpUp]'
-    - '[MoveAny]'
-    - '[AnimationAllWait]'
-    - '[NormalAttack]'
+    - '[Move]'
+    - '[AnimationWait]'
+    - '[Attack]'
     - '[Combo]'
     m_values:
     - key: '[Dash]'
@@ -48,11 +48,11 @@ MonoBehaviour:
       condition: 0
     - key: '[JumpUp]'
       condition: 0
-    - key: '[MoveAny]'
-      condition: '[Move]:0'
-    - key: '[AnimationAllWait]'
-      condition: '[AnimationWait]:1'
-    - key: '[NormalAttack]'
-      condition: '[Attack]:Normal'
+    - key: '[Move]'
+      condition: 0.1
+    - key: '[AnimationWait]'
+      condition: 1
+    - key: '[Attack]'
+      condition: Normal
     - key: '[Combo]'
-      condition: '[AnimationAllWait]/[NormalAttack]'
+      condition: '[AnimationWait]:0.9/[Attack]'

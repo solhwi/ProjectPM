@@ -290,7 +290,7 @@ public class ScriptParserEditor : AssetPostprocessor
 			}
 			catch
 			{
-				throw new Exception(string.Format("Invalid excel cell type at row {0}, column {1}.", row.RowNum, cell.ColumnIndex));
+				throw new Exception(string.Format("Invalid excel cell type at row {0}, column {1} : 앤티티 타입 {2}, 컬럼 네임 {3}.", row.RowNum, cell.ColumnIndex, entityType.ToString(), columnNames[i]));
 			}
 		}
 		return entity;

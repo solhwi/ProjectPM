@@ -1,6 +1,8 @@
 using Mono.CecilX;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -34,38 +36,56 @@ namespace StateMachine
 	public class CharacterAnimatorState : AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>
     {
         [SerializeField] protected CharacterStatTable characterStatTable = null;
-        [SerializeField] protected TransitionTable transitionTable = null;
+        [SerializeField] protected CharacterTransitionTable transitionTable = null;
         [SerializeField] protected ConditionTable conditionTable = null;
 
 #if UNITY_EDITOR
 		protected virtual void Reset()
         {
             characterStatTable = AssetDatabase.LoadAssetAtPath<CharacterStatTable>("Assets/Bundle/Datas/Parser/CharacterStatTable.asset");
-			transitionTable = AssetDatabase.LoadAssetAtPath<TransitionTable>("Assets/Bundle/Datas/Parser/TransitionTable.asset");
+			transitionTable = AssetDatabase.LoadAssetAtPath<CharacterTransitionTable>("Assets/Bundle/Datas/Parser/CharacterTransitionTable.asset");
 			conditionTable = AssetDatabase.LoadAssetAtPath<ConditionTable>("Assets/Bundle/Datas/Parser/ConditionTable.asset");
 		}
 #endif
 
         protected override bool TryChangeState(AnimationStateInfo<FrameSyncStateParam> stateInfo, CharacterState prevState, out CharacterState currentState)
         {
-			foreach (var transition in transitionTable.characterTransitionList)
+			currentState = prevState;
+
+			foreach (var transition in transitionTable.transitionList)
 			{
 				if (transition.prevState == prevState)
 				{
 					var condition = conditionTable.GetCondition(transition.conditionType);
-					if (condition == null)
-						continue;
-
-					if (condition.IsSatisfied(stateInfo) == false)
-						continue;
-
-					currentState = transition.nextState;
-					return true;
+					if (condition.IsSatisfied(stateInfo))
+					{
+						currentState = transition.nextState;
+						return true;
+					}
 				}
 			}
 
-			currentState = prevState;
-			return false;
+			if (transitionTable.loopTransitionDictionary.TryGetValue(prevState, out var loopTransition))
+			{
+				var condition = conditionTable.GetCondition(loopTransition.conditionType);
+				if (condition.IsSatisfied(stateInfo))
+				{
+					currentState = prevState;
+					return false;
+				}
+			}
+
+			if (transitionTable.defaultTransitionList.Any())
+			{
+				var defaultTransition = transitionTable.defaultTransitionList.FirstOrDefault();
+				var condition = conditionTable.GetCondition(defaultTransition.key);
+				if (condition.IsSatisfied(stateInfo))
+				{
+					currentState = defaultTransition.nextState;
+				}			
+			}
+
+			return currentState != prevState;
 		}
     }
 

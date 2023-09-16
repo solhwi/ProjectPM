@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fb8c74bbba50f04081ae5ce6a29750d, type: 3}
-  m_Name: TransitionTable
+  m_Script: {fileID: 11500000, guid: 4930ee608cfe8e5449a1749d6ce3134e, type: 3}
+  m_Name: CharacterTransitionTable
   m_EditorClassIdentifier: 
-  characterTransitionList:
+  transitionList:
   - key: 0
     prevState: 9
     nextState: 10
@@ -22,35 +22,27 @@ MonoBehaviour:
     nextState: 11
     conditionType: '[Combo]'
   - key: 2
-    prevState: 9
-    nextState: 0
-    conditionType: '[AnimationAllWait]'
-  - key: 3
-    prevState: 10
-    nextState: 0
-    conditionType: '[AnimationAllWait]'
-  - key: 4
-    prevState: 11
-    nextState: 0
-    conditionType: '[AnimationAllWait]'
-  - key: 5
     prevState: 0
     nextState: 1
-    conditionType: '[MoveAny]'
-  - key: 6
+    conditionType: '[Move]'
+  - key: 3
     prevState: 0
     nextState: 2
     conditionType: '[JumpUp]'
-  - key: 7
+  - key: 4
     prevState: 2
     nextState: 3
     conditionType: '[JumpDown]'
-  - key: 8
+  - key: 5
     prevState: 1
     nextState: 2
     conditionType: '[JumpUp]'
-  characterTransitionDictionary:
-    m_keys: 000000000100000002000000030000000400000005000000060000000700000008000000
+  - key: 6
+    prevState: 0
+    nextState: 9
+    conditionType: '[Attack]'
+  transitionDictionary:
+    m_keys: 00000000010000000200000003000000040000000500000006000000
     m_values:
     - key: 0
       prevState: 9
@@ -61,30 +53,47 @@ MonoBehaviour:
       nextState: 11
       conditionType: '[Combo]'
     - key: 2
-      prevState: 9
-      nextState: 0
-      conditionType: '[AnimationAllWait]'
-    - key: 3
-      prevState: 10
-      nextState: 0
-      conditionType: '[AnimationAllWait]'
-    - key: 4
-      prevState: 11
-      nextState: 0
-      conditionType: '[AnimationAllWait]'
-    - key: 5
       prevState: 0
       nextState: 1
-      conditionType: '[MoveAny]'
-    - key: 6
+      conditionType: '[Move]'
+    - key: 3
       prevState: 0
       nextState: 2
       conditionType: '[JumpUp]'
-    - key: 7
+    - key: 4
       prevState: 2
       nextState: 3
       conditionType: '[JumpDown]'
-    - key: 8
+    - key: 5
       prevState: 1
       nextState: 2
       conditionType: '[JumpUp]'
+    - key: 6
+      prevState: 0
+      nextState: 9
+      conditionType: '[Attack]'
+  defaultTransitionList:
+  - key: '[AnimationWait]'
+    nextState: 0
+  defaultTransitionDictionary:
+    m_keys:
+    - '[AnimationWait]'
+    m_values:
+    - key: '[AnimationWait]'
+      nextState: 0
+  loopTransitionList:
+  - key: 1
+    conditionType: '[Move]'
+  - key: 2
+    conditionType: '[JumpUp]'
+  - key: 3
+    conditionType: '[JumpDown]'
+  loopTransitionDictionary:
+    m_keys: 010000000200000003000000
+    m_values:
+    - key: 1
+      conditionType: '[Move]'
+    - key: 2
+      conditionType: '[JumpUp]'
+    - key: 3
+      conditionType: '[JumpDown]'
