@@ -30,7 +30,7 @@ public class BossSceneModule : SceneModule
 		
         yield return ObjectManager.Instance.LoadAsyncBoss(); // 스테이지에 맞는 보스 생성
 
-        yield return ObjectManager.Instance.LoadAsyncPlayer(ENUM_CHARACTER_TYPE.Normal); // 현재 캐릭터 생성
+        yield return ObjectManager.Instance.LoadAsyncPlayer(ENUM_CHARACTER_TYPE.RedMan); // 현재 캐릭터 생성
 
 		yield return TimelineManager.Instance.LoadAsyncTimeline(); // 시네마틱 생성
 	}

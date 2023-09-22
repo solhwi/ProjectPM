@@ -23,37 +23,32 @@ public class PhysicsManager : SingletonComponent<PhysicsManager>
 
     protected override void OnAwakeInstance()
     {
-        SceneManager.Instance.onSceneChanged += PopulateCollider;
-        PopulateCollider(SceneType.Title);
+        SceneManager.Instance.onSceneChanged += OnChangedScene;
+        OnChangedScene(SceneType.Title);
     }
 
     protected override void OnReleaseInstance()
     {
-        SceneManager.Instance.onSceneChanged -= PopulateCollider;
+        SceneManager.Instance.onSceneChanged -= OnChangedScene;
     }
 
-    private void PopulateCollider(SceneType type)
+    private void OnChangedScene(SceneType type)
     {
-        PopulateColliderDictionary(ref attackableCache);
-    }
+        attackableCache.Clear();
+        inputDataQueue.Clear();
+	}
 
-    private void PopulateColliderDictionary<TComponent>(ref Dictionary<Collider2D, TComponent> dict)
-        where TComponent : Component
+    public void RegisterCollider(Collider2D collider, AttackableComponent attackable)
     {
-        dict.Clear();
+        if(attackableCache.ContainsKey(collider) == false)
+		    attackableCache.Add(collider, attackable);
+	}
 
-        TComponent[] components = FindObjectsOfType<TComponent>();
-
-        for (int i = 0; i < components.Length; i++)
-        {
-            Collider2D[] componentColliders = components[i].GetComponents<Collider2D>();
-
-            for (int j = 0; j < componentColliders.Length; j++)
-            {
-                dict.Add(componentColliders[j], components[i]);
-            }
-        }
-    }
+	public void UnRegisterCollider(Collider2D collider)
+	{
+		if (attackableCache.ContainsKey(collider))
+			attackableCache.Remove(collider);
+	}
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{

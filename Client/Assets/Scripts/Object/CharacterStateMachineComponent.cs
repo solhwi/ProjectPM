@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterComponent))]
 [RequireComponent(typeof(Animator))]
-public class CharacterAnimatorComponent : MonoBehaviour
+public class CharacterStateMachineComponent : MonoBehaviour
 {
 	private Animator animator;
 

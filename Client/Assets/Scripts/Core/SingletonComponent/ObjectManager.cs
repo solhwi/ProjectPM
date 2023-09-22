@@ -29,8 +29,8 @@ public class ObjectManager : SingletonComponent<ObjectManager>
     {
         switch(characterType)
         {
-            case ENUM_CHARACTER_TYPE.Normal:
-                yield return LoadAsyncPlayer<NormalCharacterComponent>();
+            case ENUM_CHARACTER_TYPE.RedMan:
+                yield return LoadAsyncPlayer<RedManComponent>();
                 break;
         }
     }
@@ -120,12 +120,14 @@ public class ObjectManager : SingletonComponent<ObjectManager>
     public int RegisterObject(int Guid, ObjectComponent objectComponent)
     {
         objectDictionary[Guid] = objectComponent;
-        return objectDictionary.Count; // 현재 자신이 몇 번째 등록인 지 알려준다.
+        return Guid;
 	}
 
-    public void UnRegisterObject(int Guid)
+    public int UnRegisterObject(int Guid)
     {
         if(objectDictionary.ContainsKey(Guid))
             objectDictionary.Remove(Guid);
+
+        return -1;
     }
 }

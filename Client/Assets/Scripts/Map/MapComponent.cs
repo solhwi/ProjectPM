@@ -33,7 +33,7 @@ public abstract class MapComponent : MonoBehaviour
             }
         }
 
-        gameObject.layer = (int)ENUM_OBJECT_TYPE.Map;
+        gameObject.layer = (int)ENUM_LAYER_TYPE.Map;
     }
 
     protected abstract IEnumerator Start();
@@ -42,7 +42,7 @@ public abstract class MapComponent : MonoBehaviour
     {
         foreach(var renderer in spriteRenderers)
         {
-            renderer.sortingOrder = LayerHelper.GetSortingLayer(ENUM_OBJECT_TYPE.Map, order++);
+            renderer.sortingOrder = LayerHelper.GetSortingLayer(ENUM_LAYER_TYPE.Map, order++);
         }
 
         return order;

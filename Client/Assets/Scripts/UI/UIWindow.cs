@@ -40,6 +40,6 @@ public class UIWindow : MonoBehaviour
 
 	public void SetOrder(int orderIndex)
 	{
-		canvas.sortingOrder = LayerHelper.GetSortingLayer(ENUM_OBJECT_TYPE.UI, orderIndex);
+		canvas.sortingOrder = LayerHelper.GetSortingLayer(ENUM_LAYER_TYPE.UI, orderIndex);
 	}
 }

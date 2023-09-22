@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace StateMachine
 {
+	// 모든 캐릭터 형태를 대응할 수 있도록 키 값을 받아서 배분하여 갖고 있어야 한다.
 	public class CharacterAnimatorStateMachine : AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>
 	{
         private static AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>[] animatorStates = null;

@@ -9,7 +9,9 @@ using static CharacterStatTable;
 
 public enum ENUM_CHARACTER_TYPE
 {
-    Normal = 0,
+    RedMan = 0,
+	BlueMan = 1,
+	GreenMan = 2,
 }
 
 [Serializable]
@@ -24,6 +26,7 @@ public enum CharacterState
 	Landing, // 착지
 	Recovery, // 기상
 	Hit, // 데미지 입음
+	Die, // 사망
 
 	Attack, // 공격
 	Attack2,
@@ -60,7 +63,7 @@ public struct FrameSyncStateParam
 }
 
 [RequireComponent(typeof(PhysicsComponent))]
-[RequireComponent(typeof(CharacterAnimatorComponent))]
+[RequireComponent(typeof(CharacterStateMachineComponent))]
 public abstract class CharacterComponent : ObjectComponent
 {
 	public abstract ENUM_CHARACTER_TYPE CharacterType
@@ -68,8 +71,12 @@ public abstract class CharacterComponent : ObjectComponent
 		get;
 	}
 
+	// 아래 정보들은 ScriptableObject로 빼자.
+
+	public bool IsBoss { get; private set; } = false;
+
 	private PhysicsComponent physicsComponent = null;
-	private CharacterAnimatorComponent animatorComponent = null;
+	private CharacterStateMachineComponent stateMachineComponent = null;
 
 	private FrameSyncStateParam stateParam = new();
 
@@ -77,10 +84,12 @@ public abstract class CharacterComponent : ObjectComponent
 	{
 		base.Initialize(teamType, isBoss);
 
+		IsBoss = isBoss;
+
 		physicsComponent = GetComponent<PhysicsComponent>();
 
-		animatorComponent = GetComponent<CharacterAnimatorComponent>();
-		animatorComponent.Initialize(this);
+		stateMachineComponent = GetComponent<CharacterStateMachineComponent>();
+		stateMachineComponent.Initialize(this);
 	}
 
 	public void OnPlayerInput(FrameSyncInputData frameData)
@@ -103,7 +112,7 @@ public abstract class CharacterComponent : ObjectComponent
         stateParam.Velocity = physicsComponent.Velocity;
 		stateParam.IsGrounded = physicsComponent.IsGrounded;
 
-		animatorComponent.TryChangeState(stateParam);
+		stateMachineComponent.TryChangeState(stateParam);
 	}
 
 	public void OnPostMove(Vector2 moveVec)
@@ -113,6 +122,7 @@ public abstract class CharacterComponent : ObjectComponent
 
 	public override void OnUpdateAnimation()
 	{
-
+		// 반영된 물리 정보, 애니메이션의  정보로 
+		// ScriptableObject 데이터를 반영한다.
 	}
 }
