@@ -8,6 +8,7 @@ namespace MBT
     [RequireComponent(typeof(MonoBehaviourTree))]
     public class MBTExecutor : MonoBehaviour
     {
+        public bool isEnable = true;
         public MonoBehaviourTree monoBehaviourTree;
 
         void Reset()
@@ -18,9 +19,11 @@ namespace MBT
 
         private void Update()
         {
-            monoBehaviourTree.Tick();
+            if(isEnable)
+            {
+                monoBehaviourTree.Tick();
+            }
         }
-
 
         void OnValidate()
         {

@@ -43,6 +43,13 @@ public class UIAttribute : ResourceAttribute
 	}
 }
 
+public class AIAttribute : ResourceAttribute
+{
+    public AIAttribute(string path) : base("Prefabs/AI/" + path, ResourceType.Prefab)
+    {
+    }
+}
+
 public class ResourceAttribute : Attribute
 {
 	public readonly string resourcePath = string.Empty;

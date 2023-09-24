@@ -3,30 +3,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AIType
+public enum ENUM_AI_TYPE
 {
 	Dummy = 0,
 }
 
+[RequireComponent(typeof(MBTExecutor))]
 [RequireComponent(typeof(CharacterComponent))]
 [RequireComponent(typeof(Blackboard))]
 [RequireComponent(typeof(MonoBehaviourTree))]
-public class AIControllerComponent : MonoBehaviour
+public abstract class AIControllerComponent : MonoBehaviour
 {
-	public bool isEnable = true;
-
-	private MonoBehaviourTree tree;
-
-	public void Initialize()
+	public abstract ENUM_AI_TYPE AIType
 	{
-		tree = GetComponent<MonoBehaviourTree>();
+		get;
 	}
 
-	private void Update()
+    private MBTExecutor executor = null;
+
+    private void Reset()
+    {
+		Initialize();
+    }
+
+    public virtual void Initialize()
 	{
-		if (isEnable)
-		{
-			tree.Tick();
-		}
+		executor = gameObject.GetOrAddComponent<MBTExecutor>();
+	}
+
+	public void Activate()
+	{
+		executor.isEnable = true;
+    }
+
+	public void DeActivate()
+	{
+		executor.isEnable = false;
 	}
 }
