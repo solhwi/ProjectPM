@@ -4,11 +4,9 @@ using UnityEngine;
 using System;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class ScriptParserManager : SingletonComponent<ScriptParserManager>
+public class ScriptParserManager : Singleton<ScriptParserManager>
 {
-	[System.Serializable]
-	public class ScriptParserDictionary : SerializableDictionary<Type, ScriptParser> { }
-	private ScriptParserDictionary dictionary = new ScriptParserDictionary();
+	private Dictionary<Type, ScriptParser> dictionary = new Dictionary<Type, ScriptParser>();
 
 	public T GetTable<T> () where T : ScriptParser
 	{

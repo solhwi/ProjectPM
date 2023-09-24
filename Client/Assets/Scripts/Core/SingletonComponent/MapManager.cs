@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class MapManager : SingletonComponent<MapManager>
+public class MapManager : Singleton<MapManager>
 {
     private Dictionary<Type, MapComponent> mapDictionary = new Dictionary<Type, MapComponent>();
     private MapComponent currentMapComponent = null;
@@ -33,7 +33,7 @@ public class MapManager : SingletonComponent<MapManager>
         if (prefab == null)
             yield break;
 
-        var obj = Instantiate(prefab);
+        var obj = UnityEngine.Object.Instantiate(prefab);
         if (obj == null)
             yield break;
 
@@ -41,13 +41,10 @@ public class MapManager : SingletonComponent<MapManager>
         if (map == null)
             yield break;
 
+        mono.SetSingletonChild(this, map);
+
         currentMapComponent = map;
         mapDictionary[typeof(T)] = map;
-
-        map.transform.SetParent(transform);
-        map.transform.SetPositionAndRotation(default, default);
-        map.transform.SetAsLastSibling();
-
         lastMapOrder = map.SetOrder(lastMapOrder);
     }
 

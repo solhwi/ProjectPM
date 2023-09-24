@@ -1,23 +1,35 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class SingletonComponent : MonoBehaviour, IUpdater
+public class Singleton : IUpdater
 {
-	public void Initialize()
+	protected MonoBehaviourManager mono = null;
+    protected static bool isReleased = false;
+
+    protected Singleton()
 	{
-		DontDestroyOnLoad(gameObject);
-		OnAwakeInstance();
+        
+    }
+
+    public void Initialize(MonoBehaviourManager mono)
+	{
+        this.mono = mono;
+        mono.RegisterSingleton(this);
+
+        OnAwakeInstance();
 	}
 
 	public void Release()
 	{
-		OnReleaseInstance();
-	}
+        OnReleaseInstance();
+        isReleased = true;
+    }
 
-	protected virtual void OnAwakeInstance()
+    protected virtual void OnAwakeInstance()
 	{
 		
 	}
@@ -44,12 +56,11 @@ public class SingletonComponent : MonoBehaviour, IUpdater
 	}
 }
 
-public class SingletonComponent<T> : SingletonComponent where T : SingletonComponent
+public class Singleton<T> : Singleton where T : Singleton, new()
 {
-	private static bool isReleased = false;
-
 	private static T instance;
-	public static T Instance
+
+    public static T Instance
 	{
 		get
 		{
@@ -61,18 +72,11 @@ public class SingletonComponent<T> : SingletonComponent where T : SingletonCompo
 
 			if (instance == null)
 			{
-				var g = new GameObject(typeof(T).Name);
-                instance = g.AddComponent<T>();
-                instance.Initialize();
+                instance = new T();
+                instance.Initialize(MonoBehaviourManager.Instance);
 			}
 
 			return instance;
 		}
-	}
-
-	private void OnApplicationQuit()
-	{
-		isReleased = true;
-		Release();
 	}
 }

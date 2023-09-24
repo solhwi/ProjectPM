@@ -99,7 +99,7 @@ public interface IInputReceiver
 	void OnInput(FrameSyncInputData resultInput);
 }
 
-public class InputManager : SingletonComponent<InputManager>
+public class InputManager : Singleton<InputManager>
 {
 	public static float MoveThreshold { get; private set; } = 1;
 	public static JoystickType JoystickType { get; private set; } = JoystickType.Fixed;
@@ -122,7 +122,7 @@ public class InputManager : SingletonComponent<InputManager>
 
 	private void SetJoystick(SceneType type = SceneType.Title)
 	{
-		var joyStick = FindObjectOfType<VariableJoystick>();
+		var joyStick = UnityEngine.Object.FindObjectOfType<VariableJoystick>();
 		if (joyStick != null)
 		{
 			joyStick.SetMode(JoystickType);

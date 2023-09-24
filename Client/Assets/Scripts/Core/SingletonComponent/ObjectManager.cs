@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class ObjectManager : SingletonComponent<ObjectManager>
+public class ObjectManager : Singleton<ObjectManager>
 {
     public ObjectComponent PlayerObject
     {
@@ -47,7 +47,7 @@ public class ObjectManager : SingletonComponent<ObjectManager>
         if (prefab == null)
             yield break;
 
-        var obj = Instantiate(prefab);
+        var obj = UnityEngine.Object.Instantiate(prefab);
         if (obj == null)
             yield break;
 
@@ -55,15 +55,8 @@ public class ObjectManager : SingletonComponent<ObjectManager>
         if (character == null)
             yield break;
 
-        character.Initialize(ENUM_TEAM_TYPE.Friendly, false);
-
-        character.transform.SetParent(transform);
-        character.transform.SetPositionAndRotation(default, default);
-        character.transform.SetAsLastSibling();
-
-        character.AddComponent<PlayerInput>();
-
-        playerObjectGuid = character.Guid;
+        playerObjectGuid = character.Initialize(ENUM_TEAM_TYPE.Friendly, false);
+        mono.SetSingletonChild(this, character);
     }
 
     public IEnumerator LoadAsyncMonsters()

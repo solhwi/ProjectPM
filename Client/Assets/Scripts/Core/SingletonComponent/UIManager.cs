@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class UIManager : SingletonComponent<UIManager> 
+public class UIManager : Singleton<UIManager> 
 {
 	private EventSystem eventSystem;
 	private Dictionary<Type, UIPopup> popupDictionary = new Dictionary<Type, UIPopup>();
@@ -28,7 +28,7 @@ public class UIManager : SingletonComponent<UIManager>
 
 	private void FindMainWindow(SceneType type)
 	{
-		currentMainWindow = FindObjectOfType<UIMainWindow>();
+		currentMainWindow = UnityEngine.Object.FindObjectOfType<UIMainWindow>();
 		if(currentMainWindow != null)
 		{
 			currentMainWindow.SetOrder(0);
@@ -38,7 +38,7 @@ public class UIManager : SingletonComponent<UIManager>
 			Debug.LogError($"{type} 씬에 Main Window가 존재하지 않습니다.");
 		}
 
-		eventSystem = FindObjectOfType<EventSystem>();
+		eventSystem = UnityEngine.Object.FindObjectOfType<EventSystem>();
 		if (eventSystem == null)
 		{
 			Debug.LogError($"{type} 씬에 Event System이 존재하지 않습니다.");
@@ -62,11 +62,11 @@ public class UIManager : SingletonComponent<UIManager>
 		var popupPrefab = ResourceManager.Instance.Load<T>();
 		if (popupPrefab == null)
 		{
-			StartCoroutine(LoadUIRoutine<T>(param));
+			mono.StartCoroutine(LoadUIRoutine<T>(param));
 		}
 		else
 		{
-			var popupObj = Instantiate(popupPrefab);
+			var popupObj = UnityEngine.Object.Instantiate(popupPrefab);
 			OpenPopup<T>(popupObj, param);
 		}
 	}
@@ -83,7 +83,7 @@ public class UIManager : SingletonComponent<UIManager>
 		if (popupPrefab == null)
 			yield break;
 
-		var popupObj = Instantiate(popupPrefab);
+		var popupObj = UnityEngine.Object.Instantiate(popupPrefab);
 		if (popupObj == null)
 			yield break;
 
@@ -98,11 +98,9 @@ public class UIManager : SingletonComponent<UIManager>
 	{
 		if (popup.TryOpen(param))
 		{
-			popup.transform.SetParent(transform);
-			popup.transform.SetPositionAndRotation(default, default);
-			popup.transform.SetAsLastSibling();
+            mono.SetSingletonChild(this, popup);
 
-			popup.SetOrder(popupStack.Count + 1);
+            popup.SetOrder(popupStack.Count + 1);
 			popupStack.Push(popup);
 		}
 

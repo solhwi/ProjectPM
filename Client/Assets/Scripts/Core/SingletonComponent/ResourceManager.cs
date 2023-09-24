@@ -7,7 +7,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Object = UnityEngine.Object;
 
-public class ResourceManager : SingletonComponent<ResourceManager>
+public class ResourceManager : Singleton<ResourceManager>
 {
     Dictionary<Type, List<Object>> resourceDictionary = new Dictionary<Type, List<Object>>();
 
@@ -32,7 +32,7 @@ public class ResourceManager : SingletonComponent<ResourceManager>
 
 	public T InstantiateForce<T>(T prefab) where T : Object
 	{
-		return Instantiate<T>(prefab);
+		return UnityEngine.Object.Instantiate<T>(prefab);
 	}
 
 	public AsyncOperationHandle LoadAsync<TParentClass>(Type subclassType) where TParentClass : Object

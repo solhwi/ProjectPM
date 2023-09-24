@@ -34,13 +34,8 @@ public abstract class ObjectComponent : MonoBehaviour
 
     public int Guid { get; private set; } = 0;
 
-    public virtual void Initialize(ENUM_TEAM_TYPE teamType, bool isBoss)
-	{
-		Guid = GetInstanceID();
-		TeamType = teamType;
-
-		int orderIndex = ObjectManager.Instance.RegisterObject(Guid, this);
-
+    public virtual int Initialize(ENUM_TEAM_TYPE teamType, bool isBoss)
+    {
 		if (isBoss)
 		{
 			LayerType = ENUM_LAYER_TYPE.Boss;
@@ -57,7 +52,13 @@ public abstract class ObjectComponent : MonoBehaviour
 		gameObject.layer = (int)LayerType;
 
 		spriteRenderer = GetComponent<SpriteRenderer>();
-		spriteRenderer.sortingOrder = LayerHelper.GetSortingLayer(LayerType, orderIndex);
+
+        TeamType = teamType;
+        Guid = GetInstanceID();
+        int orderIndex = ObjectManager.Instance.RegisterObject(Guid, this);
+        spriteRenderer.sortingOrder = LayerHelper.GetSortingLayer(LayerType, orderIndex);
+
+        return Guid;
     }
 
     public virtual void Clear()

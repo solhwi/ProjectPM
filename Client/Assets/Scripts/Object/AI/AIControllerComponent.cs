@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum AIType
+{
+	Dummy = 0,
+}
+
+[RequireComponent(typeof(CharacterComponent))]
 [RequireComponent(typeof(Blackboard))]
 [RequireComponent(typeof(MonoBehaviourTree))]
 public class AIControllerComponent : MonoBehaviour
@@ -10,12 +16,10 @@ public class AIControllerComponent : MonoBehaviour
 	public bool isEnable = true;
 
 	private MonoBehaviourTree tree;
-	private CharacterComponent characterComponent = null;
 
-	private void Awake()
+	public void Initialize()
 	{
 		tree = GetComponent<MonoBehaviourTree>();
-		characterComponent = GetComponent<CharacterComponent>();
 	}
 
 	private void Update()

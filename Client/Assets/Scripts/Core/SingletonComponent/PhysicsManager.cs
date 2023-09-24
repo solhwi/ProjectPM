@@ -16,7 +16,7 @@ public class FrameColliderData
     }
 }
 
-public class PhysicsManager : SingletonComponent<PhysicsManager>
+public class PhysicsManager : Singleton<PhysicsManager>
 {
     Dictionary<Collider2D, AttackableComponent> attackableCache = new Dictionary<Collider2D, AttackableComponent>();
     Queue<FrameColliderData> inputDataQueue = new Queue<FrameColliderData>();

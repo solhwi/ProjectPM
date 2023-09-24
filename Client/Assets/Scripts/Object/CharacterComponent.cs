@@ -80,19 +80,19 @@ public abstract class CharacterComponent : ObjectComponent
 
 	private FrameSyncStateParam stateParam = new();
 
-	public override void Initialize(ENUM_TEAM_TYPE teamType, bool isBoss)
+	public override int Initialize(ENUM_TEAM_TYPE teamType, bool isBoss)
 	{
-		base.Initialize(teamType, isBoss);
-
 		IsBoss = isBoss;
 
 		physicsComponent = GetComponent<PhysicsComponent>();
 
 		stateMachineComponent = GetComponent<CharacterStateMachineComponent>();
 		stateMachineComponent.Initialize(this);
-	}
 
-	public void OnPlayerInput(FrameSyncInputData frameData)
+		return base.Initialize(teamType, isBoss);
+    }
+
+    public void OnPlayerInput(FrameSyncInputData frameData)
 	{
 		stateParam.Clear();
 		stateParam.userInput = frameData;

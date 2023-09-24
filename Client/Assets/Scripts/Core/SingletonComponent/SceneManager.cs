@@ -20,7 +20,7 @@ public class SceneModuleParam
 
 }
 
-public class SceneManager : SingletonComponent<SceneManager>
+public class SceneManager : Singleton<SceneManager>
 {
     public event Action<SceneType> onSceneChanged = null;
 
@@ -34,7 +34,7 @@ public class SceneManager : SingletonComponent<SceneManager>
 
 	protected override void OnAwakeInstance()
 	{
-		currentSceneModule = FindObjectOfType<SceneModule>();
+		currentSceneModule = UnityEngine.Object.FindObjectOfType<SceneModule>();
 		if(currentSceneModule != null)
 			currentSceneModule.OnEnter(null);
 
@@ -46,7 +46,7 @@ public class SceneManager : SingletonComponent<SceneManager>
         UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
 
 		if(sceneLoadCoroutine != null)
-			StopCoroutine(sceneLoadCoroutine);
+            mono.StopCoroutine(sceneLoadCoroutine);
     }
 
 	private void Update()
@@ -67,7 +67,7 @@ public class SceneManager : SingletonComponent<SceneManager>
 	public void LoadScene(SceneType sceneType, SceneModuleParam param = null)
 	{
 		currentParam = param;
-        sceneLoadCoroutine = StartCoroutine(OnLoadSceneCoroutine(sceneType, null));
+        sceneLoadCoroutine = mono.StartCoroutine(OnLoadSceneCoroutine(sceneType, null));
 	}
 
 	private void OnSceneLoaded(Scene scene, LoadSceneMode sceneMoad)
@@ -75,7 +75,7 @@ public class SceneManager : SingletonComponent<SceneManager>
 		if(Enum.TryParse(scene.name, out currentSceneType))
 		{
             onSceneChanged?.Invoke(currentSceneType);
-            sceneLoadCoroutine = StartCoroutine(OnCompletedSceneCoroutine());
+            sceneLoadCoroutine = mono.StartCoroutine(OnCompletedSceneCoroutine());
 		}
     }
 
@@ -101,7 +101,7 @@ public class SceneManager : SingletonComponent<SceneManager>
 
 	private IEnumerator OnCompletedSceneCoroutine()
     {
-        currentSceneModule = FindObjectOfType<SceneModule>();
+        currentSceneModule = UnityEngine.Object.FindObjectOfType<SceneModule>();
 		if (currentSceneModule == null)
 			yield break;
 
