@@ -9,9 +9,11 @@ public partial class ConditionTable : ScriptParser
 {
 	private Dictionary<string, IStateCondition> conditionDictionary = new Dictionary<string, IStateCondition>();
 	private const char ParameterSeparator = ':';
-	private const char ConditionSeparator = '/';
+	private const char ConditionAndSeparator = '*';
+    private const char ConditionOrSeparator = '+';
 
-	public IStateCondition GetCondition(string rawConditionType)
+
+    public IStateCondition GetCondition(string rawConditionType)
 	{
 		if (conditionDictionary.TryGetValue(rawConditionType, out var condition))
 		{
@@ -44,7 +46,7 @@ public partial class ConditionTable : ScriptParser
 
 	public IEnumerable<IStateCondition> ParseStateConditions(string compositeRawCondition)
 	{
-		foreach (var rawCondition in compositeRawCondition.Split(ConditionSeparator))
+		foreach (var rawCondition in compositeRawCondition.Split(ConditionAndSeparator))
 		{
 			var stateCondition = GetCondition(rawCondition);
 			if (stateCondition == null)
@@ -66,28 +68,35 @@ public partial class ConditionTable : ScriptParser
 
 		switch (inputRawConditionType)
 		{
-			case "[AnimationWait]":
+			case "[AnimationWaitTime]":
 				return new AnimationWaitCondition();
 
-			case "[Attack]":
+			case "[PressAttack]":
 				return new AttackCondition();
 
-			case "[JumpUp]":
-				return new JumpUpCondition();
+			case "[GoUp]":
+				return new GoUpCondition();
 
-			case "[JumpDown]":
-				return new JumpDownCondition();
+			case "[FallDown]":
+				return new FallDownCondition();
 
-			case "[Guard]":
-				return new GuardCondition();
+			case "[PressGuard]":
+				return new PressGuardCondition();
 
-			case "[Move]":
+			case "[PressMove]":
 				return new MoveCondition();
 
-			case "[Dash]":
+			case "[PressDash]":
 				return new DashCondition();
 
+			case "[Grounded]":
+				return new GroundedCondition();
+
+			case "[PressJump]":
+				return new PressJumpCondition();
+
 			case "[Combo]":
+			case "[JumpUp]":
 				return new CompositeStateCondition(this);
 
 			default:

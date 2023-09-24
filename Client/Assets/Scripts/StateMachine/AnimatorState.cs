@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Animations;
 
@@ -41,29 +42,30 @@ namespace StateMachine
 		private TMonoBehaviour owner;
 		private TParam stateParam;
 
-		private static TState prevState;
-		private static TState currentState;
+        private TState prevState;
+		private TState currentState;
 
 		private bool m_FirstFrameHappened;
 		private bool m_LastFrameHappened;
 
 		private int frameDeltaCount = 0;
 
-		public void InternalInitialize(Animator animator, TMonoBehaviour owner)
-		{
+		public void InternalInitialize(TMonoBehaviour owner)
+        {
 			this.owner = owner;
-
-			var states = animator.GetBehaviours<AnimatorState<TMonoBehaviour, TParam, TState>>();
-			foreach (var state in states)
-			{
-				state.OnInitialize(owner);
-			}
-		}
+            OnInitialize(owner);
+        }
 
 		public void TryInternalChangeState(TParam stateParam)
 		{
 			this.stateParam = stateParam;
 		}
+
+        public void InternalChangeState(TState state)
+        {
+            prevState = state;
+            currentState = state;
+        }
 
 		private AnimationStateInfo<TParam> MakeAnimationStateInfo(Animator animator, AnimatorStateInfo stateInfo)
         {
@@ -131,7 +133,6 @@ namespace StateMachine
             {
                 Debug.LogWarning($"스테이트 변경 : {prevState} -> {currentState}");
                 animator.Play(currentState.ToString());
-                prevState = currentState;
             }
         }
 

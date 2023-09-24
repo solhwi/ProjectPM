@@ -15,17 +15,17 @@ public class CompositeStateCondition : IStateCondition
 		conditionTable = table;
 	}
 
+	// 여기서 & 혹은 | 로 만족 체크를 하도록 해야 한다.
 	public bool IsSatisfied(IStateInfo stateInfo)
 	{
+		bool isSatisfied = true;
+
 		foreach (var condition in conditions)
 		{
-			if (condition.IsSatisfied(stateInfo) == false)
-			{
-				return false;
-			}
+			isSatisfied |= condition.IsSatisfied(stateInfo);
 		}
 
-		return true;
+		return isSatisfied;
 	}
 
 	public bool Parse(params string[] compositeRawCondition)

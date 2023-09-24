@@ -1,7 +1,3 @@
-using StateMachine;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -11,25 +7,40 @@ public interface IStateCondition
 	public bool IsSatisfied(IStateInfo stateInfo);
 }
 
-public class AnimationWaitCondition : IStateCondition
+public abstract class FloatParameterStateCondition : IStateCondition
 {
-	private float waitNormalizeTime = 0.0f;
+    protected float value = 0.0f;
 
-	public bool IsSatisfied(IStateInfo stateInfo)
+    public abstract bool IsSatisfied(IStateInfo stateInfo);
+
+    public bool Parse(params string[] rawParameters)
+    {
+        if (float.TryParse(rawParameters[0], out value))
+        {
+            return true;
+        }
+
+        return false;
+    }
+}
+
+public abstract class NoParameterStateCondition : IStateCondition
+{
+	public abstract bool IsSatisfied(IStateInfo stateInfo);
+
+    public bool Parse(params string[] rawParameters)
+    {
+		return true;
+    }
+}
+
+public class AnimationWaitCondition : FloatParameterStateCondition
+{
+	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
 		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
-			return animStateInfo.normalizedTime >= waitNormalizeTime;
-		}
-
-		return false;
-	}
-
-	public bool Parse(params string[] rawParameters)
-	{
-		if (float.TryParse(rawParameters[0], out waitNormalizeTime))
-		{
-			return true;
+			return animStateInfo.normalizedTime >= value;
 		}
 
 		return false;
@@ -51,9 +62,9 @@ public class DashCondition : MoveCondition
 	}
 }
 
-public class GuardCondition : IStateCondition
+public class PressGuardCondition : NoParameterStateCondition
 {
-	public bool IsSatisfied(IStateInfo stateInfo)
+	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
 		bool isSatisfied = false;
 
@@ -64,30 +75,39 @@ public class GuardCondition : IStateCondition
 
 		return isSatisfied;
 	}
-
-	public bool Parse(params string[] rawParameters)
-	{
-		return true;
-	}
 }
 
-public class JumpUpCondition : JumpCondition
+public class GoUpCondition : GroundedCondition
 {
 	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
-		bool isSatisfied = base.IsSatisfied(stateInfo);
+        bool isSatisfied = false;
 
-		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+        if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
-			isSatisfied &= animStateInfo.stateParam.Velocity.y > Mathf.Epsilon;
-			isSatisfied |= animStateInfo.stateParam.userInput.moveInput.y > Mathf.Epsilon;
+			isSatisfied = animStateInfo.stateParam.Velocity.y > Mathf.Epsilon;
 		}
 
 		return isSatisfied;
 	}
 }
 
-public class JumpDownCondition : JumpCondition
+public class PressJumpCondition : NoParameterStateCondition
+{
+    public override bool IsSatisfied(IStateInfo stateInfo)
+    {
+		bool isSatisfied = false;
+
+        if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+        {
+            isSatisfied = animStateInfo.stateParam.userInput.moveInput.y > Mathf.Epsilon;
+        }
+
+        return isSatisfied;
+    }
+}
+
+public class FallDownCondition : GroundedCondition
 {
 	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
@@ -102,38 +122,26 @@ public class JumpDownCondition : JumpCondition
 	}
 }
 
-public class MoveCondition : IStateCondition
+public class MoveCondition : FloatParameterStateCondition
 {
-	private float moveVelocity;
-
-	public virtual bool IsSatisfied(IStateInfo stateInfo)
+	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
 		bool isSatisfied = true;
 
 		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
 			float currX = animStateInfo.stateParam.userInput.moveInput.x;
-			isSatisfied &= Mathf.Abs(currX) > Mathf.Abs(moveVelocity);
+			isSatisfied &= Mathf.Abs(currX) > Mathf.Abs(value);
 			isSatisfied &= animStateInfo.stateParam.IsGrounded;
 		}
 
 		return isSatisfied;
 	}
-
-	public bool Parse(params string[] rawParameters)
-	{
-		if (float.TryParse(rawParameters[0], out moveVelocity))
-		{
-			return true;
-		}
-
-		return false;
-	}
 }
 
-public class JumpCondition : IStateCondition
+public class GroundedCondition : NoParameterStateCondition
 {
-	public virtual bool IsSatisfied(IStateInfo stateInfo)
+	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
 		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
@@ -141,11 +149,6 @@ public class JumpCondition : IStateCondition
 		}
 
 		return false;
-	}
-
-	public bool Parse(params string[] rawParameters)
-	{
-		return true;
 	}
 }
 

@@ -8,17 +8,17 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	// 모든 캐릭터 형태를 대응할 수 있도록 키 값을 받아서 배분하여 갖고 있어야 한다.
 	public class CharacterAnimatorStateMachine : AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>
 	{
         private static AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>[] animatorStates = null;
 
+		// Animator에 따른 구분이 필요하다.
 		public static void Initialize(Animator animator, CharacterComponent characterComponent)
 		{
 			animatorStates = animator.GetBehaviours<AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>>();
 			foreach (var state in animatorStates)
 			{
-                state.InternalInitialize(animator, characterComponent);
+                state.InternalInitialize(characterComponent);
 			}
 		}
 
@@ -32,9 +32,21 @@ namespace StateMachine
 				state.TryInternalChangeState(stateParam);
 			}
 		}
-	}
 
-	public class CharacterAnimatorState : AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>
+		public static void ChangeState(CharacterState state)
+		{
+            if (animatorStates == null)
+                return;
+
+            foreach (var animatorState in animatorStates)
+            {
+                animatorState.InternalChangeState(state);
+            }
+        }
+
+    }
+
+    public class CharacterAnimatorState : AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>
     {
         [SerializeField] protected CharacterStatTable characterStatTable = null;
         [SerializeField] protected CharacterTransitionTable transitionTable = null;
@@ -86,7 +98,13 @@ namespace StateMachine
 				}			
 			}
 
-			return currentState != prevState;
+			bool isChanged = currentState != prevState;
+            if (isChanged)
+			{
+                CharacterAnimatorStateMachine.ChangeState(currentState);
+            }
+
+			return isChanged;
 		}
     }
 
