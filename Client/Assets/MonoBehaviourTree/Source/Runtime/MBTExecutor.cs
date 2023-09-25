@@ -17,6 +17,14 @@ namespace MBT
             OnValidate();
         }
 
+        private void Awake()
+        {
+            if (monoBehaviourTree == null)
+            {
+                monoBehaviourTree = gameObject.GetComponent<MonoBehaviourTree>();
+            }
+        }
+
         private void Update()
         {
             if(isEnable)

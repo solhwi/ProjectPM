@@ -1,5 +1,3 @@
-using NPOI.SS.Formula.PTG;
-using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,9 +52,9 @@ public partial class ConditionTable : ScriptParser
 		{
 			string[] andSeparatedConditions = orSeparatedCondition.Split(ConditionAndSeparator);
 
-			for (int j = 0; j < andSeparatedConditions.Length; j++)
+			for (int i = 0; i < andSeparatedConditions.Length; i++)
 			{
-				var rawCondition = andSeparatedConditions[j];
+				var rawCondition = andSeparatedConditions[i];
 
 				var stateCondition = GetCondition(rawCondition);
 				if (stateCondition == null)
@@ -65,7 +63,7 @@ public partial class ConditionTable : ScriptParser
 					stateCondition.Parse(parameters);
 				}
 
-				yield return new KeyValuePair<IStateCondition, bool>(stateCondition, j > 0);
+				yield return new KeyValuePair<IStateCondition, bool>(stateCondition, i > 0);
 			}
 		}
 	}

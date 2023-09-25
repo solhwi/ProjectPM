@@ -5,11 +5,9 @@ using UnityEngine;
 
 public enum ENUM_AI_TYPE
 {
-	Dummy = 0,
+	NormalMonster = 0,
 }
 
-[RequireComponent(typeof(MBTExecutor))]
-[RequireComponent(typeof(CharacterComponent))]
 [RequireComponent(typeof(Blackboard))]
 [RequireComponent(typeof(MonoBehaviourTree))]
 public abstract class AIControllerComponent : MonoBehaviour

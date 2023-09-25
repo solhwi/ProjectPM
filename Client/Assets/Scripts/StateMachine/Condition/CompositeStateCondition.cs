@@ -24,13 +24,13 @@ public class CompositeStateCondition : IStateCondition
 			var conditionPair = conditions[i];
 
 			var condition = conditionPair.Key;
-			bool isAnd = conditionPair.Value;
+			bool isAndCondition = conditionPair.Value;
 
 			if (i == 0) // 첫 컨디션은 &도 아니고 |도 아님
 			{
 				isSatisfied = condition.IsSatisfied(stateInfo);
 			}
-			else if (isAnd)
+			else if (isAndCondition)
 			{
 				isSatisfied &= condition.IsSatisfied(stateInfo);
 			}
