@@ -44,18 +44,26 @@ public partial class ConditionTable : ScriptParser
 		}
 	}
 
-	public IEnumerable<IStateCondition> ParseStateConditions(string compositeRawCondition)
+	public IEnumerable<KeyValuePair<IStateCondition, bool>> ParseStateConditions(string compositeRawCondition)
 	{
-		foreach (var rawCondition in compositeRawCondition.Split(ConditionAndSeparator))
+		foreach(var orSeparatedCondition in compositeRawCondition.Split(ConditionOrSeparator))
 		{
-			var stateCondition = GetCondition(rawCondition);
-			if (stateCondition == null)
-			{
-				stateCondition = MakeStateCondition(rawCondition, out string[] parameters);
-				stateCondition.Parse(parameters);
-			}
+			string[] andSeparatedConditions = orSeparatedCondition.Split(ConditionAndSeparator);
 
-			yield return stateCondition;
+			for (int j = 0; j < andSeparatedConditions.Length; j++)
+			{
+				var rawCondition = andSeparatedConditions[j];
+
+				var stateCondition = GetCondition(rawCondition);
+				if (stateCondition == null)
+				{
+					stateCondition = MakeStateCondition(rawCondition, out string[] parameters);
+					stateCondition.Parse(parameters);
+				}
+
+				bool isAnd = andSeparatedConditions.Length - 1 > j;
+				yield return new KeyValuePair<IStateCondition, bool>(stateCondition, isAnd);
+			}
 		}
 	}
 

@@ -8,21 +8,36 @@ using UnityEngine;
 public class CompositeStateCondition : IStateCondition
 {
 	private ConditionTable conditionTable;
-	private List<IStateCondition> conditions = new List<IStateCondition>();
+	private List<KeyValuePair<IStateCondition, bool>> conditions = new List<KeyValuePair<IStateCondition, bool>>();
 
 	public CompositeStateCondition(ConditionTable table) 
 	{
 		conditionTable = table;
 	}
 
-	// 여기서 & 혹은 | 로 만족 체크를 하도록 해야 한다.
 	public bool IsSatisfied(IStateInfo stateInfo)
 	{
-		bool isSatisfied = true;
+		bool isSatisfied = false;
 
-		foreach (var condition in conditions)
+		for(int i = 0; i < conditions.Count; i++)
 		{
-			isSatisfied |= condition.IsSatisfied(stateInfo);
+			var conditionPair = conditions[i];
+
+			var condition = conditionPair.Key;
+			bool isAnd = conditionPair.Value;
+
+			if (i == 0) // 첫 컨디션은 &도 아니고 |도 아님
+			{
+				isSatisfied = condition.IsSatisfied(stateInfo);
+			}
+			else if (isAnd)
+			{
+				isSatisfied &= condition.IsSatisfied(stateInfo);
+			}
+			else
+			{
+				isSatisfied |= condition.IsSatisfied(stateInfo);
+			}
 		}
 
 		return isSatisfied;

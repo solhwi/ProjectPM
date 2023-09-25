@@ -14,17 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transitionList:
   - key: 0
-    prevState: 9
-    nextState: 10
-    conditionType: '[Combo]'
-  - key: 1
     prevState: 10
     nextState: 11
+    conditionType: '[Combo]'
+  - key: 1
+    prevState: 11
+    nextState: 12
     conditionType: '[Combo]'
   - key: 2
     prevState: 0
     nextState: 1
-    conditionType: '[Move]'
+    conditionType: '[PressMove]'
   - key: 3
     prevState: 0
     nextState: 2
@@ -39,23 +39,23 @@ MonoBehaviour:
     conditionType: '[JumpUp]'
   - key: 6
     prevState: 0
-    nextState: 9
-    conditionType: '[Attack]'
+    nextState: 10
+    conditionType: '[PressAttack]'
   transitionDictionary:
     m_keys: 00000000010000000200000003000000040000000500000006000000
     m_values:
     - key: 0
-      prevState: 9
-      nextState: 10
-      conditionType: '[Combo]'
-    - key: 1
       prevState: 10
       nextState: 11
+      conditionType: '[Combo]'
+    - key: 1
+      prevState: 11
+      nextState: 12
       conditionType: '[Combo]'
     - key: 2
       prevState: 0
       nextState: 1
-      conditionType: '[Move]'
+      conditionType: '[PressMove]'
     - key: 3
       prevState: 0
       nextState: 2
@@ -70,8 +70,8 @@ MonoBehaviour:
       conditionType: '[JumpUp]'
     - key: 6
       prevState: 0
-      nextState: 9
-      conditionType: '[Attack]'
+      nextState: 10
+      conditionType: '[PressAttack]'
   defaultTransitionList:
   - key: '[AnimationWait]'
     nextState: 0

@@ -13,46 +13,66 @@ MonoBehaviour:
   m_Name: ConditionTable
   m_EditorClassIdentifier: 
   characterRawconditionList:
-  - key: '[Dash]'
+  - key: '[PressDash]'
     condition: 0
-  - key: '[Guard]'
+  - key: '[PressGuard]'
     condition: 0
-  - key: '[JumpDown]'
+  - key: '[PressJump]'
+    condition: 0
+  - key: '[PressMove]'
+    condition: 0
+  - key: '[PressAttack]'
+    condition: Normal
+  - key: '[AnimationWaitTime]'
+    condition: 1
+  - key: '[FallDown]'
+    condition: 0
+  - key: '[GoUp]'
+    condition: 0
+  - key: '[Grounded]'
     condition: 0
   - key: '[JumpUp]'
-    condition: 0
-  - key: '[Move]'
-    condition: 0.1
-  - key: '[AnimationWait]'
-    condition: 1
-  - key: '[Attack]'
-    condition: Normal
+    condition: '[GoUp]*[Grounded]+[PressJump]'
+  - key: '[JumpDown]'
+    condition: '[FallDown]*[Grounded]'
   - key: '[Combo]'
-    condition: '[AnimationWait]:0.9/[Attack]'
+    condition: '[AnimationWaitTime]:0.9*[PressAttack]'
   characterRawconditionDictionary:
     m_keys:
-    - '[Dash]'
-    - '[Guard]'
-    - '[JumpDown]'
+    - '[PressDash]'
+    - '[PressGuard]'
+    - '[PressJump]'
+    - '[PressMove]'
+    - '[PressAttack]'
+    - '[AnimationWaitTime]'
+    - '[FallDown]'
+    - '[GoUp]'
+    - '[Grounded]'
     - '[JumpUp]'
-    - '[Move]'
-    - '[AnimationWait]'
-    - '[Attack]'
+    - '[JumpDown]'
     - '[Combo]'
     m_values:
-    - key: '[Dash]'
+    - key: '[PressDash]'
       condition: 0
-    - key: '[Guard]'
+    - key: '[PressGuard]'
       condition: 0
-    - key: '[JumpDown]'
+    - key: '[PressJump]'
+      condition: 0
+    - key: '[PressMove]'
+      condition: 0
+    - key: '[PressAttack]'
+      condition: Normal
+    - key: '[AnimationWaitTime]'
+      condition: 1
+    - key: '[FallDown]'
+      condition: 0
+    - key: '[GoUp]'
+      condition: 0
+    - key: '[Grounded]'
       condition: 0
     - key: '[JumpUp]'
-      condition: 0
-    - key: '[Move]'
-      condition: 0.1
-    - key: '[AnimationWait]'
-      condition: 1
-    - key: '[Attack]'
-      condition: Normal
+      condition: '[GoUp]*[Grounded]+[PressJump]'
+    - key: '[JumpDown]'
+      condition: '[FallDown]*[Grounded]'
     - key: '[Combo]'
-      condition: '[AnimationWait]:0.9/[Attack]'
+      condition: '[AnimationWaitTime]:0.9*[PressAttack]'

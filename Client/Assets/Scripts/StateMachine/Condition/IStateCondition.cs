@@ -11,10 +11,11 @@ public abstract class FloatParameterStateCondition : IStateCondition
 {
     protected float value = 0.0f;
 
-    public abstract bool IsSatisfied(IStateInfo stateInfo);
+	public abstract bool IsSatisfied(IStateInfo stateInfo);
 
     public bool Parse(params string[] rawParameters)
     {
+
         if (float.TryParse(rawParameters[0], out value))
         {
             return true;
@@ -171,7 +172,7 @@ public class AttackCondition : IStateCondition
 		if(rawParameters.Any() == false)
 			return false;
 
-		switch(rawParameters[0])
+		switch (rawParameters[0])
 		{
 			case "Normal":
 				key = ENUM_ATTACK_KEY.ATTACK;
