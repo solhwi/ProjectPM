@@ -108,7 +108,7 @@ public abstract class CharacterComponent : ObjectComponent
 		stateParam.defender = this;
     }
 
-	public override void OnPostInput()
+	public override void OnPostUpdate()
 	{
         stateParam.Velocity = physicsComponent.Velocity;
 		stateParam.IsGrounded = physicsComponent.IsGrounded;
@@ -121,7 +121,7 @@ public abstract class CharacterComponent : ObjectComponent
 		physicsComponent.Move(moveVec);
 	}
 
-	public override void OnUpdateAnimation()
+	public override void OnLateUpdate()
 	{
 		// 반영된 물리 정보, 애니메이션의  정보로 
 		// ScriptableObject 데이터를 반영한다.

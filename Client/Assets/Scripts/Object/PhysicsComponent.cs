@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,9 +29,12 @@ public class PhysicsComponent : MonoBehaviour
 	float gravityPower = 9.8f;
 	float jumpDeltaTime = 0.0f;
 
+    public bool isEnabled = true;
     public bool IsGrounded { get; protected set; }
 
+
     private Queue<Vector2> vectorQueue = new Queue<Vector2>();
+    Coroutine endofFrameRoutine = null;
 
     public Vector2 Velocity => m_NextMovement;
 
@@ -50,8 +54,26 @@ public class PhysicsComponent : MonoBehaviour
 		Physics2D.queriesStartInColliders = false;
     }
 
+    private void OnEnable()
+    {
+        isEnabled = true;
+        endofFrameRoutine = StartCoroutine(OnUpdateEndOfFrame());
+    }
+
+    private void OnDisable()
+    {
+        isEnabled = false;
+        if (endofFrameRoutine != null)
+        {
+            StopCoroutine(endofFrameRoutine);
+        }
+    }
+
     void FixedUpdate()
     {
+        if (isEnabled == false)
+            return;
+
         m_PreviousPosition = m_Rigidbody2D.position;
 		m_CurrentPosition = m_PreviousPosition;
 
@@ -97,6 +119,9 @@ public class PhysicsComponent : MonoBehaviour
 
     private void Update()
     {
+        if (isEnabled == false)
+            return;
+        
         if (IsGrounded == false)
         {
             float totalGravity = gravityPower + (gravityPower * jumpDeltaTime);
@@ -109,8 +134,9 @@ public class PhysicsComponent : MonoBehaviour
         }
 	}
 
-	private void LateUpdate()
+	private IEnumerator OnUpdateEndOfFrame()
 	{
+        yield return new WaitForEndOfFrame();
 		m_NextMovement = Vector2.zero;
 	}
 

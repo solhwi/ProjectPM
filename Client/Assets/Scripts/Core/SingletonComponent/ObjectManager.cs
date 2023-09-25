@@ -98,7 +98,7 @@ public class ObjectManager : Singleton<ObjectManager>
     {
         foreach(var obj in objectDictionary.Values)
         {
-            obj.OnPostInput();
+            obj.OnPostUpdate();
         }
 	}
 
@@ -106,7 +106,7 @@ public class ObjectManager : Singleton<ObjectManager>
     {
         foreach (var obj in objectDictionary.Values)
         {
-            obj.OnUpdateAnimation();
+            obj.OnLateUpdate();
         }
     }
 

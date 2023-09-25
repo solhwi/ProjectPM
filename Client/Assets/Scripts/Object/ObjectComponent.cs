@@ -72,12 +72,12 @@ public abstract class ObjectComponent : MonoBehaviour
 		
 	}
 
-    public virtual void OnPostInput()
+    public virtual void OnPostUpdate()
     {
 
     }
 
-    public virtual void OnUpdateAnimation()
+    public virtual void OnLateUpdate()
     {
 
     }
