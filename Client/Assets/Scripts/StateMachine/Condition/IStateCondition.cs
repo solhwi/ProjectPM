@@ -66,15 +66,15 @@ public class AnimationWaitCondition : FloatParameterStateCondition
 	}
 }
 
-public class DashCondition : MoveCondition
+public class DashCondition : NoParameterStateCondition
 {
 	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
-		bool isSatisfied = base.IsSatisfied(stateInfo);
+		bool isSatisfied = false;
 
 		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
-			isSatisfied |= animStateInfo.stateParam.userInput.isDash;
+			isSatisfied = animStateInfo.stateParam.userInput.isDash;
 		}
 
 		return isSatisfied;
@@ -89,14 +89,14 @@ public class PressGuardCondition : NoParameterStateCondition
 
 		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
-			isSatisfied |= animStateInfo.stateParam.userInput.isGuard;
+			isSatisfied = animStateInfo.stateParam.userInput.isGuard;
 		}
 
 		return isSatisfied;
 	}
 }
 
-public class GoUpCondition : GroundedCondition
+public class GoUpCondition : FloatParameterStateCondition
 {
 	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
@@ -126,15 +126,15 @@ public class PressJumpCondition : NoParameterStateCondition
     }
 }
 
-public class FallDownCondition : GroundedCondition
+public class FallDownCondition : FloatParameterStateCondition
 {
 	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
-		bool isSatisfied = base.IsSatisfied(stateInfo);
+		bool isSatisfied = false;
 
 		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
-			isSatisfied |= animStateInfo.stateParam.Velocity.y < -1 * Mathf.Epsilon;
+			isSatisfied = animStateInfo.stateParam.Velocity.y < -1 * Mathf.Epsilon;
 		}
 
 		return isSatisfied;
@@ -145,12 +145,12 @@ public class MoveCondition : FloatParameterStateCondition
 {
 	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
-		bool isSatisfied = true;
+		bool isSatisfied = false;
 
 		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
 			float currX = animStateInfo.stateParam.userInput.moveInput.x;
-			isSatisfied &= Mathf.Abs(currX) > Mathf.Abs(value);
+			isSatisfied = Mathf.Abs(currX) > Mathf.Abs(value);
 		}
 
 		return isSatisfied;

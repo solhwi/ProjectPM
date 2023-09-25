@@ -33,14 +33,14 @@ namespace StateMachine
 			}
 		}
 
-		public static void ChangeState(CharacterState state)
+		public static new void SetPrevState(CharacterState state)
 		{
             if (animatorStates == null)
                 return;
 
             foreach (var animatorState in animatorStates)
             {
-                animatorState.InternalChangeState(state);
+                animatorState.SetPrevState(state);
             }
         }
 
@@ -65,29 +65,6 @@ namespace StateMachine
         {
 			currentState = prevState;
 
-			foreach (var transition in transitionTable.transitionList)
-			{
-				if (transition.prevState == prevState)
-				{
-					var condition = conditionTable.GetCondition(transition.conditionType);
-					if (condition.IsSatisfied(stateInfo))
-					{
-						currentState = transition.nextState;
-						return true;
-					}
-				}
-			}
-
-			if (transitionTable.loopTransitionDictionary.TryGetValue(prevState, out var loopTransition))
-			{
-				var condition = conditionTable.GetCondition(loopTransition.conditionType);
-				if (condition.IsSatisfied(stateInfo))
-				{
-					currentState = prevState;
-					return false;
-				}
-			}
-
 			if (transitionTable.defaultTransitionList.Any())
 			{
 				var defaultTransition = transitionTable.defaultTransitionList.FirstOrDefault();
@@ -98,13 +75,34 @@ namespace StateMachine
 				}			
 			}
 
-			bool isChanged = currentState != prevState;
-            if (isChanged)
-			{
-                CharacterAnimatorStateMachine.ChangeState(currentState);
+            if (transitionTable.loopTransitionDictionary.TryGetValue(prevState, out var loopTransition))
+            {
+                var condition = conditionTable.GetCondition(loopTransition.conditionType);
+                if (condition.IsSatisfied(stateInfo))
+                {
+                    currentState = prevState;
+                }
             }
 
-			return isChanged;
+            foreach (var transition in transitionTable.transitionList)
+            {
+                if (transition.prevState == prevState)
+                {
+                    var condition = conditionTable.GetCondition(transition.conditionType);
+                    if (condition.IsSatisfied(stateInfo))
+                    {
+                        currentState = transition.nextState;
+                    }
+                }
+            }
+
+            if (currentState != prevState)
+            {
+                Debug.LogError($"스테이트 변경 : {prevState} -> {currentState}");
+                CharacterAnimatorStateMachine.SetPrevState(currentState);
+            }
+
+            return currentState != prevState;
 		}
     }
 

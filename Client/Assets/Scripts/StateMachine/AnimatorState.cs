@@ -43,7 +43,6 @@ namespace StateMachine
 		private TParam stateParam;
 
         private TState prevState;
-		private TState currentState;
 
 		private bool m_FirstFrameHappened;
 		private bool m_LastFrameHappened;
@@ -61,10 +60,9 @@ namespace StateMachine
 			this.stateParam = stateParam;
 		}
 
-        public void InternalChangeState(TState state)
+        public void SetPrevState(TState state)
         {
             prevState = state;
-            currentState = state;
         }
 
 		private AnimationStateInfo<TParam> MakeAnimationStateInfo(Animator animator, AnimatorStateInfo stateInfo)
@@ -129,9 +127,8 @@ namespace StateMachine
                 OnSLTransitionFromStateUpdate(owner, animationStateInfo);
             }
 
-            if (TryChangeState(animationStateInfo, prevState, out currentState))
+            if (TryChangeState(animationStateInfo, prevState, out var currentState))
             {
-                Debug.LogWarning($"스테이트 변경 : {prevState} -> {currentState}");
                 animator.Play(currentState.ToString());
             }
         }

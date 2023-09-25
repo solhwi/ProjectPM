@@ -65,8 +65,7 @@ public partial class ConditionTable : ScriptParser
 					stateCondition.Parse(parameters);
 				}
 
-				bool isAnd = j > 0;
-				yield return new KeyValuePair<IStateCondition, bool>(stateCondition, isAnd);
+				yield return new KeyValuePair<IStateCondition, bool>(stateCondition, j > 0);
 			}
 		}
 	}

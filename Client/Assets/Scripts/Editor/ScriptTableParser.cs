@@ -24,11 +24,10 @@ public class ScriptableObjectHelper
 		{
 			asset = ScriptableObject.CreateInstance(assetType.Name);
 			AssetDatabase.CreateAsset(asset, assetPath);
-
-			asset.hideFlags = HideFlags.NotEditable;
 		}
 
-		return asset;
+        asset.hideFlags = HideFlags.DontSaveInEditor;
+        return asset;
 	}
 }
 

@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
-  m_ObjectHideFlags: 8
+  m_ObjectHideFlags: 4
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -364,7 +364,7 @@ MonoBehaviour:
       nextState: 0
   loopTransitionList:
   - key: 1
-    conditionType: '[Move]'
+    conditionType: '[PressMove]'
   - key: 2
     conditionType: '[JumpUp]'
   - key: 3
@@ -373,7 +373,7 @@ MonoBehaviour:
     m_keys: 010000000200000003000000
     m_values:
     - key: 1
-      conditionType: '[Move]'
+      conditionType: '[PressMove]'
     - key: 2
       conditionType: '[JumpUp]'
     - key: 3
