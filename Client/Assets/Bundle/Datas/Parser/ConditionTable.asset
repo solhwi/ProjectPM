@@ -30,13 +30,21 @@ MonoBehaviour:
   - key: '[GoUp]'
     condition: 0
   - key: '[Grounded]'
+    condition: 1
+  - key: '[Damage]'
     condition: 0
   - key: '[JumpUp]'
-    condition: '[GoUp]*[Grounded]+[PressJump]'
+    condition: '[GoUp]*[Grounded]:0+[PressJump]'
   - key: '[JumpDown]'
-    condition: '[FallDown]*[Grounded]'
+    condition: '[FallDown]*[Grounded]:0'
   - key: '[Combo]'
-    condition: '[AnimationWaitTime]:0.9*[PressAttack]'
+    condition: '[AnimationWaitTime]:0.95*[PressAttack]'
+  - key: '[Dash]'
+    condition: '[PressMove]*[Grounded]:1*[PressDash]'
+  - key: '[PressSkill]'
+    condition: '[PressAttack]:Skill'
+  - key: '[PressUltimate]'
+    condition: '[PressAttack]:Ultimate'
   characterRawconditionDictionary:
     m_keys:
     - '[PressDash]'
@@ -48,9 +56,13 @@ MonoBehaviour:
     - '[FallDown]'
     - '[GoUp]'
     - '[Grounded]'
+    - '[Damage]'
     - '[JumpUp]'
     - '[JumpDown]'
     - '[Combo]'
+    - '[Dash]'
+    - '[PressSkill]'
+    - '[PressUltimate]'
     m_values:
     - key: '[PressDash]'
       condition: 0
@@ -69,10 +81,18 @@ MonoBehaviour:
     - key: '[GoUp]'
       condition: 0
     - key: '[Grounded]'
+      condition: 1
+    - key: '[Damage]'
       condition: 0
     - key: '[JumpUp]'
-      condition: '[GoUp]*[Grounded]+[PressJump]'
+      condition: '[GoUp]*[Grounded]:0+[PressJump]'
     - key: '[JumpDown]'
-      condition: '[FallDown]*[Grounded]'
+      condition: '[FallDown]*[Grounded]:0'
     - key: '[Combo]'
-      condition: '[AnimationWaitTime]:0.9*[PressAttack]'
+      condition: '[AnimationWaitTime]:0.95*[PressAttack]'
+    - key: '[Dash]'
+      condition: '[PressMove]*[Grounded]:1*[PressDash]'
+    - key: '[PressSkill]'
+      condition: '[PressAttack]:Skill'
+    - key: '[PressUltimate]'
+      condition: '[PressAttack]:Ultimate'

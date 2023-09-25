@@ -29,7 +29,7 @@ public enum CharacterState
 	AirborneHit, // 공중에서 데미지 입음
 	Die, // 사망
 
-	Attack, // 공격
+	Attack1, // 공격
 	Attack2,
 	Attack3,
 	DashAttack, // 대쉬 공격

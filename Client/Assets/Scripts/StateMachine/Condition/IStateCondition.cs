@@ -15,7 +15,6 @@ public abstract class FloatParameterStateCondition : IStateCondition
 
     public bool Parse(params string[] rawParameters)
     {
-
         if (float.TryParse(rawParameters[0], out value))
         {
             return true;
@@ -34,6 +33,25 @@ public abstract class NoParameterStateCondition : IStateCondition
 		return true;
     }
 }
+
+
+public abstract class IntStateCondition : IStateCondition
+{
+	protected int value;
+
+    public abstract bool IsSatisfied(IStateInfo stateInfo);
+
+    public bool Parse(params string[] rawParameters)
+    {
+        if (int.TryParse(rawParameters[0], out value))
+        {
+            return true;
+        }
+
+        return false;
+    }
+}
+
 
 public class AnimationWaitCondition : FloatParameterStateCondition
 {
@@ -133,20 +151,35 @@ public class MoveCondition : FloatParameterStateCondition
 		{
 			float currX = animStateInfo.stateParam.userInput.moveInput.x;
 			isSatisfied &= Mathf.Abs(currX) > Mathf.Abs(value);
-			isSatisfied &= animStateInfo.stateParam.IsGrounded;
 		}
 
 		return isSatisfied;
 	}
 }
 
-public class GroundedCondition : NoParameterStateCondition
+public class DamageCondition : IntStateCondition
+{
+    public override bool IsSatisfied(IStateInfo stateInfo)
+    {
+        if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+        {
+			if (animStateInfo.stateParam.attackers == null)
+				return false;
+
+			return animStateInfo.stateParam.attackers.Count() > value;
+        }
+
+        return false;
+    }
+}
+
+public class GroundedCondition : IntStateCondition
 {
 	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
 		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
 		{
-			return animStateInfo.stateParam.IsGrounded == false;
+			return animStateInfo.stateParam.IsGrounded == (value > 0);
 		}
 
 		return false;

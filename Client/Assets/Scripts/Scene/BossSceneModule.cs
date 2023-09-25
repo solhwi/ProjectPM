@@ -18,7 +18,8 @@ public class BossSceneModule : SceneModule
     public override void OnEnter(SceneModuleParam param)
 	{
         MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, ObjectManager.Instance.PlayerObject);
-	}
+		ControllerManager.Instance.SetPlayerController(ObjectManager.Instance.PlayerObject);
+    }
 
 	public override IEnumerator OnPrepareEnterRoutine(SceneModuleParam param)
 	{

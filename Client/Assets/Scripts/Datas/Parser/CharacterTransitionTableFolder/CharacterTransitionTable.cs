@@ -16,6 +16,11 @@ public partial class CharacterTransitionTable : ScriptParser
 		{
 			transitionDictionary.Add(value.key, value);
 		}
+		priorityTransitionDictionary.Clear();
+		foreach(var value in priorityTransitionList)
+		{
+			priorityTransitionDictionary.Add(value.key, value);
+		}
 		defaultTransitionDictionary.Clear();
 		foreach(var value in defaultTransitionList)
 		{
@@ -41,6 +46,18 @@ public partial class CharacterTransitionTable : ScriptParser
 	[System.Serializable]
 	public class TransitionDictionary : SerializableDictionary<int, Transition> {}
 	public TransitionDictionary transitionDictionary = new TransitionDictionary();
+
+	[Serializable]
+	public class PriorityTransition
+	{
+		public string key;
+		public CharacterState nextState;
+	}
+
+	public List<PriorityTransition> priorityTransitionList = new List<PriorityTransition>();
+	[System.Serializable]
+	public class PriorityTransitionDictionary : SerializableDictionary<string, PriorityTransition> {}
+	public PriorityTransitionDictionary priorityTransitionDictionary = new PriorityTransitionDictionary();
 
 	[Serializable]
 	public class DefaultTransition

@@ -20,8 +20,12 @@ public partial class ConditionTable : ScriptParser
 			return condition;
 		}
 
-		Debug.LogError($"존재하지 않는 컨디션 타입 : {rawConditionType}");
-		return null;
+		if (rawConditionType.Contains(ParameterSeparator) == false)
+		{
+            Debug.LogError($"존재하지 않는 컨디션 타입 : {rawConditionType}");
+        }
+
+        return null;
 	}
 
 
@@ -61,7 +65,7 @@ public partial class ConditionTable : ScriptParser
 					stateCondition.Parse(parameters);
 				}
 
-				bool isAnd = andSeparatedConditions.Length - 1 > j;
+				bool isAnd = j > 0;
 				yield return new KeyValuePair<IStateCondition, bool>(stateCondition, isAnd);
 			}
 		}
@@ -100,12 +104,19 @@ public partial class ConditionTable : ScriptParser
 			case "[Grounded]":
 				return new GroundedCondition();
 
-			case "[PressJump]":
+			case "[Damage]":
+				return new DamageCondition();
+
+            case "[PressJump]":
 				return new PressJumpCondition();
 
 			case "[Combo]":
 			case "[JumpUp]":
-				return new CompositeStateCondition(this);
+			case "[JumpDown]":
+			case "[Dash]":
+			case "[PressSkill]":
+            case "[PressUltimate]":
+                return new CompositeStateCondition(this);
 
 			default:
 				return null;

@@ -38,6 +38,9 @@ public class SceneManager : Singleton<SceneManager>
 		if(currentSceneModule != null)
 			currentSceneModule.OnEnter(null);
 
+		mono.onUpdate += Update;
+		mono.onLateUpdate += LateUpdate;
+
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -45,7 +48,10 @@ public class SceneManager : Singleton<SceneManager>
 	{
         UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
 
-		if(sceneLoadCoroutine != null)
+        mono.onUpdate -= Update;
+        mono.onLateUpdate -= LateUpdate;
+
+        if (sceneLoadCoroutine != null)
             mono.StopCoroutine(sceneLoadCoroutine);
     }
 
