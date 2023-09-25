@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterHitState : CharacterAnimatorState
+    public class CharacterAirborneHitState : CharacterAnimatorState
     {
 
-	}
+    }
 
 }

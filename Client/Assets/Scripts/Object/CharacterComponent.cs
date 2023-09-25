@@ -25,7 +25,8 @@ public enum CharacterState
 	Down, // 다운
 	Landing, // 착지
 	Recovery, // 기상
-	Hit, // 데미지 입음
+	StandHit, // 데미지 입음
+	AirborneHit, // 공중에서 데미지 입음
 	Die, // 사망
 
 	Attack, // 공격
