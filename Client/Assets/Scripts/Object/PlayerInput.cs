@@ -6,11 +6,11 @@ public class PlayerInput : MonoBehaviour, IInputReceiver
 {
 	public bool isEnable = true;
 
-	CharacterComponent characterComponent = null;
+	EntityMeditatorComponent characterComponent = null;
 
 	private void Awake()
 	{
-		characterComponent = GetComponent<CharacterComponent>();
+		characterComponent = GetComponent<EntityMeditatorComponent>();
 	}
 
 	private void OnEnable()

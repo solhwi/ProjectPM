@@ -6,36 +6,36 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class ObjectManager : Singleton<ObjectManager>
+public class EntityManager : Singleton<EntityManager>
 {
-    public ObjectComponent PlayerObject
+    public EntityComponent Player
     {
         get
         {
-            if (objectDictionary.TryGetValue(playerObjectGuid, out var component))
+            if (characterDictionary.TryGetValue(playerCharacterGuid, out var component))
             {
                 return component;
             }
 
-            Debug.LogError($"플레이어 오브젝트가 생성되기 전입니다. GUID : {playerObjectGuid}");
+            Debug.LogError($"플레이어 오브젝트가 생성되기 전입니다. GUID : {playerCharacterGuid}");
             return null;
         }
     }
 
-    private int playerObjectGuid = 0;
-    private Dictionary<int, ObjectComponent> objectDictionary = new Dictionary<int, ObjectComponent>();
+    private int playerCharacterGuid = 0;
+    private Dictionary<int, EntityComponent> characterDictionary = new Dictionary<int, EntityComponent>();
 
-    public IEnumerator LoadAsyncPlayer(ENUM_CHARACTER_TYPE characterType)
+    public IEnumerator LoadAsyncPlayer(ENUM_ENTITY_TYPE characterType)
     {
         switch(characterType)
         {
-            case ENUM_CHARACTER_TYPE.RedMan:
+            case ENUM_ENTITY_TYPE.RedMan:
                 yield return LoadAsyncPlayer<RedManComponent>();
                 break;
         }
     }
 
-    private IEnumerator LoadAsyncPlayer<T>() where T : CharacterComponent
+    private IEnumerator LoadAsyncPlayer<T>() where T : EntityMeditatorComponent
     {
         var handle = ResourceManager.Instance.LoadAsync<T>();
         while (!handle.IsDone || handle.Status != AsyncOperationStatus.Succeeded)
@@ -55,8 +55,12 @@ public class ObjectManager : Singleton<ObjectManager>
         if (character == null)
             yield break;
 
-        playerObjectGuid = character.Initialize(ENUM_TEAM_TYPE.Friendly, false);
-        mono.SetSingletonChild(this, character);
+		character.Initialize();
+		character.SetEntityLayer(ENUM_LAYER_TYPE.Friendly);
+
+        playerCharacterGuid = character.Guid;
+
+		mono.SetSingletonChild(this, character);
     }
 
     public IEnumerator LoadAsyncMonsters()
@@ -96,7 +100,7 @@ public class ObjectManager : Singleton<ObjectManager>
 
 	public override void OnPostUpdate(int deltaFrameCount, float deltaTime)
     {
-        foreach(var obj in objectDictionary.Values)
+        foreach(var obj in characterDictionary.Values)
         {
             obj.OnPostUpdate();
         }
@@ -104,22 +108,22 @@ public class ObjectManager : Singleton<ObjectManager>
 
     public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
     {
-        foreach (var obj in objectDictionary.Values)
+        foreach (var obj in characterDictionary.Values)
         {
             obj.OnLateUpdate();
         }
     }
 
-    public int RegisterObject(int Guid, ObjectComponent objectComponent)
+    public int Register(int Guid, EntityComponent objectComponent)
     {
-        objectDictionary[Guid] = objectComponent;
+        characterDictionary[Guid] = objectComponent;
         return Guid;
 	}
 
-    public int UnRegisterObject(int Guid)
+    public int UnRegister(int Guid)
     {
-        if(objectDictionary.ContainsKey(Guid))
-            objectDictionary.Remove(Guid);
+        if(characterDictionary.ContainsKey(Guid))
+            characterDictionary.Remove(Guid);
 
         return -1;
     }

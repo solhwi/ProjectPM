@@ -12,11 +12,11 @@ public class TrainingSceneModule : SceneModule
 
 	public override void OnPostUpdate(int deltaFrameCount, float deltaTime)
 	{
-		ObjectManager.Instance.OnPostUpdate(deltaFrameCount, deltaTime);
+		EntityManager.Instance.OnPostUpdate(deltaFrameCount, deltaTime);
 	}
 
 	public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
 	{
-        ObjectManager.Instance.OnLateUpdate(deltaFrameCount, deltaTime);
+        EntityManager.Instance.OnLateUpdate(deltaFrameCount, deltaTime);
 	}
 }

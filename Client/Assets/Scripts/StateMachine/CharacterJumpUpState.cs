@@ -10,12 +10,12 @@ namespace StateMachine
 		private float jumpYPower = 0.0f;
         private Vector2 jumpVector = new Vector2 (0, 0);
 		
-		public override void OnSLStateEnter(CharacterComponent owner, AnimationStateInfo<FrameSyncStateParam> stateInfo)
+		public override void OnSLStateEnter(EntityMeditatorComponent owner, AnimationStateInfo<FrameSyncStateParam> stateInfo)
 		{
             if (owner == null)
                 return;
 
-            var stat = characterStatTable.GetStat(owner.CharacterType);
+            var stat = characterStatTable.GetStat(owner.EntityType);
             if (stat == null)
                 return;
 
@@ -25,12 +25,12 @@ namespace StateMachine
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, AnimationStateInfo<FrameSyncStateParam> stateInfo)
+		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, AnimationStateInfo<FrameSyncStateParam> stateInfo)
 		{
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateExit(CharacterComponent owner, AnimationStateInfo<FrameSyncStateParam> stateInfo)
+		public override void OnSLStateExit(EntityMeditatorComponent owner, AnimationStateInfo<FrameSyncStateParam> stateInfo)
 		{
             owner.OnPostMove(jumpVector * Time.deltaTime);
         }

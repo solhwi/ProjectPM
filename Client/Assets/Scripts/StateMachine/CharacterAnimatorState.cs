@@ -8,14 +8,14 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterAnimatorStateMachine : AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>
+	public class CharacterAnimatorStateMachine : AnimatorState<EntityMeditatorComponent, FrameSyncStateParam, CharacterState>
 	{
-        private static AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>[] animatorStates = null;
+        private static AnimatorState<EntityMeditatorComponent, FrameSyncStateParam, CharacterState>[] animatorStates = null;
 
 		// Animator에 따른 구분이 필요하다.
-		public static void Initialize(Animator animator, CharacterComponent characterComponent)
+		public static void Initialize(Animator animator, EntityMeditatorComponent characterComponent)
 		{
-			animatorStates = animator.GetBehaviours<AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>>();
+			animatorStates = animator.GetBehaviours<AnimatorState<EntityMeditatorComponent, FrameSyncStateParam, CharacterState>>();
 			foreach (var state in animatorStates)
 			{
                 state.InternalInitialize(characterComponent);
@@ -46,7 +46,7 @@ namespace StateMachine
 
     }
 
-    public class CharacterAnimatorState : AnimatorState<CharacterComponent, FrameSyncStateParam, CharacterState>
+    public class CharacterAnimatorState : AnimatorState<EntityMeditatorComponent, FrameSyncStateParam, CharacterState>
     {
         [SerializeField] protected CharacterStatTable characterStatTable = null;
         [SerializeField] protected CharacterTransitionTable transitionTable = null;

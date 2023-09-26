@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Character("NormalCharacter.prefab")]
-public class RedManComponent : CharacterComponent
+public class RedManComponent : EntityMeditatorComponent
 {
-	public override ENUM_CHARACTER_TYPE CharacterType => ENUM_CHARACTER_TYPE.RedMan;
+	public override ENUM_ENTITY_TYPE EntityType => ENUM_ENTITY_TYPE.RedMan;
 }

@@ -7,6 +7,9 @@ using kcp2k;
 using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine.UIElements;
+
+
 
 public abstract class NetworkSceneModule : SceneModule
 {
@@ -62,7 +65,12 @@ public abstract class NetworkSceneModule : SceneModule
         currentSession.Connect(param);
     }
 
-    public override void OnExit()
+	public void OnNetworkUpdate()
+	{
+		
+	}
+
+	public override void OnExit()
     {
         base.OnExit();
 

@@ -6,11 +6,11 @@ public class DamageableComponent : MonoBehaviour
 {
 	public bool isEnable = true;
 
-	ObjectComponent targetObject = null;
+	EntityMeditatorComponent targetCharacter = null;
 
 	private void Awake()
 	{
-		targetObject = GetComponent<ObjectComponent>();
+		targetCharacter = GetComponent<EntityMeditatorComponent>();
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -39,6 +39,6 @@ public class DamageableComponent : MonoBehaviour
 
 	public void OnDamage(IEnumerable<AttackableComponent> attackers)
 	{
-		targetObject.OnOtherInput(attackers);
+		targetCharacter.OnOtherInput(attackers);
 	}
 }

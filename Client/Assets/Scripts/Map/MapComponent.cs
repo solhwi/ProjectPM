@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using static TMPro.Examples.TMP_ExampleScript_01;
 
 public enum ENUM_MAP_TYPE
 {

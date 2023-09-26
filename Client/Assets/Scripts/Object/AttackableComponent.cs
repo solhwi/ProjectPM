@@ -6,9 +6,9 @@ using UnityEngine;
 public class AttackableComponent : MonoBehaviour
 {
 	private Collider2D myCollider = null;
-	public ObjectComponent AttackOwner { get; private set; }
+	public EntityComponent AttackOwner { get; private set; }
 
-	public void Initialize(ObjectComponent owner)
+	public void Initialize(EntityComponent owner)
 	{
 		AttackOwner = owner;
 		myCollider = GetComponent<Collider2D>();

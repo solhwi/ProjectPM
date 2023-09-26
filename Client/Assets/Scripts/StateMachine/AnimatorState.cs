@@ -129,6 +129,7 @@ namespace StateMachine
 
             if (TryChangeState(animationStateInfo, prevState, out var currentState))
             {
+                // 실질적인 스테이트 변경 요청
                 animator.Play(currentState.ToString());
             }
         }

@@ -164,6 +164,13 @@ namespace Mirror
         //    during FinishLoadScene.
         public NetworkManagerMode mode { get; private set; }
 
+#if UNITY_EDITOR
+        private void Awake()
+		{
+			Initialize();
+		}
+#endif
+
         // virtual so that inheriting classes' OnValidate() can call base.OnValidate() too
         public virtual void OnValidate()
         {

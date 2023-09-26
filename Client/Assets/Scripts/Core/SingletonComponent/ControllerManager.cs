@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ControllerManager : Singleton<ControllerManager>
 {
-    public PlayerInput SetPlayerController(ObjectComponent targetObject)
+    public PlayerInput SetPlayerController(EntityComponent targetObject)
     {
         return targetObject.GetOrAddComponent<PlayerInput>();
     }

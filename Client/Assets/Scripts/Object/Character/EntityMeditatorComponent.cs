@@ -5,9 +5,29 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using static CharacterStatTable;
 
-public enum ENUM_CHARACTER_TYPE
+// 이 곳에 타입이 추가되면 Unity Layer에도 추가해야 합니다.
+public enum ENUM_LAYER_TYPE
+{
+	Map = 3,
+	Ground = 6,
+	Platform = 7,
+	Object = 8,
+	Enemy = 9,
+	Boss = 10,
+	Friendly = 11,
+	Projectile = 12,
+	UI = 13,
+}
+
+public enum ENUM_TEAM_TYPE
+{
+	None = -1,
+	Friendly = 0,
+	Enemy = 1,
+}
+
+public enum ENUM_ENTITY_TYPE
 {
     RedMan = 0,
 	BlueMan = 1,
@@ -51,7 +71,7 @@ public struct FrameSyncStateParam
 	public Vector2 Velocity;
 
     public IEnumerable<AttackableComponent> attackers;
-    public ObjectComponent defender;
+    public EntityMeditatorComponent defender;
 
 	public void Clear()
 	{
@@ -63,43 +83,40 @@ public struct FrameSyncStateParam
 	}
 }
 
+[RequireComponent(typeof(RenderingComponent))]
 [RequireComponent(typeof(PhysicsComponent))]
 [RequireComponent(typeof(CharacterStateMachineComponent))]
-public abstract class CharacterComponent : ObjectComponent
+public abstract class EntityMeditatorComponent : EntityComponent
 {
-	public abstract ENUM_CHARACTER_TYPE CharacterType
-	{
-		get;
-	}
-
-	// 아래 정보들은 ScriptableObject로 빼자.
-
-	public bool IsBoss { get; private set; } = false;
-
+	private RenderingComponent renderingCompoonent = null;
 	private PhysicsComponent physicsComponent = null;
 	private CharacterStateMachineComponent stateMachineComponent = null;
 
 	private FrameSyncStateParam stateParam = new();
 
-	public override int Initialize(ENUM_TEAM_TYPE teamType, bool isBoss)
+	public override void Initialize()
 	{
-		IsBoss = isBoss;
+		base.Initialize();
 
 		physicsComponent = GetComponent<PhysicsComponent>();
 
 		stateMachineComponent = GetComponent<CharacterStateMachineComponent>();
 		stateMachineComponent.Initialize(this);
+	}
 
-		return base.Initialize(teamType, isBoss);
+	public void SetEntityLayer(ENUM_LAYER_TYPE layerType)
+	{
+		renderingCompoonent = GetComponent<RenderingComponent>();
+		renderingCompoonent.Initialize(layerType, Guid);
     }
 
-    public void OnPlayerInput(FrameSyncInputData frameData)
+	public void OnPlayerInput(FrameSyncInputData frameData)
 	{
 		stateParam.Clear();
 		stateParam.userInput = frameData;
     }
 
-	public override void OnOtherInput(IEnumerable<AttackableComponent> attackers)
+	public void OnOtherInput(IEnumerable<AttackableComponent> attackers)
 	{
 		if (attackers.Any() == false)
 			return;
@@ -123,7 +140,6 @@ public abstract class CharacterComponent : ObjectComponent
 
 	public override void OnLateUpdate()
 	{
-		// 반영된 물리 정보, 애니메이션의  정보로 
-		// ScriptableObject 데이터를 반영한다.
+
 	}
 }

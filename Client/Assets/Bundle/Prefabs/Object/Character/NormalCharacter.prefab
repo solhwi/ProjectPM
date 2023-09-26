@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1567925571384664050}
   - component: {fileID: 1550911840502356393}
   - component: {fileID: 2725238379644671886}
+  - component: {fileID: 2111098085485975088}
   - component: {fileID: 2207896231629970980}
   - component: {fileID: 875410190796969756}
   - component: {fileID: 581437186035518913}
@@ -202,6 +203,19 @@ MonoBehaviour:
   groundedRaycastDistance: 0.1
   hitOffset: {x: 0, y: 0.256}
   hitBox: {x: 2.56, y: 2.56}
+  isEnabled: 1
+--- !u!114 &2111098085485975088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3984707968245006999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28f8de7e0cb503945909d8fb99e78e21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2207896231629970980
 MonoBehaviour:
   m_ObjectHideFlags: 0

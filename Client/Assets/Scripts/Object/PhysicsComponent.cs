@@ -34,10 +34,9 @@ public class PhysicsComponent : MonoBehaviour
 
 
     private Queue<Vector2> vectorQueue = new Queue<Vector2>();
-    Coroutine endofFrameRoutine = null;
+	private Coroutine endofFrameRoutine = null;
 
     public Vector2 Velocity => m_NextMovement;
-
 
 	void Awake()
     {

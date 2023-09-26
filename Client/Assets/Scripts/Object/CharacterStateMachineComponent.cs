@@ -8,7 +8,7 @@ public class CharacterStateMachineComponent : MonoBehaviour
 {
 	private Animator animator;
 
-    public void Initialize(CharacterComponent owner)
+    public void Initialize(EntityMeditatorComponent owner)
 	{
 		animator = GetComponent<Animator>();
 		CharacterAnimatorStateMachine.Initialize(animator, owner);
