@@ -1,3 +1,4 @@
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -76,7 +77,7 @@ public class GuardInputData : PressInputData
 	}
 }
 
-public struct FrameSyncInputData
+public struct FrameSyncInputMessage : NetworkMessage
 {
 	public readonly Vector2 moveInput;
 	public readonly ENUM_ATTACK_KEY pressedAttackKey; 
@@ -84,7 +85,7 @@ public struct FrameSyncInputData
 	public readonly bool isGuard;
 	public readonly int frameCount;
 
-	public FrameSyncInputData(Vector2 moveInput, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int frameCount)
+	public FrameSyncInputMessage(Vector2 moveInput, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int frameCount)
 	{
 		this.moveInput = moveInput;
 		this.pressedAttackKey = pressedAttackKey;
@@ -96,7 +97,7 @@ public struct FrameSyncInputData
 
 public interface IInputReceiver
 {
-	void OnInput(FrameSyncInputData resultInput);
+	void OnInput(FrameSyncInputMessage resultInput);
 }
 
 public class InputManager : Singleton<InputManager>
@@ -112,7 +113,7 @@ public class InputManager : Singleton<InputManager>
 	private List<IInputReceiver> inputReceivers = new List<IInputReceiver>();
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
 
-	private FrameSyncInputData prevInputData = new FrameSyncInputData();
+	private FrameSyncInputMessage prevInputData = new FrameSyncInputMessage();
 
 	protected override void OnAwakeInstance()
 	{
@@ -214,7 +215,7 @@ public class InputManager : Singleton<InputManager>
 			}
 		}
 
-		prevInputData = new FrameSyncInputData(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount);
+		prevInputData = new FrameSyncInputMessage(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount);
 
 		foreach (var receiver in inputReceivers)
 		{

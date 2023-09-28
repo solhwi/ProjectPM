@@ -55,6 +55,12 @@ public class SceneManager : Singleton<SceneManager>
             mono.StopCoroutine(sceneLoadCoroutine);
     }
 
+	private void FixedUpdate()
+	{
+		if (currentSceneModule != null)
+			currentSceneModule.OnFixedUpdate();
+    }
+
 	private void Update()
 	{
 		if (currentSceneModule != null)

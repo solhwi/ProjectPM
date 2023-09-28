@@ -65,9 +65,9 @@ public abstract class NetworkSceneModule : SceneModule
         currentSession.Connect(param);
     }
 
-	public void OnNetworkUpdate()
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
-		
+        currentSession.Tick();
 	}
 
 	public override void OnExit()

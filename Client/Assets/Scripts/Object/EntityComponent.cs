@@ -4,22 +4,22 @@ using UnityEngine;
 
 public abstract class EntityComponent : MonoBehaviour
 {
-	public abstract ENUM_ENTITY_TYPE EntityType
+	public ENUM_ENTITY_TYPE EntityType
 	{
-		get;
+		get; private set;
 	}
 
 	public int Guid { get; private set; } = 0;
 
-	public virtual void Initialize()
+	public virtual void Initialize(ENUM_ENTITY_TYPE type)
 	{
-		Guid = GetInstanceID();
-		EntityManager.Instance.Register(Guid, this);
+        EntityType = type;
+        Guid = EntityManager.Instance.Register(this);
 	}
 	public void Clear()
 	{
-		EntityManager.Instance.UnRegister(Guid);
-		Guid = 0;
+		EntityType = ENUM_ENTITY_TYPE.None;
+        Guid = EntityManager.Instance.UnRegister(Guid);
 	}
 
 	public virtual void OnPostUpdate()

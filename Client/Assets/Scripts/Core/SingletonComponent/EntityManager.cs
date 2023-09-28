@@ -12,7 +12,7 @@ public class EntityManager : Singleton<EntityManager>
     {
         get
         {
-            if (characterDictionary.TryGetValue(playerCharacterGuid, out var component))
+            if (entityDictionary.TryGetValue(playerCharacterGuid, out var component))
             {
                 return component;
             }
@@ -23,21 +23,11 @@ public class EntityManager : Singleton<EntityManager>
     }
 
     private int playerCharacterGuid = 0;
-    private Dictionary<int, EntityComponent> characterDictionary = new Dictionary<int, EntityComponent>();
+    private Dictionary<int, EntityComponent> entityDictionary = new Dictionary<int, EntityComponent>();
 
     public IEnumerator LoadAsyncPlayer(ENUM_ENTITY_TYPE characterType)
     {
-        switch(characterType)
-        {
-            case ENUM_ENTITY_TYPE.RedMan:
-                yield return LoadAsyncPlayer<RedManComponent>();
-                break;
-        }
-    }
-
-    private IEnumerator LoadAsyncPlayer<T>() where T : EntityMeditatorComponent
-    {
-        var handle = ResourceManager.Instance.LoadAsync<T>();
+        var handle = ResourceManager.Instance.LoadAsync<EntityMeditatorComponent>();
         while (!handle.IsDone || handle.Status != AsyncOperationStatus.Succeeded)
         {
             yield return null;
@@ -51,11 +41,11 @@ public class EntityManager : Singleton<EntityManager>
         if (obj == null)
             yield break;
 
-        T character = obj.GetComponent<T>();
+        var character = obj.GetComponent<EntityMeditatorComponent>();
         if (character == null)
             yield break;
 
-		character.Initialize();
+		character.Initialize(characterType);
 		character.SetEntityLayer(ENUM_LAYER_TYPE.Friendly);
 
         playerCharacterGuid = character.Guid;
@@ -100,7 +90,7 @@ public class EntityManager : Singleton<EntityManager>
 
 	public override void OnPostUpdate(int deltaFrameCount, float deltaTime)
     {
-        foreach(var obj in characterDictionary.Values)
+        foreach(var obj in entityDictionary.Values)
         {
             obj.OnPostUpdate();
         }
@@ -108,22 +98,23 @@ public class EntityManager : Singleton<EntityManager>
 
     public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
     {
-        foreach (var obj in characterDictionary.Values)
+        foreach (var obj in entityDictionary.Values)
         {
             obj.OnLateUpdate();
         }
     }
 
-    public int Register(int Guid, EntityComponent objectComponent)
+    public int Register(EntityComponent objectComponent)
     {
-        characterDictionary[Guid] = objectComponent;
+        int Guid = objectComponent.GetInstanceID();
+        entityDictionary[Guid] = objectComponent;
         return Guid;
 	}
 
     public int UnRegister(int Guid)
     {
-        if(characterDictionary.ContainsKey(Guid))
-            characterDictionary.Remove(Guid);
+        if(entityDictionary.ContainsKey(Guid))
+            entityDictionary.Remove(Guid);
 
         return -1;
     }

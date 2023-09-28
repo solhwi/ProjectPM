@@ -61,7 +61,12 @@ public abstract class SceneModule : MonoBehaviour, IUpdater
 		yield return null;
 	}
 
-	public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
+    protected virtual void OnFixedUpdate()
+    {
+        
+    }
+
+    public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
 		
 	}

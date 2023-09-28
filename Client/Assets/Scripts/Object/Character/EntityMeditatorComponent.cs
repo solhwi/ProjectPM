@@ -29,6 +29,7 @@ public enum ENUM_TEAM_TYPE
 
 public enum ENUM_ENTITY_TYPE
 {
+	None = -1,	
     RedMan = 0,
 	BlueMan = 1,
 	GreenMan = 2,
@@ -65,7 +66,7 @@ public enum CharacterState
 
 public struct FrameSyncStateParam
 {
-	public FrameSyncInputData userInput;
+	public FrameSyncInputMessage userInput;
 
 	public bool IsGrounded;
 	public Vector2 Velocity;
@@ -86,7 +87,8 @@ public struct FrameSyncStateParam
 [RequireComponent(typeof(RenderingComponent))]
 [RequireComponent(typeof(PhysicsComponent))]
 [RequireComponent(typeof(CharacterStateMachineComponent))]
-public abstract class EntityMeditatorComponent : EntityComponent
+[Character("EntityMeditator.prefab")]
+public class EntityMeditatorComponent : EntityComponent
 {
 	private RenderingComponent renderingCompoonent = null;
 	private PhysicsComponent physicsComponent = null;
@@ -94,9 +96,9 @@ public abstract class EntityMeditatorComponent : EntityComponent
 
 	private FrameSyncStateParam stateParam = new();
 
-	public override void Initialize()
+	public override void Initialize(ENUM_ENTITY_TYPE type)
 	{
-		base.Initialize();
+		base.Initialize(type);
 
 		physicsComponent = GetComponent<PhysicsComponent>();
 
@@ -110,7 +112,7 @@ public abstract class EntityMeditatorComponent : EntityComponent
 		renderingCompoonent.Initialize(layerType, Guid);
     }
 
-	public void OnPlayerInput(FrameSyncInputData frameData)
+	public void OnPlayerInput(FrameSyncInputMessage frameData)
 	{
 		stateParam.Clear();
 		stateParam.userInput = frameData;

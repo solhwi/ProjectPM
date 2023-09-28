@@ -14,6 +14,8 @@ public interface ISessionComponent
 	void Connect(SceneModuleParam param);
 
 	void Disconnect();
+
+    void Tick();
 }
 
 public interface IMatchSessionSubscriber
@@ -247,5 +249,15 @@ public class MatchSessionManager : NetworkManager<MatchSessionManager>, ISession
     private void OnStartGame()
     {
         SceneManager.Instance.LoadScene(SceneType.Battle, new BattleSceneModuleParam(isOwner));
+    }
+
+    public void Tick()
+    {
+        
+    }
+
+    public void OnTickServer()
+    {
+        
     }
 }
