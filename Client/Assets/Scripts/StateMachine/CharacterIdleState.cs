@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterIdleState : CharacterAnimatorState
+	public class CharacterIdleState : EntityAnimatorState
     {
 
 	}

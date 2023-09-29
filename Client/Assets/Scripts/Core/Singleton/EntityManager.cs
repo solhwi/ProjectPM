@@ -1,7 +1,9 @@
 using NPOI.HPSF;
+using StateMachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -24,6 +26,14 @@ public class EntityManager : Singleton<EntityManager>
 
     private int playerCharacterGuid = 0;
     private Dictionary<int, EntityComponent> entityDictionary = new Dictionary<int, EntityComponent>();
+
+    public EntityComponent GetEntityComponent(int guid)
+    {
+        if (entityDictionary.ContainsKey(guid) == false)
+            return null;
+
+        return entityDictionary[guid];
+    }
 
     public IEnumerator LoadAsyncPlayer(ENUM_ENTITY_TYPE characterType)
     {
@@ -102,6 +112,28 @@ public class EntityManager : Singleton<EntityManager>
         {
             obj.OnLateUpdate();
         }
+    }
+
+    public IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset)
+    {
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(pos, size, 0);
+        if (colliders == null || colliders.Length == 0)
+            yield break;
+
+        foreach (var collider in colliders)
+        {
+            var entity = collider.GetComponent<EntityComponent>();
+            if (entity == null)
+                continue;
+
+            yield return entity;
+        }
+    }
+
+    // ºÎµúÈù Entityµé ±¸ÇÏ±â
+    public IEnumerable<EntityComponent> GetOverlapEntities(FrameSyncInputMessage message)
+    {
+        return GetOverlapEntities(message.entityGuid, message.myEntityPos, message.myEntityHitBox, message.myEntityOffset);
     }
 
     public int Register(EntityComponent objectComponent)

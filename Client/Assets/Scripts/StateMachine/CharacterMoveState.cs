@@ -5,17 +5,19 @@ using UnityEngine.Animations;
 
 namespace StateMachine
 {
-	public class CharacterMoveState : CharacterAnimatorState
+	public class CharacterMoveState : EntityAnimatorState
     {
-		public override void OnSLStateEnter(EntityMeditatorComponent owner, AnimationStateInfo<FrameSyncStateParam> stateInfo)
+		public override void OnSLStateEnter(EntityMeditatorComponent owner, AnimationStateInfo animatorStateInfo, IStateInfo stateInfo)
 		{
-			Move(owner, stateInfo.stateParam.userInput.moveInput.x);
+			var message = stateInfo.Convert<FrameSyncInputMessage>();
+            Move(owner, message.moveInput.x);
 		}
 
-		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner,AnimationStateInfo<FrameSyncStateParam> stateInfo)
+		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, AnimationStateInfo animatorStateInfo, IStateInfo stateInfo)
         {
-			Move(owner, stateInfo.stateParam.userInput.moveInput.x);
-		}
+            var message = stateInfo.Convert<FrameSyncInputMessage>();
+            Move(owner, message.moveInput.x);
+        }
 
 		private void Move(EntityMeditatorComponent owner, float x)
 		{

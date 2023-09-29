@@ -39,6 +39,6 @@ public class DamageableComponent : MonoBehaviour
 
 	public void OnDamage(IEnumerable<AttackableComponent> attackers)
 	{
-		targetCharacter.OnOtherInput(attackers);
+		// targetCharacter.OnOtherInput(attackers);
 	}
 }

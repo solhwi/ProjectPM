@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace StateMachine
 {
-	public class CharacterSkillState : CharacterAnimatorState
+	public class CharacterSkillState : EntityAnimatorState
     {
 
 	}

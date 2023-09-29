@@ -77,27 +77,27 @@ public class GuardInputData : PressInputData
 	}
 }
 
-public struct FrameSyncInputMessage : NetworkMessage
+public struct FrameSyncInputInfo
 {
-	public readonly Vector2 moveInput;
-	public readonly ENUM_ATTACK_KEY pressedAttackKey; 
-	public readonly bool isDash;
-	public readonly bool isGuard;
-	public readonly int frameCount;
+    public readonly Vector2 moveInput;
+    public readonly ENUM_ATTACK_KEY pressedAttackKey;
+    public readonly bool isDash;
+    public readonly bool isGuard;
+    public readonly int frameCount;
 
-	public FrameSyncInputMessage(Vector2 moveInput, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int frameCount)
-	{
-		this.moveInput = moveInput;
-		this.pressedAttackKey = pressedAttackKey;
-		this.isDash = isDash;
-		this.isGuard = isGuard;
-		this.frameCount = frameCount;
-	}
+    public FrameSyncInputInfo(Vector2 moveInput, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int frameCount)
+    {
+        this.moveInput = moveInput;
+        this.pressedAttackKey = pressedAttackKey;
+        this.isDash = isDash;
+        this.isGuard = isGuard;
+        this.frameCount = frameCount;
+    }
 }
 
 public interface IInputReceiver
 {
-	void OnInput(FrameSyncInputMessage resultInput);
+	void OnInput(FrameSyncInputInfo resultInput);
 }
 
 public class InputManager : Singleton<InputManager>
@@ -113,7 +113,7 @@ public class InputManager : Singleton<InputManager>
 	private List<IInputReceiver> inputReceivers = new List<IInputReceiver>();
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
 
-	private FrameSyncInputMessage prevInputData = new FrameSyncInputMessage();
+	private FrameSyncInputInfo prevInputData = new FrameSyncInputInfo();
 
 	protected override void OnAwakeInstance()
 	{
@@ -215,7 +215,7 @@ public class InputManager : Singleton<InputManager>
 			}
 		}
 
-		prevInputData = new FrameSyncInputMessage(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount);
+		prevInputData = new FrameSyncInputInfo(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount);
 
 		foreach (var receiver in inputReceivers)
 		{

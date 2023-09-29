@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterJumpSkilllState : CharacterAnimatorState
+	public class CharacterJumpSkilllState : EntityAnimatorState
     {
 
 	}

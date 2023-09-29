@@ -57,7 +57,7 @@ public class AnimationWaitCondition : FloatParameterStateCondition
 {
 	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
-		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+		if (stateInfo is FrameSyncInputMessage animStateInfo)
 		{
 			return animStateInfo.normalizedTime >= value;
 		}
@@ -72,9 +72,9 @@ public class DashCondition : NoParameterStateCondition
 	{
 		bool isSatisfied = false;
 
-		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+		if (stateInfo is FrameSyncInputMessage animStateInfo)
 		{
-			isSatisfied = animStateInfo.stateParam.userInput.isDash;
+			isSatisfied = animStateInfo.isDashInput;
 		}
 
 		return isSatisfied;
@@ -87,9 +87,9 @@ public class PressGuardCondition : NoParameterStateCondition
 	{
 		bool isSatisfied = false;
 
-		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+		if (stateInfo is FrameSyncInputMessage animStateInfo)
 		{
-			isSatisfied = animStateInfo.stateParam.userInput.isGuard;
+			isSatisfied = animStateInfo.isGuardInput;
 		}
 
 		return isSatisfied;
@@ -102,10 +102,10 @@ public class GoUpCondition : FloatParameterStateCondition
 	{
         bool isSatisfied = false;
 
-        if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
-		{
-			isSatisfied = animStateInfo.stateParam.Velocity.y > Mathf.Epsilon;
-		}
+        if (stateInfo is FrameSyncInputMessage animStateInfo)
+        {
+            isSatisfied = animStateInfo.myEntityVelocity.y > Mathf.Epsilon;
+        }
 
 		return isSatisfied;
 	}
@@ -117,9 +117,9 @@ public class PressJumpCondition : NoParameterStateCondition
     {
 		bool isSatisfied = false;
 
-        if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+        if (stateInfo is FrameSyncInputMessage animStateInfo)
         {
-            isSatisfied = animStateInfo.stateParam.userInput.moveInput.y > Mathf.Epsilon;
+            isSatisfied = animStateInfo.moveInput.y > Mathf.Epsilon;
         }
 
         return isSatisfied;
@@ -132,9 +132,9 @@ public class FallDownCondition : FloatParameterStateCondition
 	{
 		bool isSatisfied = false;
 
-		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+		if (stateInfo is FrameSyncInputMessage animStateInfo)
 		{
-			isSatisfied = animStateInfo.stateParam.Velocity.y < -1 * Mathf.Epsilon;
+			isSatisfied = animStateInfo.myEntityVelocity.y < -1 * Mathf.Epsilon;
 		}
 
 		return isSatisfied;
@@ -147,9 +147,9 @@ public class MoveCondition : FloatParameterStateCondition
 	{
 		bool isSatisfied = false;
 
-		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+		if (stateInfo is FrameSyncInputMessage animStateInfo)
 		{
-			float currX = animStateInfo.stateParam.userInput.moveInput.x;
+			float currX = animStateInfo.moveInput.x;
 			isSatisfied = Mathf.Abs(currX) > Mathf.Abs(value);
 		}
 
@@ -161,12 +161,13 @@ public class DamageCondition : IntStateCondition
 {
     public override bool IsSatisfied(IStateInfo stateInfo)
     {
-        if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+        if (stateInfo is FrameSyncInputMessage animStateInfo)
         {
-			if (animStateInfo.stateParam.attackers == null)
-				return false;
+			//EntityManager.Instance.GetEntityComponent()
+			//if (animStateInfo.stateParam.attackers == null)
+			//	return false;
 
-			return animStateInfo.stateParam.attackers.Count() > value;
+			//return animStateInfo.stateParam.attackers.Count() > value;
         }
 
         return false;
@@ -177,9 +178,9 @@ public class GroundedCondition : IntStateCondition
 {
 	public override bool IsSatisfied(IStateInfo stateInfo)
 	{
-		if (stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+		if (stateInfo is FrameSyncInputMessage animStateInfo)
 		{
-			return animStateInfo.stateParam.IsGrounded == (value > 0);
+			return animStateInfo.isGrounded == (value > 0);
 		}
 
 		return false;
@@ -192,9 +193,9 @@ public class AttackCondition : IStateCondition
 
 	public bool IsSatisfied(IStateInfo stateInfo)
 	{
-		if(stateInfo is AnimationStateInfo<FrameSyncStateParam> animStateInfo)
+		if(stateInfo is FrameSyncInputMessage animStateInfo)
 		{
-			return animStateInfo.stateParam.userInput.pressedAttackKey == key;
+			return animStateInfo.pressedAttackKeyNum == (int)key;
 		}
 
 		return false;

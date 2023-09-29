@@ -5,7 +5,7 @@ using UnityEngine.Animations;
 
 namespace StateMachine
 {
-	public class CharacterAttack1State : CharacterAnimatorState
+	public class CharacterAttack1State : EntityAnimatorState
     {
 		
 	}

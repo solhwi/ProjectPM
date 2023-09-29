@@ -36,7 +36,7 @@ public enum ENUM_ENTITY_TYPE
 }
 
 [Serializable]
-public enum CharacterState
+public enum ENUM_ENTITY_STATE
 {
 	Idle, // 멈춤
 	Move, // 좌, 우
@@ -94,9 +94,20 @@ public class EntityMeditatorComponent : EntityComponent
 	private PhysicsComponent physicsComponent = null;
 	private CharacterStateMachineComponent stateMachineComponent = null;
 
-	private FrameSyncStateParam stateParam = new();
+    private CharacterTransitionTable transitionTable = null;
+    private ConditionTable conditionTable = null;
 
-	public override void Initialize(ENUM_ENTITY_TYPE type)
+    // 현재 스테이트 정보를 가지고 있어야 한다.
+    // 그래야 ObjectManager가 충돌, 스테이트 처리가 가능하다.
+    private FrameSyncStateParam stateParam = new();
+
+    public override Vector2 Velocity => physicsComponent.Velocity;
+
+	public override Vector2 HitBox => physicsComponent.HitBox;
+
+	public override bool IsGrounded => physicsComponent.IsGrounded;
+
+    public override void Initialize(ENUM_ENTITY_TYPE type)
 	{
 		base.Initialize(type);
 
@@ -112,36 +123,60 @@ public class EntityMeditatorComponent : EntityComponent
 		renderingCompoonent.Initialize(layerType, Guid);
     }
 
-	public void OnPlayerInput(FrameSyncInputMessage frameData)
-	{
-		stateParam.Clear();
-		stateParam.userInput = frameData;
+    public override ENUM_ENTITY_STATE GetSimulatedNextState(IStateInfo stateInfo)
+    {
+		var nextState = CurrentState;
+
+        if (transitionTable.defaultTransitionList.Any())
+        {
+            var defaultTransition = transitionTable.defaultTransitionList.FirstOrDefault();
+            var condition = conditionTable.GetCondition(defaultTransition.key);
+            if (condition.IsSatisfied(stateInfo))
+            {
+                nextState = defaultTransition.nextState;
+            }
+        }
+
+        if (transitionTable.loopTransitionDictionary.TryGetValue(CurrentState, out var loopTransition))
+        {
+            var condition = conditionTable.GetCondition(loopTransition.conditionType);
+            if (condition.IsSatisfied(stateInfo))
+            {
+                nextState = CurrentState;
+            }
+        }
+
+        foreach (var transition in transitionTable.transitionList)
+        {
+            if (transition.prevState == CurrentState)
+            {
+                var condition = conditionTable.GetCondition(transition.conditionType);
+                if (condition.IsSatisfied(stateInfo))
+                {
+                    nextState = transition.nextState;
+                }
+            }
+        }
+
+		return nextState;
     }
 
-	public void OnOtherInput(IEnumerable<AttackableComponent> attackers)
-	{
-		if (attackers.Any() == false)
-			return;
+    public override bool TryChangeState(IStateInfo stateInfo)
+    {
+        var nextState = GetSimulatedNextState(stateInfo);
 
-        stateParam.attackers = attackers;
-		stateParam.defender = this;
-    }
+		bool isChanged = CurrentState != nextState;
+		if (isChanged)
+		{
+            stateMachineComponent.TryChangeState(nextState, stateInfo);
+			CurrentState = nextState;
+        }
 
-	public override void OnPostUpdate()
-	{
-        stateParam.Velocity = physicsComponent.Velocity;
-		stateParam.IsGrounded = physicsComponent.IsGrounded;
-
-		stateMachineComponent.TryChangeState(stateParam);
+        return isChanged;
 	}
 
-	public void OnPostMove(Vector2 moveVec)
+    public void OnPostMove(Vector2 moveVec)
 	{
 		physicsComponent.Move(moveVec);
-	}
-
-	public override void OnLateUpdate()
-	{
-
 	}
 }

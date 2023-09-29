@@ -37,8 +37,8 @@ public partial class CharacterTransitionTable : ScriptParser
 	public class Transition
 	{
 		public int key;
-		public CharacterState prevState;
-		public CharacterState nextState;
+		public ENUM_ENTITY_STATE prevState;
+		public ENUM_ENTITY_STATE nextState;
 		public string conditionType;
 	}
 
@@ -51,7 +51,7 @@ public partial class CharacterTransitionTable : ScriptParser
 	public class PriorityTransition
 	{
 		public string key;
-		public CharacterState nextState;
+		public ENUM_ENTITY_STATE nextState;
 	}
 
 	public List<PriorityTransition> priorityTransitionList = new List<PriorityTransition>();
@@ -63,7 +63,7 @@ public partial class CharacterTransitionTable : ScriptParser
 	public class DefaultTransition
 	{
 		public string key;
-		public CharacterState nextState;
+		public ENUM_ENTITY_STATE nextState;
 	}
 
 	public List<DefaultTransition> defaultTransitionList = new List<DefaultTransition>();
@@ -74,13 +74,13 @@ public partial class CharacterTransitionTable : ScriptParser
 	[Serializable]
 	public class LoopTransition
 	{
-		public CharacterState key;
+		public ENUM_ENTITY_STATE key;
 		public string conditionType;
 	}
 
 	public List<LoopTransition> loopTransitionList = new List<LoopTransition>();
 	[System.Serializable]
-	public class LoopTransitionDictionary : SerializableDictionary<CharacterState, LoopTransition> {}
+	public class LoopTransitionDictionary : SerializableDictionary<ENUM_ENTITY_STATE, LoopTransition> {}
 	public LoopTransitionDictionary loopTransitionDictionary = new LoopTransitionDictionary();
 
 

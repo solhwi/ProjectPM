@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public abstract class EntityComponent : MonoBehaviour
@@ -9,7 +10,27 @@ public abstract class EntityComponent : MonoBehaviour
 		get; private set;
 	}
 
-	public int Guid { get; private set; } = 0;
+    public ENUM_ENTITY_STATE CurrentState
+	{
+		get; protected set;
+	}
+
+	public abstract Vector2 Velocity
+	{
+		get;
+	}
+
+	public abstract Vector2 HitBox
+	{
+		get;
+	}
+
+	public abstract bool IsGrounded
+	{
+		get;
+	}
+
+    public int Guid { get; private set; } = 0;
 
 	public virtual void Initialize(ENUM_ENTITY_TYPE type)
 	{
@@ -22,7 +43,17 @@ public abstract class EntityComponent : MonoBehaviour
         Guid = EntityManager.Instance.UnRegister(Guid);
 	}
 
-	public virtual void OnPostUpdate()
+    public virtual ENUM_ENTITY_STATE GetSimulatedNextState(IStateInfo stateInfo)
+    {
+        return CurrentState;
+	}
+
+	public virtual bool TryChangeState(IStateInfo stateInfo)
+	{
+		return false;
+	}
+
+    public virtual void OnPostUpdate()
 	{
 		
 	}

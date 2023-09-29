@@ -61,7 +61,7 @@ public abstract class SceneModule : MonoBehaviour, IUpdater
 		yield return null;
 	}
 
-    protected virtual void OnFixedUpdate()
+    public virtual void OnFixedUpdate()
     {
         
     }

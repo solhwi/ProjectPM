@@ -11,11 +11,11 @@ public class CharacterStateMachineComponent : MonoBehaviour
     public void Initialize(EntityMeditatorComponent owner)
 	{
 		animator = GetComponent<Animator>();
-		CharacterAnimatorStateMachine.Initialize(animator, owner);
+		EntityAnimatorStateMachine.Initialize(animator, owner);
     }
 
-    public void TryChangeState(FrameSyncStateParam stateParam)
+    public void TryChangeState(ENUM_ENTITY_STATE nextState, IStateInfo info)
     {
-		CharacterAnimatorStateMachine.TryChangeState(stateParam);
+		EntityAnimatorStateMachine.TryChangeState(animator, nextState, info);
 	}
 }

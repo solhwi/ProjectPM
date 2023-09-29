@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterStandHitState : CharacterAnimatorState
+	public class CharacterStandHitState : EntityAnimatorState
     {
 
 	}

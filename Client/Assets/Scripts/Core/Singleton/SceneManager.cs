@@ -31,6 +31,7 @@ public class SceneManager : Singleton<SceneManager>
 	private SceneModuleParam currentParam = null;
 
     private Coroutine sceneLoadCoroutine = null;
+	private bool isLoadComplete = false;
 
 	protected override void OnAwakeInstance()
 	{
@@ -63,6 +64,9 @@ public class SceneManager : Singleton<SceneManager>
 
 	private void Update()
 	{
+		if (isLoadComplete == false)
+			return;
+
 		if (currentSceneModule != null)
 			currentSceneModule.OnUpdate(Time.frameCount, Time.deltaTime);
 
@@ -71,8 +75,11 @@ public class SceneManager : Singleton<SceneManager>
 	}
 
 	private void LateUpdate()
-	{
-		if (currentSceneModule != null)
+    {
+        if (isLoadComplete == false)
+            return;
+
+        if (currentSceneModule != null)
 			currentSceneModule.OnLateUpdate(Time.frameCount, Time.deltaTime);
 	}
 
@@ -97,7 +104,9 @@ public class SceneManager : Singleton<SceneManager>
 
 		currentSceneModule?.OnExit();
 
-		var asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneType.ToString(), LoadSceneMode.Single);
+		isLoadComplete = false;
+
+        var asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneType.ToString(), LoadSceneMode.Single);
 
 		asyncOperation.allowSceneActivation = false;
 
@@ -121,5 +130,8 @@ public class SceneManager : Singleton<SceneManager>
         currentSceneModule.OnEnter(currentParam);
 
         currentParam = null;
+
+        yield return null;
+		isLoadComplete = true;
     }
 }
