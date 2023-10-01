@@ -25,25 +25,48 @@ public abstract class EntityComponent : MonoBehaviour
 		get;
 	}
 
+	public abstract Vector2 Offset
+	{
+		get;
+	}
+
+	public Vector2 Position
+	{
+		get
+		{
+			return transform.position;
+		}
+	}
+
 	public abstract bool IsGrounded
 	{
 		get;
 	}
 
+	public int OwnerGuid { get; private set; }
+
     public int Guid { get; private set; } = 0;
 
-	public virtual void Initialize(ENUM_ENTITY_TYPE type)
+	public virtual void Initialize(int ownerGuid, ENUM_ENTITY_TYPE type)
 	{
-        EntityType = type;
+		OwnerGuid = ownerGuid;
+		EntityType = type;
         Guid = EntityManager.Instance.Register(this);
 	}
+
 	public void Clear()
 	{
+		OwnerGuid = 0;
 		EntityType = ENUM_ENTITY_TYPE.None;
         Guid = EntityManager.Instance.UnRegister(Guid);
 	}
 
-    public virtual ENUM_ENTITY_STATE GetSimulatedNextState(IStateInfo stateInfo)
+	public virtual void Teleport(Vector2 posVec)
+	{
+		transform.position = posVec;
+	}
+
+	public virtual ENUM_ENTITY_STATE GetSimulatedNextState(IStateInfo stateInfo)
     {
         return CurrentState;
 	}

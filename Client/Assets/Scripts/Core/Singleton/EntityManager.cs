@@ -1,3 +1,4 @@
+using Mirror;
 using NPOI.HPSF;
 using StateMachine;
 using System;
@@ -35,6 +36,17 @@ public class EntityManager : Singleton<EntityManager>
         return entityDictionary[guid];
     }
 
+    public IEnumerable<EntityComponent> GetMyEntities(int ownerGuid)
+    {
+        foreach(var entity in entityDictionary.Values)
+        {
+            if(entity.OwnerGuid == ownerGuid)
+            {
+                yield return entity;
+            }
+        }
+    }
+
     public IEnumerator LoadAsyncPlayer(ENUM_ENTITY_TYPE characterType)
     {
         var handle = ResourceManager.Instance.LoadAsync<EntityMeditatorComponent>();
@@ -55,7 +67,7 @@ public class EntityManager : Singleton<EntityManager>
         if (character == null)
             yield break;
 
-		character.Initialize(characterType);
+		character.Initialize(0, characterType);
 		character.SetEntityLayer(ENUM_LAYER_TYPE.Friendly);
 
         playerCharacterGuid = character.Guid;
@@ -114,16 +126,23 @@ public class EntityManager : Singleton<EntityManager>
         }
     }
 
-    public IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset)
+    public IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity)
     {
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(pos, size, 0);
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(pos + offset, size, 0);
         if (colliders == null || colliders.Length == 0)
             yield break;
 
+        var myEntity = GetEntityComponent(entityGuid);
+        if (myEntity == null)
+            yield break;
+        
         foreach (var collider in colliders)
         {
             var entity = collider.GetComponent<EntityComponent>();
             if (entity == null)
+                continue;
+
+            if (entity.OwnerGuid == myEntity.OwnerGuid) // ³»²« Á¦¿Ü
                 continue;
 
             yield return entity;
@@ -131,12 +150,17 @@ public class EntityManager : Singleton<EntityManager>
     }
 
     // ºÎµúÈù Entityµé ±¸ÇÏ±â
-    public IEnumerable<EntityComponent> GetOverlapEntities(FrameSyncInputMessage message)
+    public IEnumerable<EntityComponent> GetOverlapEntities(FrameEntityMessage message)
     {
-        return GetOverlapEntities(message.entityGuid, message.myEntityPos, message.myEntityHitBox, message.myEntityOffset);
+        return GetOverlapEntities(message.entityGuid, message.myEntityPos, message.myEntityHitBox, message.myEntityOffset, message.myEntityVelocity);
     }
 
-    public int Register(EntityComponent objectComponent)
+    public IEnumerable<int> GetOverlapEntitiyGuids(FrameEntityMessage message)
+    {
+        return GetOverlapEntities(message).Select(entity => entity.Guid);
+    }
+
+	public int Register(EntityComponent objectComponent)
     {
         int Guid = objectComponent.GetInstanceID();
         entityDictionary[Guid] = objectComponent;

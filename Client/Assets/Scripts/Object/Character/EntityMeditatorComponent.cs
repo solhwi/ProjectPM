@@ -66,7 +66,7 @@ public enum ENUM_ENTITY_STATE
 
 public struct FrameSyncStateParam
 {
-	public FrameSyncInputMessage userInput;
+	public FrameSnapShotMessage userInput;
 
 	public bool IsGrounded;
 	public Vector2 Velocity;
@@ -97,19 +97,17 @@ public class EntityMeditatorComponent : EntityComponent
     private CharacterTransitionTable transitionTable = null;
     private ConditionTable conditionTable = null;
 
-    // 현재 스테이트 정보를 가지고 있어야 한다.
-    // 그래야 ObjectManager가 충돌, 스테이트 처리가 가능하다.
-    private FrameSyncStateParam stateParam = new();
-
     public override Vector2 Velocity => physicsComponent.Velocity;
 
 	public override Vector2 HitBox => physicsComponent.HitBox;
 
 	public override bool IsGrounded => physicsComponent.IsGrounded;
 
-    public override void Initialize(ENUM_ENTITY_TYPE type)
+	public override Vector2 Offset => physicsComponent.hitOffset;
+
+	public override void Initialize(int ownerGuid, ENUM_ENTITY_TYPE type)
 	{
-		base.Initialize(type);
+		base.Initialize(ownerGuid, type);
 
 		physicsComponent = GetComponent<PhysicsComponent>();
 
@@ -161,22 +159,35 @@ public class EntityMeditatorComponent : EntityComponent
 		return nextState;
     }
 
-    public override bool TryChangeState(IStateInfo stateInfo)
+	public override bool TryChangeState(IStateInfo stateInfo)
     {
+		var frameSyncInfo = stateInfo.Convert<FrameEntityMessage>();
+
+		var beforeState = CurrentState;
+		CurrentState = frameSyncInfo.entityCurrentState > 0 ? (ENUM_ENTITY_STATE)frameSyncInfo.entityCurrentState : CurrentState;
         var nextState = GetSimulatedNextState(stateInfo);
 
-		bool isChanged = CurrentState != nextState;
+		bool isChanged = beforeState != nextState;
 		if (isChanged)
 		{
             stateMachineComponent.TryChangeState(nextState, stateInfo);
 			CurrentState = nextState;
         }
+		else
+		{
+			CurrentState = beforeState;
+		}
 
         return isChanged;
 	}
 
-    public void OnPostMove(Vector2 moveVec)
+    public void Move(Vector2 moveVec)
 	{
 		physicsComponent.Move(moveVec);
+	}
+
+	public override void Teleport(Vector2 posVec)
+	{
+		physicsComponent.Teleport(posVec);
 	}
 }

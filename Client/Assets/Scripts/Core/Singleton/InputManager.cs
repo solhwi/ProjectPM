@@ -77,18 +77,18 @@ public class GuardInputData : PressInputData
 	}
 }
 
-public struct FrameSyncInputInfo
+public struct FrameSyncInputInfo : NetworkMessage, IStateInfo
 {
-    public readonly Vector2 moveInput;
-    public readonly ENUM_ATTACK_KEY pressedAttackKey;
-    public readonly bool isDash;
-    public readonly bool isGuard;
-    public readonly int frameCount;
+    public Vector2 moveInput;
+    public int pressedAttackKeyNum;
+    public bool isDash;
+    public bool isGuard;
+    public int frameCount;
 
     public FrameSyncInputInfo(Vector2 moveInput, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int frameCount)
     {
         this.moveInput = moveInput;
-        this.pressedAttackKey = pressedAttackKey;
+        this.pressedAttackKeyNum = (int)pressedAttackKey;
         this.isDash = isDash;
         this.isGuard = isGuard;
         this.frameCount = frameCount;

@@ -16,7 +16,7 @@ public interface IStateInfo
     }
 }
 
-public struct AnimationStateInfo
+public struct AnimationStateInfo : IStateInfo
 {
     public readonly AnimatorStateInfo animatorStateInfo;
     public readonly int currentKeyFrame;
@@ -121,7 +121,7 @@ namespace StateMachine
             return false;
         }
 
-        public sealed override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
+		public sealed override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
         {
             m_LastFrameHappened = false;
             frameDeltaCount++;

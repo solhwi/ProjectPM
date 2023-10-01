@@ -37,7 +37,7 @@ namespace StateMachine
 				state.TryChangeState(animator, nextState, info);
 			}
 		}
-    }
+	}
 
 	public class EntityAnimatorState : AnimatorState<EntityMeditatorComponent, ENUM_ENTITY_STATE>
 	{

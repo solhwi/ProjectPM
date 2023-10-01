@@ -21,20 +21,20 @@ namespace StateMachine
 
             jumpYPower = stat.jumpPower;
 
-            var message = stateInfo.Convert<FrameSyncInputMessage>();
-            jumpVector = new Vector2(message.moveInput.x, message.moveInput.y * jumpYPower);
+            var message = stateInfo.Convert<FrameSnapShotMessage>();
+            // jumpVector = new Vector2(message.moveInput.x, message.moveInput.y * jumpYPower);
 
-            owner.OnPostMove(jumpVector * Time.deltaTime);
+            owner.Move(jumpVector * Time.deltaTime);
         }
 
 		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, AnimationStateInfo animatorStateInfo, IStateInfo stateInfo)
 		{
-            owner.OnPostMove(jumpVector * Time.deltaTime);
+            owner.Move(jumpVector * Time.deltaTime);
         }
 
 		public override void OnSLStateExit(EntityMeditatorComponent owner, AnimationStateInfo animatorStateInfo, IStateInfo stateInfo)
 		{
-            owner.OnPostMove(jumpVector * Time.deltaTime);
+            owner.Move(jumpVector * Time.deltaTime);
         }
 	}
 
