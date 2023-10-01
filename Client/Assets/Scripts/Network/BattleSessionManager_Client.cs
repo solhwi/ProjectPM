@@ -4,13 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public partial class BattleSessionManager
+public partial class BattleSessionManager : IInputReceiver
 {
+	FrameInputMessage prevFrameInput = new FrameInputMessage();
+	FrameInputMessage currentFrameInput = new FrameInputMessage();
+
 	public override void OnStartClient()
 	{
 		base.OnStartClient();
 
 		NetworkClient.RegisterHandler<FrameSyncSnapShotMessage>(OnReceiveFrameSyncMessage);
+		InputManager.Instance.RegisterInputReceiver(this);
 		IsServerSession = false;
 
 		sessionCoroutine = StartCoroutine(DoClientRoutine());
@@ -30,6 +34,8 @@ public partial class BattleSessionManager
 		base.OnStopClient();
 
 		NetworkClient.UnregisterHandler<FrameEntityMessage>();
+		InputManager.Instance.UnregisterInputReceiver(this);
+
 		IsServerSession = false;
 
 		if (sessionCoroutine != null)
@@ -40,8 +46,11 @@ public partial class BattleSessionManager
 	{
 		if (IsServerSession == false)
 		{
-			var currentFrameSnapShot = new FrameSnapShotMessage();
+			var currentFrameSnapShot = new FrameInputSnapShotMessage();
+			currentFrameSnapShot.ownerGuid = 0;
+			currentFrameSnapShot.tickCount = currentTickCount;
 			currentFrameSnapShot.entityMessages = MakeFrameEntityMessages().ToArray();
+			currentFrameSnapShot.inputMessage = currentFrameInput;
 
 			NetworkClient.Send(currentFrameSnapShot);
 		}
@@ -59,7 +68,7 @@ public partial class BattleSessionManager
 			entityMessage.myEntityVelocity = entity.Velocity;
 			entityMessage.myEntityHitBox = entity.HitBox;
 			entityMessage.myEntityPos = entity.Position;
-			entityMessage.entityCurrentState = (int)entity.CurrentState;
+			entityMessage.entityState = (int)entity.CurrentState;
 
 			yield return entityMessage;
 		}
@@ -68,6 +77,9 @@ public partial class BattleSessionManager
 	private void OnReceiveFrameSyncMessage(FrameSyncSnapShotMessage message)
 	{
 		// 틱 카운트에 문제가 있다면 폐기한다.
+		if (currentTickCount > message.tickCount)
+			return;
+
 		foreach (var entityMessage in message.entityMessages)
 		{
 			var entity = EntityManager.Instance.GetEntityComponent(entityMessage.entityGuid);
@@ -77,7 +89,13 @@ public partial class BattleSessionManager
 			entity.TryChangeState(entityMessage);
 			entity.Teleport(entityMessage.myEntityPos);
 		}
+
+		currentTickCount = message.tickCount + 1;
 	}
 
-
+	public void OnInput(FrameInputMessage input)
+	{
+		prevFrameInput = currentFrameInput;
+		currentFrameInput = input;
+	}
 }

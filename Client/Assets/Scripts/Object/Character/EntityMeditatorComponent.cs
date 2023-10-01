@@ -66,7 +66,7 @@ public enum ENUM_ENTITY_STATE
 
 public struct FrameSyncStateParam
 {
-	public FrameSnapShotMessage userInput;
+	public FrameInputSnapShotMessage userInput;
 
 	public bool IsGrounded;
 	public Vector2 Velocity;
@@ -164,7 +164,7 @@ public class EntityMeditatorComponent : EntityComponent
 		var frameSyncInfo = stateInfo.Convert<FrameEntityMessage>();
 
 		var beforeState = CurrentState;
-		CurrentState = frameSyncInfo.entityCurrentState > 0 ? (ENUM_ENTITY_STATE)frameSyncInfo.entityCurrentState : CurrentState;
+		CurrentState = frameSyncInfo.entityState > 0 ? (ENUM_ENTITY_STATE)frameSyncInfo.entityState : CurrentState;
         var nextState = GetSimulatedNextState(stateInfo);
 
 		bool isChanged = beforeState != nextState;

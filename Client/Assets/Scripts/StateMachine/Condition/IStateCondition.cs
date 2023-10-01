@@ -72,7 +72,7 @@ public class DashCondition : NoParameterStateCondition
 	{
 		bool isSatisfied = false;
 
-		if (stateInfo is FrameSyncInputInfo frameInfo)
+		if (stateInfo is FrameInputMessage frameInfo)
 		{
 			isSatisfied = frameInfo.isDash;
 		}
@@ -87,7 +87,7 @@ public class PressGuardCondition : NoParameterStateCondition
 	{
 		bool isSatisfied = false;
 
-		if (stateInfo is FrameSyncInputInfo frameInfo)
+		if (stateInfo is FrameInputMessage frameInfo)
 		{
 			isSatisfied = frameInfo.isGuard;
 		}
@@ -117,7 +117,7 @@ public class PressJumpCondition : NoParameterStateCondition
     {
 		bool isSatisfied = false;
 
-        if (stateInfo is FrameSyncInputInfo frameInfo)
+        if (stateInfo is FrameInputMessage frameInfo)
         {
             isSatisfied = frameInfo.moveInput.y > Mathf.Epsilon;
         }
@@ -147,7 +147,7 @@ public class MoveCondition : FloatParameterStateCondition
 	{
 		bool isSatisfied = false;
 
-		if (stateInfo is FrameSyncInputInfo frameInfo)
+		if (stateInfo is FrameInputMessage frameInfo)
 		{
 			float currX = frameInfo.moveInput.x;
 			isSatisfied = Mathf.Abs(currX) > Mathf.Abs(value);
@@ -192,7 +192,7 @@ public class AttackCondition : IStateCondition
 
 	public bool IsSatisfied(IStateInfo stateInfo)
 	{
-		if(stateInfo is FrameSyncInputInfo animStateInfo)
+		if(stateInfo is FrameInputMessage animStateInfo)
 		{
 			return animStateInfo.pressedAttackKeyNum == (int)key;
 		}

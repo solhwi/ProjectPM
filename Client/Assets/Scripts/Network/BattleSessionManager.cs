@@ -9,6 +9,8 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 	private Coroutine sessionCoroutine = null;
 	private bool IsServerSession = false;
 
+	private int currentTickCount = 0;
+
 	public void Connect(SceneModuleParam param)
 	{
 		if (param is BattleSceneModuleParam battleParam)

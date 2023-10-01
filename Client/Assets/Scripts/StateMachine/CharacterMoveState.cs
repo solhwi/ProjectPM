@@ -9,13 +9,13 @@ namespace StateMachine
     {
 		public override void OnSLStateEnter(EntityMeditatorComponent owner, AnimationStateInfo animatorStateInfo, IStateInfo stateInfo)
 		{
-			var message = stateInfo.Convert<FrameSnapShotMessage>();
+			var message = stateInfo.Convert<FrameInputSnapShotMessage>();
             // Move(owner, message.moveInput.x);
 		}
 
 		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, AnimationStateInfo animatorStateInfo, IStateInfo stateInfo)
         {
-            var message = stateInfo.Convert<FrameSnapShotMessage>();
+            var message = stateInfo.Convert<FrameInputSnapShotMessage>();
             // Move(owner, message.moveInput.x);
         }
 

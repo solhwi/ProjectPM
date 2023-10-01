@@ -11,7 +11,7 @@ using UnityEngine;
 
 public partial class BattleSessionManager
 {
-    Queue<FrameSnapShotMessage> inputMessageQueue = new Queue<FrameSnapShotMessage>();
+    Queue<FrameInputSnapShotMessage> inputMessageQueue = new Queue<FrameInputSnapShotMessage>();
     private float latency = 1.0f;
 
    
@@ -19,7 +19,7 @@ public partial class BattleSessionManager
     {
         base.OnStartServer();
 
-        NetworkServer.RegisterHandler<FrameSnapShotMessage>(OnReceiveFrameMessage, false);
+        NetworkServer.RegisterHandler<FrameInputSnapShotMessage>(OnReceiveFrameMessage, false);
         IsServerSession = true;
 
         sessionCoroutine = StartCoroutine(DoServerRoutine());
@@ -29,7 +29,7 @@ public partial class BattleSessionManager
     {
         base.OnStopServer();
 
-        NetworkServer.UnregisterHandler<FrameSnapShotMessage>();
+        NetworkServer.UnregisterHandler<FrameInputSnapShotMessage>();
         IsServerSession = false;
 
         if (sessionCoroutine != null)
@@ -48,21 +48,22 @@ public partial class BattleSessionManager
 
 			var frameSnapShot = new FrameSyncSnapShotMessage();
 			frameSnapShot.entityMessages = FlushFrameSyncEntityMessage(inputMessageQueue, lastTickCount).ToArray();
+            frameSnapShot.tickCount = lastTickCount + 1;
 
-            // 스냅샷을 발송한다.
+			// 스냅샷을 발송한다.
 			NetworkServer.SendToAll(frameSnapShot);
 		}
 	}
 
-    private IEnumerable<FrameEntityMessage> FlushFrameSyncEntityMessage(Queue<FrameSnapShotMessage> inputQueue, int tickIndex)
+    private IEnumerable<FrameEntityMessage> FlushFrameSyncEntityMessage(Queue<FrameInputSnapShotMessage> inputQueue, int tickIndex)
     {
-		while (inputQueue.TryDequeue(out var message))
+		while (inputQueue.TryDequeue(out var inputMessage))
 		{
-            if (message.tickCount != tickIndex)
+            if (inputMessage.tickCount != tickIndex)
                 continue;
 
             // 우선 프레임 당시 상황으로 이동 시킨 후
-            foreach(var entityMessage in message.entityMessages)
+            foreach(var entityMessage in inputMessage.entityMessages)
             {
 				var entity = EntityManager.Instance.GetEntityComponent(entityMessage.entityGuid);
 				if (entity == null)
@@ -72,12 +73,16 @@ public partial class BattleSessionManager
 			}
 
             // 충돌 체크한다.
-			foreach (var entityMessage in message.entityMessages)
+			foreach (var entityMessage in inputMessage.entityMessages)
 			{
+				var entity = EntityManager.Instance.GetEntityComponent(entityMessage.entityGuid);
+				if (entity == null)
+					continue;
+
 				var frameSyncMessage = new FrameEntityMessage();
 				frameSyncMessage.entityGuid = entityMessage.entityGuid;
 				frameSyncMessage.attackerEntities = EntityManager.Instance.GetOverlapEntitiyGuids(entityMessage).ToArray();
-				frameSyncMessage.entityCurrentState = entityMessage.entityCurrentState;
+                frameSyncMessage.entityState = (int)entity.GetSimulatedNextState(inputMessage);
 				yield return frameSyncMessage;
 			}
 
@@ -85,7 +90,7 @@ public partial class BattleSessionManager
 		}
 	}
 
-	private void OnReceiveFrameMessage(NetworkConnectionToClient connectionToClient, FrameSnapShotMessage message)
+	private void OnReceiveFrameMessage(NetworkConnectionToClient connectionToClient, FrameInputSnapShotMessage message)
     {
         inputMessageQueue.Enqueue(message);
     }

@@ -77,7 +77,7 @@ public class GuardInputData : PressInputData
 	}
 }
 
-public struct FrameSyncInputInfo : NetworkMessage, IStateInfo
+public struct FrameInputMessage : NetworkMessage, IStateInfo
 {
     public Vector2 moveInput;
     public int pressedAttackKeyNum;
@@ -85,7 +85,7 @@ public struct FrameSyncInputInfo : NetworkMessage, IStateInfo
     public bool isGuard;
     public int frameCount;
 
-    public FrameSyncInputInfo(Vector2 moveInput, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int frameCount)
+    public FrameInputMessage(Vector2 moveInput, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int frameCount)
     {
         this.moveInput = moveInput;
         this.pressedAttackKeyNum = (int)pressedAttackKey;
@@ -97,7 +97,7 @@ public struct FrameSyncInputInfo : NetworkMessage, IStateInfo
 
 public interface IInputReceiver
 {
-	void OnInput(FrameSyncInputInfo resultInput);
+	void OnInput(FrameInputMessage resultInput);
 }
 
 public class InputManager : Singleton<InputManager>
@@ -113,7 +113,7 @@ public class InputManager : Singleton<InputManager>
 	private List<IInputReceiver> inputReceivers = new List<IInputReceiver>();
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
 
-	private FrameSyncInputInfo prevInputData = new FrameSyncInputInfo();
+	private FrameInputMessage prevInputData = new FrameInputMessage();
 
 	protected override void OnAwakeInstance()
 	{
@@ -215,7 +215,7 @@ public class InputManager : Singleton<InputManager>
 			}
 		}
 
-		prevInputData = new FrameSyncInputInfo(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount);
+		prevInputData = new FrameInputMessage(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount);
 
 		foreach (var receiver in inputReceivers)
 		{

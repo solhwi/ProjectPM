@@ -5,7 +5,6 @@ using UnityEngine;
 
 public struct FrameSyncSnapShotMessage : NetworkMessage
 {
-	public int ownerGuid;
 	public int tickCount;
 
 	public FrameEntityMessage[] entityMessages;
@@ -14,7 +13,7 @@ public struct FrameSyncSnapShotMessage : NetworkMessage
 public struct FrameEntityMessage : NetworkMessage, IStateInfo
 {
 	public int entityGuid;
-	public int entityCurrentState;
+	public int entityState;
 
 	public Vector2 myEntityPos;
 	public Vector2 myEntityHitBox;
@@ -26,11 +25,11 @@ public struct FrameEntityMessage : NetworkMessage, IStateInfo
 	public bool isGrounded;
 }
 
-public struct FrameSnapShotMessage : NetworkMessage, IStateInfo
+public struct FrameInputSnapShotMessage : NetworkMessage, IStateInfo
 {
 	public int ownerGuid;
 	public int tickCount;
 
 	public FrameEntityMessage[] entityMessages;
-	public FrameSyncInputInfo inputInfo;
+	public FrameInputMessage inputMessage;
 }

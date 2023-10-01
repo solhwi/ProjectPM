@@ -21,7 +21,7 @@ namespace StateMachine
 
             jumpYPower = stat.jumpPower;
 
-            var message = stateInfo.Convert<FrameSnapShotMessage>();
+            var message = stateInfo.Convert<FrameInputSnapShotMessage>();
             // jumpVector = new Vector2(message.moveInput.x, message.moveInput.y * jumpYPower);
 
             owner.Move(jumpVector * Time.deltaTime);

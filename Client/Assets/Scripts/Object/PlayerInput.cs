@@ -23,7 +23,7 @@ public class PlayerInput : MonoBehaviour, IInputReceiver
 		InputManager.Instance.UnregisterInputReceiver(this);
 	}
 
-	public void OnInput(FrameSyncInputInfo input)
+	public void OnInput(FrameInputMessage input)
 	{
 		if (!isEnable)
 			return;
