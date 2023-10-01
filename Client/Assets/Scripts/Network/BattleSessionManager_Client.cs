@@ -18,6 +18,7 @@ public partial class BattleSessionManager : IInputReceiver, IEntityCaptureReceiv
 
 		NetworkClient.RegisterHandler<FrameSyncSnapShotMessage>(OnReceiveFrameSyncMessage);
 		InputManager.Instance.RegisterInputReceiver(this);
+		EntityManager.Instance.Register(this);
 		IsServerSession = false;
 
 		sessionCoroutine = StartCoroutine(DoClientRoutine());
@@ -38,6 +39,7 @@ public partial class BattleSessionManager : IInputReceiver, IEntityCaptureReceiv
 
 		NetworkClient.UnregisterHandler<FrameEntityMessage>();
 		InputManager.Instance.UnregisterInputReceiver(this);
+		EntityManager.Instance.UnRegister(this);
 
 		IsServerSession = false;
 

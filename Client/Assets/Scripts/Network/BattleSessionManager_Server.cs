@@ -20,7 +20,7 @@ public partial class BattleSessionManager
         base.OnStartServer();
 
         NetworkServer.RegisterHandler<FrameInputSnapShotMessage>(OnReceiveFrameMessage, false);
-        IsServerSession = true;
+		IsServerSession = true;
 
         sessionCoroutine = StartCoroutine(DoServerRoutine());
     }
@@ -30,7 +30,7 @@ public partial class BattleSessionManager
         base.OnStopServer();
 
         NetworkServer.UnregisterHandler<FrameInputSnapShotMessage>();
-        IsServerSession = false;
+		IsServerSession = false;
 
         if (sessionCoroutine != null)
             StopCoroutine(sessionCoroutine);

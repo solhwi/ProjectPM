@@ -180,8 +180,7 @@ public class EntityManager : Singleton<EntityManager>
 		return entityMessage;
 	}
 
-
-	public IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity)
+	private IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset)
     {
         Collider2D[] colliders = Physics2D.OverlapBoxAll(pos + offset, size, 0);
         if (colliders == null || colliders.Length == 0)
@@ -204,10 +203,9 @@ public class EntityManager : Singleton<EntityManager>
         }
     }
 
-    // ºÎµúÈù Entityµé ±¸ÇÏ±â
-    public IEnumerable<EntityComponent> GetOverlapEntities(FrameEntityMessage message)
+    private IEnumerable<EntityComponent> GetOverlapEntities(FrameEntityMessage message)
     {
-        return GetOverlapEntities(message.entityGuid, message.myEntityPos, message.myEntityHitBox, message.myEntityOffset, message.myEntityVelocity);
+        return GetOverlapEntities(message.entityGuid, message.myEntityPos, message.myEntityHitBox, message.myEntityOffset);
     }
 
     public IEnumerable<int> GetOverlapEntitiyGuids(FrameEntityMessage message)
@@ -229,4 +227,16 @@ public class EntityManager : Singleton<EntityManager>
 
         return -1;
     }
+
+    public void Register(IEntityCaptureReceiver receiver)
+    {
+        if(entityCaptureReceivers.Contains(receiver) == false)
+		    entityCaptureReceivers.Add(receiver);
+	}
+
+	public void UnRegister(IEntityCaptureReceiver receiver)
+	{
+		if (entityCaptureReceivers.Contains(receiver))
+			entityCaptureReceivers.Remove(receiver);
+	}
 }

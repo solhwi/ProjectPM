@@ -7,6 +7,16 @@ public class OfflineBattleManager : Singleton<OfflineBattleManager>, IEntityCapt
 {
 	private FrameEntityMessage[] currentFrameEntitiesSnapshot = null;
 
+	protected override void OnAwakeInstance()
+	{
+		EntityManager.Instance.Register(this);
+	}
+
+	protected override void OnReleaseInstance()
+	{
+		EntityManager.Instance.UnRegister(this);
+	}
+
 	public void OnCapture(FrameEntityMessage playerEntityMessage, FrameEntityMessage[] entitiyMessages)
 	{
 		currentFrameEntitiesSnapshot = entitiyMessages;

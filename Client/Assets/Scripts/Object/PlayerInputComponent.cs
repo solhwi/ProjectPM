@@ -23,12 +23,14 @@ public class PlayerInputComponent : MonoBehaviour, IInputReceiver
 		InputManager.Instance.UnregisterInputReceiver(this);
 	}
 
-	public void OnInput(FrameInputMessage input)
+	public void OnInput(FrameInputMessage message)
 	{
 		if (!isEnable)
 			return;
 
 		if (characterComponent == null)
 			return;
+
+		characterComponent.TryChangeState(message);
 	}
 }
