@@ -35,40 +35,9 @@ public struct EntityAnimatorStateInfo
 
 namespace StateMachine
 {
-	public class EntityAnimatorStateMachine : EntityAnimatorState
-	{
-		private static Dictionary<Animator, EntityAnimatorState[]> animatorStateDictionary = new Dictionary<Animator, EntityAnimatorState[]>();
-
-		public static void Initialize(Animator animator, EntityMeditatorComponent entityComponent)
-		{
-			var animatorStates = animator.GetBehaviours<EntityAnimatorState>();
-			animatorStateDictionary[animator] = animatorStates;
-
-			foreach (var state in animatorStates)
-			{
-				state.Initialize(entityComponent);
-			}
-		}
-
-		public static new void TryChangeState(Animator animator, ENUM_ENTITY_STATE nextState)
-		{
-			if (animatorStateDictionary.Any() == false)
-				return;
-
-			if (animatorStateDictionary.ContainsKey(animator) == false)
-				return;
-
-			foreach (var state in animatorStateDictionary[animator])
-			{
-				state.TryChangeState(animator, nextState);
-			}
-		}
-	}
-
 	public class EntityAnimatorState : SealedStateMachineBehaviour
     {	
 		private EntityMeditatorComponent owner;
-		private ENUM_ENTITY_STATE currentState;
 
 		private bool m_FirstFrameHappened;
 		private bool m_LastFrameHappened;
@@ -128,17 +97,6 @@ namespace StateMachine
                 OnSLTransitionFromStateUpdate(owner, animationStateInfo);
             }
 		}
-
-        public bool TryChangeState(Animator animator, ENUM_ENTITY_STATE nextState)
-        {
-            if (currentState.Equals(nextState) == false)
-            {
-                animator.Play(nextState.ToString());
-            }
-
-            currentState = nextState;
-            return true;
-        }
 
 		public sealed override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
         {

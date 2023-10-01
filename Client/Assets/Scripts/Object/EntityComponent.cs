@@ -10,9 +10,9 @@ public abstract class EntityComponent : MonoBehaviour
 		get; private set;
 	}
 
-    public ENUM_ENTITY_STATE CurrentState
+    public abstract ENUM_ENTITY_STATE CurrentState
 	{
-		get; protected set;
+		get;
 	}
 
 	public abstract Vector2 Velocity

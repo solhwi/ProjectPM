@@ -66,16 +66,13 @@ public enum ENUM_ENTITY_STATE
 
 [RequireComponent(typeof(RenderingComponent))]
 [RequireComponent(typeof(PhysicsComponent))]
-[RequireComponent(typeof(CharacterStateMachineComponent))]
+[RequireComponent(typeof(EntityStateMachineComponent))]
 [Character("EntityMeditator.prefab")]
 public class EntityMeditatorComponent : EntityComponent
 {
 	[SerializeField] private RenderingComponent renderingCompoonent = null;
 	[SerializeField] private PhysicsComponent physicsComponent = null;
-	[SerializeField] private CharacterStateMachineComponent stateMachineComponent = null;
-
-	[SerializeField] private CharacterTransitionTable transitionTable = null;
-	[SerializeField] private ConditionTable conditionTable = null;
+	[SerializeField] private EntityStateMachineComponent stateMachineComponent = null;
 
     public override Vector2 Velocity => physicsComponent.Velocity;
 
@@ -84,6 +81,8 @@ public class EntityMeditatorComponent : EntityComponent
 	public override bool IsGrounded => physicsComponent.IsGrounded;
 
 	public override Vector2 Offset => physicsComponent.hitOffset;
+
+	public override ENUM_ENTITY_STATE CurrentState => stateMachineComponent.CurrentState;
 
 	public override void Initialize(int ownerGuid, ENUM_ENTITY_TYPE type)
 	{
@@ -98,54 +97,22 @@ public class EntityMeditatorComponent : EntityComponent
 
     public override ENUM_ENTITY_STATE GetSimulatedNextState(IStateMessage stateInfo)
     {
-		var nextState = CurrentState;
-
-        if (transitionTable.defaultTransitionList.Any())
-        {
-            var defaultTransition = transitionTable.defaultTransitionList.FirstOrDefault();
-            var condition = conditionTable.GetCondition(defaultTransition.key);
-            if (condition.IsSatisfied(stateInfo))
-            {
-                nextState = defaultTransition.nextState;
-            }
-        }
-
-        if (transitionTable.loopTransitionDictionary.TryGetValue(CurrentState, out var loopTransition))
-        {
-            var condition = conditionTable.GetCondition(loopTransition.conditionType);
-            if (condition.IsSatisfied(stateInfo))
-            {
-                nextState = CurrentState;
-            }
-        }
-
-        foreach (var transition in transitionTable.transitionList)
-        {
-            if (transition.prevState == CurrentState)
-            {
-                var condition = conditionTable.GetCondition(transition.conditionType);
-                if (condition.IsSatisfied(stateInfo))
-                {
-                    nextState = transition.nextState;
-                }
-            }
-        }
-
-		return nextState;
+		return stateMachineComponent.GetSimulatedNextState(stateInfo);
     }
 
 	public override bool TryChangeState(IStateMessage stateInfo)
     {
 		var entityFrameInfo = stateInfo.ConvertToEntity();
 
-		CurrentState = entityFrameInfo.entityState > 0 ? (ENUM_ENTITY_STATE)entityFrameInfo.entityState : CurrentState;
-        var nextState = GetSimulatedNextState(stateInfo);
+		var fixedCurrentState = entityFrameInfo.entityState > 0 ? (ENUM_ENTITY_STATE)entityFrameInfo.entityState : CurrentState;
+		stateMachineComponent.ChangeState(fixedCurrentState);
 
-		bool isChanged = CurrentState != nextState;
+		var nextState = GetSimulatedNextState(stateInfo);
+
+		bool isChanged = fixedCurrentState != nextState;
 		if (isChanged)
 		{
-            stateMachineComponent.TryChangeState(nextState);
-			CurrentState = nextState;
+            stateMachineComponent.ChangeState(nextState);
         }
 
         return isChanged;
