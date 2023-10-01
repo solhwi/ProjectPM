@@ -15,7 +15,7 @@ public class CompositeStateCondition : IStateCondition
 		conditionTable = table;
 	}
 
-	public bool IsSatisfied(IStateInfo stateInfo)
+	public bool IsSatisfied(IStateMessage stateInfo)
 	{
 		bool isSatisfied = false;
 

@@ -66,12 +66,12 @@ public abstract class EntityComponent : MonoBehaviour
 		transform.position = posVec;
 	}
 
-	public virtual ENUM_ENTITY_STATE GetSimulatedNextState(IStateInfo stateInfo)
+	public virtual ENUM_ENTITY_STATE GetSimulatedNextState(IStateMessage stateInfo)
     {
         return CurrentState;
 	}
 
-	public virtual bool TryChangeState(IStateInfo stateInfo)
+	public virtual bool TryChangeState(IStateMessage stateInfo)
 	{
 		return false;
 	}

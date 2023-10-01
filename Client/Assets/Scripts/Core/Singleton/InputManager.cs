@@ -77,24 +77,6 @@ public class GuardInputData : PressInputData
 	}
 }
 
-public struct FrameInputMessage : NetworkMessage, IStateInfo
-{
-    public Vector2 moveInput;
-    public int pressedAttackKeyNum;
-    public bool isDash;
-    public bool isGuard;
-    public int frameCount;
-
-    public FrameInputMessage(Vector2 moveInput, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int frameCount)
-    {
-        this.moveInput = moveInput;
-        this.pressedAttackKeyNum = (int)pressedAttackKey;
-        this.isDash = isDash;
-        this.isGuard = isGuard;
-        this.frameCount = frameCount;
-    }
-}
-
 public interface IInputReceiver
 {
 	void OnInput(FrameInputMessage resultInput);

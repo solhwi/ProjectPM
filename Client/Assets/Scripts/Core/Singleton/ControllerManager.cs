@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class ControllerManager : Singleton<ControllerManager>
 {
-    public PlayerInput SetPlayerController(EntityComponent targetObject)
+    public PlayerInputComponent SetPlayerController(EntityComponent targetObject)
     {
-        return targetObject.GetOrAddComponent<PlayerInput>();
+        return targetObject.GetOrAddComponent<PlayerInputComponent>();
     }
 }

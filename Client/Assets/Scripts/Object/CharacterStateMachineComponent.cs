@@ -14,8 +14,8 @@ public class CharacterStateMachineComponent : MonoBehaviour
 		EntityAnimatorStateMachine.Initialize(animator, owner);
     }
 
-    public void TryChangeState(ENUM_ENTITY_STATE nextState, IStateInfo info)
+    public void TryChangeState(ENUM_ENTITY_STATE nextState)
     {
-		EntityAnimatorStateMachine.TryChangeState(animator, nextState, info);
+		EntityAnimatorStateMachine.TryChangeState(animator, nextState);
 	}
 }

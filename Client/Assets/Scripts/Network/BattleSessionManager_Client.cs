@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public partial class BattleSessionManager : IInputReceiver
+public partial class BattleSessionManager : IInputReceiver, IEntityCaptureReceiver
 {
-	FrameInputMessage prevFrameInput = new FrameInputMessage();
-	FrameInputMessage currentFrameInput = new FrameInputMessage();
+	private FrameInputMessage prevFrameInput = new FrameInputMessage();
+	private FrameInputMessage currentFrameInput = new FrameInputMessage();
+
+	private FrameEntityMessage[] currentFrameEntitiesSnapshot = null;
+	private FrameEntityMessage currentFramePlayerEntitySnapshot = new FrameEntityMessage();
 
 	public override void OnStartClient()
 	{
@@ -49,28 +52,11 @@ public partial class BattleSessionManager : IInputReceiver
 			var currentFrameSnapShot = new FrameInputSnapShotMessage();
 			currentFrameSnapShot.ownerGuid = 0;
 			currentFrameSnapShot.tickCount = currentTickCount;
-			currentFrameSnapShot.entityMessages = MakeFrameEntityMessages().ToArray();
-			currentFrameSnapShot.inputMessage = currentFrameInput;
+			currentFrameSnapShot.entityMessages = currentFrameEntitiesSnapshot;
+			currentFrameSnapShot.playerEntityMessage = currentFramePlayerEntitySnapshot;
+			currentFrameSnapShot.playerInputMessage = currentFrameInput;
 
 			NetworkClient.Send(currentFrameSnapShot);
-		}
-	}
-
-	private IEnumerable<FrameEntityMessage> MakeFrameEntityMessages()
-	{
-		foreach (var entity in EntityManager.Instance.GetMyEntities(0))
-		{
-			var entityMessage = new FrameEntityMessage();
-
-			entityMessage.entityGuid = entity.Guid;
-			entityMessage.isGrounded = entity.IsGrounded;
-			entityMessage.myEntityOffset = entity.Offset;
-			entityMessage.myEntityVelocity = entity.Velocity;
-			entityMessage.myEntityHitBox = entity.HitBox;
-			entityMessage.myEntityPos = entity.Position;
-			entityMessage.entityState = (int)entity.CurrentState;
-
-			yield return entityMessage;
 		}
 	}
 
@@ -86,8 +72,8 @@ public partial class BattleSessionManager : IInputReceiver
 			if (entity == null)
 				return;
 
-			entity.TryChangeState(entityMessage);
 			entity.Teleport(entityMessage.myEntityPos);
+			entity.TryChangeState(entityMessage);
 		}
 
 		currentTickCount = message.tickCount + 1;
@@ -97,5 +83,11 @@ public partial class BattleSessionManager : IInputReceiver
 	{
 		prevFrameInput = currentFrameInput;
 		currentFrameInput = input;
+	}
+
+	public void OnCapture(FrameEntityMessage playerEntityMessage, FrameEntityMessage[] entitiyMessages)
+	{
+		currentFramePlayerEntitySnapshot = playerEntityMessage;
+		currentFrameEntitiesSnapshot = entitiyMessages;
 	}
 }

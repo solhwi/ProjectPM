@@ -82,7 +82,7 @@ public partial class BattleSessionManager
 				var frameSyncMessage = new FrameEntityMessage();
 				frameSyncMessage.entityGuid = entityMessage.entityGuid;
 				frameSyncMessage.attackerEntities = EntityManager.Instance.GetOverlapEntitiyGuids(entityMessage).ToArray();
-                frameSyncMessage.entityState = (int)entity.GetSimulatedNextState(inputMessage);
+                frameSyncMessage.entityState = (int)entity.GetSimulatedNextState(inputMessage.playerInputMessage);
 				yield return frameSyncMessage;
 			}
 

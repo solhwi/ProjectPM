@@ -38,7 +38,7 @@ public enum ENUM_ENTITY_TYPE
 [Serializable]
 public enum ENUM_ENTITY_STATE
 {
-	Idle, // ∏ÿ√„
+	Idle = 1, // ∏ÿ√„
 	Move, // ¡¬, øÏ
 	JumpUp, // ¡°«¡ («œ∏Èº≠ π∞∏Æ¿˚¿Œ ¿Ãµø¿Ã ∞°¥…)
 	JumpDown, // ¡°«¡ ¥ŸøÓ
@@ -64,38 +64,18 @@ public enum ENUM_ENTITY_STATE
 	Ultimate, // ±√±ÿ±‚
 }
 
-public struct FrameSyncStateParam
-{
-	public FrameInputSnapShotMessage userInput;
-
-	public bool IsGrounded;
-	public Vector2 Velocity;
-
-    public IEnumerable<AttackableComponent> attackers;
-    public EntityMeditatorComponent defender;
-
-	public void Clear()
-	{
-		userInput = default;
-		IsGrounded = false;
-		Velocity = default;
-		attackers = null;
-		defender = null;
-	}
-}
-
 [RequireComponent(typeof(RenderingComponent))]
 [RequireComponent(typeof(PhysicsComponent))]
 [RequireComponent(typeof(CharacterStateMachineComponent))]
 [Character("EntityMeditator.prefab")]
 public class EntityMeditatorComponent : EntityComponent
 {
-	private RenderingComponent renderingCompoonent = null;
-	private PhysicsComponent physicsComponent = null;
-	private CharacterStateMachineComponent stateMachineComponent = null;
+	[SerializeField] private RenderingComponent renderingCompoonent = null;
+	[SerializeField] private PhysicsComponent physicsComponent = null;
+	[SerializeField] private CharacterStateMachineComponent stateMachineComponent = null;
 
-    private CharacterTransitionTable transitionTable = null;
-    private ConditionTable conditionTable = null;
+	[SerializeField] private CharacterTransitionTable transitionTable = null;
+	[SerializeField] private ConditionTable conditionTable = null;
 
     public override Vector2 Velocity => physicsComponent.Velocity;
 
@@ -108,20 +88,15 @@ public class EntityMeditatorComponent : EntityComponent
 	public override void Initialize(int ownerGuid, ENUM_ENTITY_TYPE type)
 	{
 		base.Initialize(ownerGuid, type);
-
-		physicsComponent = GetComponent<PhysicsComponent>();
-
-		stateMachineComponent = GetComponent<CharacterStateMachineComponent>();
 		stateMachineComponent.Initialize(this);
 	}
 
 	public void SetEntityLayer(ENUM_LAYER_TYPE layerType)
 	{
-		renderingCompoonent = GetComponent<RenderingComponent>();
 		renderingCompoonent.Initialize(layerType, Guid);
     }
 
-    public override ENUM_ENTITY_STATE GetSimulatedNextState(IStateInfo stateInfo)
+    public override ENUM_ENTITY_STATE GetSimulatedNextState(IStateMessage stateInfo)
     {
 		var nextState = CurrentState;
 
@@ -159,24 +134,19 @@ public class EntityMeditatorComponent : EntityComponent
 		return nextState;
     }
 
-	public override bool TryChangeState(IStateInfo stateInfo)
+	public override bool TryChangeState(IStateMessage stateInfo)
     {
-		var frameSyncInfo = stateInfo.Convert<FrameEntityMessage>();
+		var entityFrameInfo = stateInfo.ConvertToEntity();
 
-		var beforeState = CurrentState;
-		CurrentState = frameSyncInfo.entityState > 0 ? (ENUM_ENTITY_STATE)frameSyncInfo.entityState : CurrentState;
+		CurrentState = entityFrameInfo.entityState > 0 ? (ENUM_ENTITY_STATE)entityFrameInfo.entityState : CurrentState;
         var nextState = GetSimulatedNextState(stateInfo);
 
-		bool isChanged = beforeState != nextState;
+		bool isChanged = CurrentState != nextState;
 		if (isChanged)
 		{
-            stateMachineComponent.TryChangeState(nextState, stateInfo);
+            stateMachineComponent.TryChangeState(nextState);
 			CurrentState = nextState;
         }
-		else
-		{
-			CurrentState = beforeState;
-		}
 
         return isChanged;
 	}

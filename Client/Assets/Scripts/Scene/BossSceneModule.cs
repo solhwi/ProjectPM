@@ -17,8 +17,8 @@ public class BossSceneModule : SceneModule
 {
     public override void OnEnter(SceneModuleParam param)
 	{
-        MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntityManager.Instance.Player);
-		ControllerManager.Instance.SetPlayerController(EntityManager.Instance.Player);
+        MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntityManager.Instance.PlayerEntity);
+		ControllerManager.Instance.SetPlayerController(EntityManager.Instance.PlayerEntity);
     }
 
 	public override IEnumerator OnPrepareEnterRoutine(SceneModuleParam param)
@@ -59,5 +59,6 @@ public class BossSceneModule : SceneModule
     public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
     {
         EntityManager.Instance.OnLateUpdate(deltaFrameCount, deltaTime);
+		OfflineBattleManager.Instance.OnLateUpdate(deltaFrameCount, deltaTime);
     }
 }

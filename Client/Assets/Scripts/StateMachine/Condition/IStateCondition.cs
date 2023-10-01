@@ -4,14 +4,14 @@ using UnityEngine;
 public interface IStateCondition
 {
 	public bool Parse(params string[] rawParameters);
-	public bool IsSatisfied(IStateInfo stateInfo);
+	public bool IsSatisfied(IStateMessage stateInfo);
 }
 
 public abstract class FloatParameterStateCondition : IStateCondition
 {
     protected float value = 0.0f;
 
-	public abstract bool IsSatisfied(IStateInfo stateInfo);
+	public abstract bool IsSatisfied(IStateMessage stateInfo);
 
     public bool Parse(params string[] rawParameters)
     {
@@ -26,7 +26,7 @@ public abstract class FloatParameterStateCondition : IStateCondition
 
 public abstract class NoParameterStateCondition : IStateCondition
 {
-	public abstract bool IsSatisfied(IStateInfo stateInfo);
+	public abstract bool IsSatisfied(IStateMessage stateInfo);
 
     public bool Parse(params string[] rawParameters)
     {
@@ -39,7 +39,7 @@ public abstract class IntStateCondition : IStateCondition
 {
 	protected int value;
 
-    public abstract bool IsSatisfied(IStateInfo stateInfo);
+    public abstract bool IsSatisfied(IStateMessage stateInfo);
 
     public bool Parse(params string[] rawParameters)
     {
@@ -55,134 +55,86 @@ public abstract class IntStateCondition : IStateCondition
 
 public class AnimationWaitCondition : FloatParameterStateCondition
 {
-	public override bool IsSatisfied(IStateInfo stateInfo)
+	public override bool IsSatisfied(IStateMessage stateInfo)
 	{
-		if (stateInfo is FrameEntityMessage frameInfo)
-		{
-			// return frameInfo.entityNormalizeTime >= value;
-		}
-
-		return false;
+		var entityStateInfo = stateInfo.ConvertToAnimationMessage();
+		return entityStateInfo.normalizeTime >= value;
 	}
 }
 
 public class DashCondition : NoParameterStateCondition
 {
-	public override bool IsSatisfied(IStateInfo stateInfo)
+	public override bool IsSatisfied(IStateMessage stateInfo)
 	{
-		bool isSatisfied = false;
-
-		if (stateInfo is FrameInputMessage frameInfo)
-		{
-			isSatisfied = frameInfo.isDash;
-		}
-
-		return isSatisfied;
+		var entityStateInfo = stateInfo.ConvertToInput();
+		return entityStateInfo.isDash;
 	}
 }
 
 public class PressGuardCondition : NoParameterStateCondition
 {
-	public override bool IsSatisfied(IStateInfo stateInfo)
+	public override bool IsSatisfied(IStateMessage stateInfo)
 	{
-		bool isSatisfied = false;
-
-		if (stateInfo is FrameInputMessage frameInfo)
-		{
-			isSatisfied = frameInfo.isGuard;
-		}
-
-		return isSatisfied;
+		var entityStateInfo = stateInfo.ConvertToInput();
+		return entityStateInfo.isGuard;
 	}
 }
 
 public class GoUpCondition : FloatParameterStateCondition
 {
-	public override bool IsSatisfied(IStateInfo stateInfo)
+	public override bool IsSatisfied(IStateMessage stateInfo)
 	{
-        bool isSatisfied = false;
-
-        if (stateInfo is FrameEntityMessage frameInfo)
-        {
-            isSatisfied = frameInfo.myEntityVelocity.y > Mathf.Epsilon;
-        }
-
-		return isSatisfied;
+		var entityStateInfo = stateInfo.ConvertToEntity();
+		return entityStateInfo.myEntityVelocity.y < -1 * Mathf.Epsilon;
 	}
 }
 
 public class PressJumpCondition : NoParameterStateCondition
 {
-    public override bool IsSatisfied(IStateInfo stateInfo)
+    public override bool IsSatisfied(IStateMessage stateInfo)
     {
-		bool isSatisfied = false;
-
-        if (stateInfo is FrameInputMessage frameInfo)
-        {
-            isSatisfied = frameInfo.moveInput.y > Mathf.Epsilon;
-        }
-
-        return isSatisfied;
+		var entityStateInfo = stateInfo.ConvertToInput();
+		return entityStateInfo.moveInput.y < -1 * Mathf.Epsilon;
     }
 }
 
 public class FallDownCondition : FloatParameterStateCondition
 {
-	public override bool IsSatisfied(IStateInfo stateInfo)
+	public override bool IsSatisfied(IStateMessage stateInfo)
 	{
-		bool isSatisfied = false;
-		
-		if (stateInfo is FrameEntityMessage frameInfo)
-		{
-			isSatisfied = frameInfo.myEntityVelocity.y < -1 * Mathf.Epsilon;
-		}
-
-		return isSatisfied;
+		var entityStateInfo = stateInfo.ConvertToEntity();
+		return entityStateInfo.myEntityVelocity.y < -1 * Mathf.Epsilon;
 	}
 }
 
 public class MoveCondition : FloatParameterStateCondition
 {
-	public override bool IsSatisfied(IStateInfo stateInfo)
+	public override bool IsSatisfied(IStateMessage stateInfo)
 	{
-		bool isSatisfied = false;
-
-		if (stateInfo is FrameInputMessage frameInfo)
-		{
-			float currX = frameInfo.moveInput.x;
-			isSatisfied = Mathf.Abs(currX) > Mathf.Abs(value);
-		}
-
-		return isSatisfied;
+		var entityStateInfo = stateInfo.ConvertToInput();
+		float currX = entityStateInfo.moveInput.x;
+		return Mathf.Abs(currX) > Mathf.Abs(value);
 	}
 }
 
 public class DamageCondition : IntStateCondition
 {
-    public override bool IsSatisfied(IStateInfo stateInfo)
+    public override bool IsSatisfied(IStateMessage stateInfo)
     {
-        if (stateInfo is FrameEntityMessage frameInfo)
-        {
-			if (frameInfo.attackerEntities == null)
-				return false;
+		var entityStateInfo = stateInfo.ConvertToEntity();
+		if (entityStateInfo.attackerEntities == null)
+			return false;
 
-			return frameInfo.attackerEntities.Count() > value;
-		}
-
-        return false;
+		return entityStateInfo.attackerEntities.Count() > value;
     }
 }
 
 public class GroundedCondition : IntStateCondition
 {
-	public override bool IsSatisfied(IStateInfo stateInfo)
+	public override bool IsSatisfied(IStateMessage stateInfo)
 	{
-		if (stateInfo is FrameEntityMessage animStateInfo)
-		{
-			return animStateInfo.isGrounded == (value > 0);
-		}
-
-		return false;
+		var entityStateInfo = stateInfo.ConvertToEntity();
+		return entityStateInfo.isGrounded == (value > 0);
 	}
 }
 
@@ -190,14 +142,10 @@ public class AttackCondition : IStateCondition
 {
 	private ENUM_ATTACK_KEY key = ENUM_ATTACK_KEY.NONE;
 
-	public bool IsSatisfied(IStateInfo stateInfo)
+	public bool IsSatisfied(IStateMessage stateInfo)
 	{
-		if(stateInfo is FrameInputMessage animStateInfo)
-		{
-			return animStateInfo.pressedAttackKeyNum == (int)key;
-		}
-
-		return false;
+		var entityStateInfo = stateInfo.ConvertToInput();
+		return entityStateInfo.pressedAttackKeyNum == (int)key;
 	}
 
 	public bool Parse(params string[] rawParameters)

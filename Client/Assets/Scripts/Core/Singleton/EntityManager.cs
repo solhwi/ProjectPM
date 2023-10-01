@@ -9,26 +9,41 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
+public interface IEntityCaptureReceiver
+{
+	void OnCapture(FrameEntityMessage playerEntityMessage, FrameEntityMessage[] entitiyMessages);
+}
+
 public class EntityManager : Singleton<EntityManager>
 {
-    public EntityComponent Player
+    public EntityComponent PlayerEntity
     {
         get
         {
-            if (entityDictionary.TryGetValue(playerCharacterGuid, out var component))
+            if (entityDictionary.TryGetValue(PlayerEntityGuid, out var component))
             {
                 return component;
             }
 
-            Debug.LogError($"플레이어 오브젝트가 생성되기 전입니다. GUID : {playerCharacterGuid}");
+            Debug.LogError($"플레이어 오브젝트가 생성되기 전입니다. GUID : {PlayerEntityGuid}");
             return null;
         }
     }
 
-    private int playerCharacterGuid = 0;
+    public int PlayerGuid { get; private set; }
+	public int PlayerEntityGuid { get; private set; }
     private Dictionary<int, EntityComponent> entityDictionary = new Dictionary<int, EntityComponent>();
+    private List<IEntityCaptureReceiver> entityCaptureReceivers = new List<IEntityCaptureReceiver>();
 
-    public EntityComponent GetEntityComponent(int guid)
+    private FrameEntityMessage[] currentFrameEntitiesSnapshot = null;
+    private FrameEntityMessage currentFramePlayerEntitySnapshot = new FrameEntityMessage();
+
+	protected override void OnAwakeInstance()
+	{
+        PlayerGuid = 0;
+	}
+
+	public EntityComponent GetEntityComponent(int guid)
     {
         if (entityDictionary.ContainsKey(guid) == false)
             return null;
@@ -67,10 +82,10 @@ public class EntityManager : Singleton<EntityManager>
         if (character == null)
             yield break;
 
-		character.Initialize(0, characterType);
+		character.Initialize(PlayerGuid, characterType);
 		character.SetEntityLayer(ENUM_LAYER_TYPE.Friendly);
 
-        playerCharacterGuid = character.Guid;
+        PlayerEntityGuid = character.Guid;
 
 		mono.SetSingletonChild(this, character);
     }
@@ -112,7 +127,15 @@ public class EntityManager : Singleton<EntityManager>
 
 	public override void OnPostUpdate(int deltaFrameCount, float deltaTime)
     {
-        foreach(var obj in entityDictionary.Values)
+        currentFramePlayerEntitySnapshot = MakeMyFrameEntityMessage();
+		currentFrameEntitiesSnapshot = MakeFrameEntityMessages(PlayerGuid).ToArray();
+
+		foreach (var receiver in entityCaptureReceivers)
+        {
+            receiver.OnCapture(currentFramePlayerEntitySnapshot, currentFrameEntitiesSnapshot);
+		}
+
+		foreach (var obj in entityDictionary.Values)
         {
             obj.OnPostUpdate();
         }
@@ -120,13 +143,45 @@ public class EntityManager : Singleton<EntityManager>
 
     public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
     {
-        foreach (var obj in entityDictionary.Values)
+		foreach (var obj in entityDictionary.Values)
         {
             obj.OnLateUpdate();
         }
     }
 
-    public IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity)
+	private IEnumerable<FrameEntityMessage> MakeFrameEntityMessages(int ownerGuid)
+	{
+		foreach (var entity in EntityManager.Instance.GetMyEntities(ownerGuid))
+		{
+			yield return MakeFrameEntityMessage(entity);
+		}
+	}
+
+	private FrameEntityMessage MakeMyFrameEntityMessage()
+	{
+		return MakeFrameEntityMessage(PlayerEntity);
+	}
+
+	private FrameEntityMessage MakeFrameEntityMessage(EntityComponent entity)
+	{
+		if (entity == null)
+			return new FrameEntityMessage();
+
+		var entityMessage = new FrameEntityMessage();
+
+		entityMessage.entityGuid = entity.Guid;
+		entityMessage.isGrounded = entity.IsGrounded;
+		entityMessage.myEntityOffset = entity.Offset;
+		entityMessage.myEntityVelocity = entity.Velocity;
+		entityMessage.myEntityHitBox = entity.HitBox;
+		entityMessage.myEntityPos = entity.Position;
+		entityMessage.entityState = (int)entity.CurrentState;
+
+		return entityMessage;
+	}
+
+
+	public IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity)
     {
         Collider2D[] colliders = Physics2D.OverlapBoxAll(pos + offset, size, 0);
         if (colliders == null || colliders.Length == 0)

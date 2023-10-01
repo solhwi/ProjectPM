@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInput : MonoBehaviour, IInputReceiver
+public class PlayerInputComponent : MonoBehaviour, IInputReceiver
 {
 	public bool isEnable = true;
 
