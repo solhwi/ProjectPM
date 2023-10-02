@@ -44,7 +44,15 @@ public class OfflineBattleManager : Singleton<OfflineBattleManager>, IEntityCapt
 
 			var frameSyncMessage = new FrameEntityMessage();
 			frameSyncMessage.entityGuid = entityMessage.entityGuid;
+			frameSyncMessage.entityState = entityMessage.entityState;
+
+			frameSyncMessage.myEntityOffset = entityMessage.myEntityOffset;
+			frameSyncMessage.myEntityHitBox = entityMessage.myEntityHitBox;
+			frameSyncMessage.myEntityPos = entityMessage.myEntityPos;
+
 			frameSyncMessage.attackerEntities = EntityManager.Instance.GetOverlapEntitiyGuids(entityMessage).ToArray();
+			frameSyncMessage.animationMessage = entityMessage.animationMessage;
+
 			yield return frameSyncMessage;
 		}
 	}

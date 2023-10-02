@@ -65,22 +65,25 @@ public class EntityStateMachineComponent : MonoBehaviour
 			state.SetStateMessage(stateMessage);
 		}
 
-		Debug.Log($"스테이트 변경 : {CurrentState} => {nextState}");
-		animator.Play(nextState.ToString());
-		CurrentState = nextState;
+		if (CurrentState != nextState)
+		{
+			Debug.Log($"스테이트 변경 : {CurrentState} => {nextState}");
+			animator.Play(nextState.ToString());
+			CurrentState = nextState;
+		}
 	}
 
 	public ENUM_ENTITY_STATE GetSimulatedNextState(IStateMessage stateInfo)
 	{
-		var nextState = CurrentState;
-
-		if (transitionTable.defaultTransitionList.Any())
+		foreach (var transition in transitionTable.transitionList)
 		{
-			var defaultTransition = transitionTable.defaultTransitionList.FirstOrDefault();
-			var condition = conditionTable.GetCondition(defaultTransition.key);
-			if (condition.IsSatisfied(stateInfo))
+			if (transition.prevState == CurrentState)
 			{
-				nextState = defaultTransition.nextState;
+				var condition = conditionTable.GetCondition(transition.conditionType);
+				if (condition.IsSatisfied(stateInfo))
+				{
+					return transition.nextState;
+				}
 			}
 		}
 
@@ -89,24 +92,25 @@ public class EntityStateMachineComponent : MonoBehaviour
 			var condition = conditionTable.GetCondition(loopTransition.conditionType);
 			if (condition.IsSatisfied(stateInfo))
 			{
-				nextState = CurrentState;
+				return CurrentState;
 			}
-		}
-
-		foreach (var transition in transitionTable.transitionList)
-		{
-			if (transition.prevState == CurrentState)
+			else
 			{
-				var condition = conditionTable.GetCondition(transition.conditionType);
-				if (condition.IsSatisfied(stateInfo))
-				{
-					nextState = transition.nextState;
-				}
+				return ENUM_ENTITY_STATE.Idle;
 			}
 		}
-
-		// 키 프레임 등을 체크해서 슈퍼아머나 무적도 걸러야 합니다.
-
-		return nextState;
+		else
+		{
+			var defaultTransition = transitionTable.defaultTransitionList.FirstOrDefault();
+			var condition = conditionTable.GetCondition(defaultTransition.key);
+			if (condition.IsSatisfied(stateInfo))
+			{
+				return defaultTransition.nextState;
+			}
+			else
+			{
+				return CurrentState;
+			}
+		}
 	}
 }
