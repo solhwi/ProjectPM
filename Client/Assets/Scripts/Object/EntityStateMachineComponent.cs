@@ -2,9 +2,8 @@ using StateMachine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
-
-// 여기서 애니메이션 프레임 정보도 빼오면 되겠다!
 
 [RequireComponent(typeof(Animator))]
 public class EntityStateMachineComponent : MonoBehaviour
@@ -12,30 +11,63 @@ public class EntityStateMachineComponent : MonoBehaviour
 	private Animator animator;
 	private EntityAnimatorState[] animatorStates;
 
-	[SerializeField] private CharacterTransitionTable transitionTable = null;
-	[SerializeField] private ConditionTable conditionTable = null;
+	[SerializeField] private EntityTransitionTable transitionTable = null;
+	[SerializeField] private EntityConditionTable conditionTable = null;
+
+	private void Reset()
+	{
+		transitionTable = AssetDatabase.LoadAssetAtPath<EntityTransitionTable>("Assets/Bundle/Datas/Parser/EntityTransitionTable.asset");
+		conditionTable = AssetDatabase.LoadAssetAtPath<EntityConditionTable>("Assets/Bundle/Datas/Parser/EntityConditionTable.asset");
+	}
 
 	public ENUM_ENTITY_STATE CurrentState
 	{
 		get;
 		private set;
+	} = ENUM_ENTITY_STATE.Idle;
+
+	public float CurrentNormalizedTime
+	{
+		get
+		{
+			return animator.GetCurrentNormalizedTime();
+		}
+	}
+
+	public int CurrentKeyFrame
+	{
+		get
+		{
+			return animator.GetCurrentKeyFrame();
+		}
 	}
 
 	public void Initialize(EntityMeditatorComponent owner)
 	{
 		animator = GetComponent<Animator>();
 		animatorStates = animator.GetBehaviours<EntityAnimatorState>();
-
 		foreach (var state in animatorStates)
 		{
 			state.Initialize(owner);
 		}
+		CurrentState = ENUM_ENTITY_STATE.Idle;
 	}
 
-    public void ChangeState(ENUM_ENTITY_STATE nextState)
+	public void ChangeState(ENUM_ENTITY_STATE nextState)
+	{
+		ChangeState(nextState, new NoStateMessage());
+	}
+
+	public void ChangeState(ENUM_ENTITY_STATE nextState, IStateMessage stateMessage)
     {
-		CurrentState = nextState;
+		foreach (var state in animatorStates)
+		{
+			state.SetStateMessage(stateMessage);
+		}
+
+		Debug.Log($"스테이트 변경 : {CurrentState} => {nextState}");
 		animator.Play(nextState.ToString());
+		CurrentState = nextState;
 	}
 
 	public ENUM_ENTITY_STATE GetSimulatedNextState(IStateMessage stateInfo)
@@ -72,6 +104,8 @@ public class EntityStateMachineComponent : MonoBehaviour
 				}
 			}
 		}
+
+		// 키 프레임 등을 체크해서 슈퍼아머나 무적도 걸러야 합니다.
 
 		return nextState;
 	}

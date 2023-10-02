@@ -9,372 +9,372 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4930ee608cfe8e5449a1749d6ce3134e, type: 3}
-  m_Name: CharacterTransitionTable
+  m_Script: {fileID: 11500000, guid: 21ce7ecc02c887440a548430a66437f0, type: 3}
+  m_Name: EntityTransitionTable
   m_EditorClassIdentifier: 
   transitionList:
   - key: 0
-    prevState: 0
-    nextState: 1
+    prevState: 1
+    nextState: 2
     conditionType: '[PressMove]'
   - key: 1
-    prevState: 0
-    nextState: 2
+    prevState: 1
+    nextState: 3
     conditionType: '[JumpUp]'
   - key: 2
-    prevState: 0
-    nextState: 11
+    prevState: 1
+    nextState: 12
     conditionType: '[PressAttack]'
   - key: 3
-    prevState: 0
-    nextState: 4
+    prevState: 1
+    nextState: 5
     conditionType: '[Dash]'
   - key: 4
-    prevState: 0
-    nextState: 8
+    prevState: 1
+    nextState: 9
     conditionType: '[Damage]'
   - key: 5
-    prevState: 0
-    nextState: 11
+    prevState: 1
+    nextState: 12
     conditionType: '[PressAttack]'
   - key: 6
-    prevState: 0
-    nextState: 16
-    conditionType: '[PressSkill]'
-  - key: 7
-    prevState: 0
-    nextState: 19
-    conditionType: '[PressGuard]'
-  - key: 8
-    prevState: 0
-    nextState: 20
-    conditionType: '[PressUltimate]'
-  - key: 9
-    prevState: 0
-    nextState: 3
-    conditionType: '[JumpDown]'
-  - key: 10
     prevState: 1
-    nextState: 2
-    conditionType: '[JumpUp]'
-  - key: 11
-    prevState: 1
-    nextState: 11
-    conditionType: '[PressAttack]'
-  - key: 12
-    prevState: 1
-    nextState: 4
-    conditionType: '[Dash]'
-  - key: 13
-    prevState: 1
-    nextState: 8
-    conditionType: '[Damage]'
-  - key: 14
-    prevState: 1
-    nextState: 11
-    conditionType: '[PressAttack]'
-  - key: 15
-    prevState: 1
-    nextState: 16
-    conditionType: '[PressSkill]'
-  - key: 16
-    prevState: 1
-    nextState: 19
-    conditionType: '[PressGuard]'
-  - key: 17
-    prevState: 1
-    nextState: 20
-    conditionType: '[PressUltimate]'
-  - key: 18
-    prevState: 2
-    nextState: 3
-    conditionType: '[JumpDown]'
-  - key: 19
-    prevState: 2
-    nextState: 15
-    conditionType: '[PressAttack]'
-  - key: 20
-    prevState: 2
-    nextState: 18
-    conditionType: '[PressSkill]'
-  - key: 21
-    prevState: 2
-    nextState: 6
-    conditionType: '[Grounded]'
-  - key: 22
-    prevState: 2
-    nextState: 9
-    conditionType: '[Damage]'
-  - key: 23
-    prevState: 3
-    nextState: 6
-    conditionType: '[Grounded]'
-  - key: 24
-    prevState: 3
-    nextState: 9
-    conditionType: '[Damage]'
-  - key: 25
-    prevState: 4
-    nextState: 14
-    conditionType: '[PressAttack]'
-  - key: 26
-    prevState: 4
     nextState: 17
     conditionType: '[PressSkill]'
-  - key: 27
-    prevState: 4
+  - key: 7
+    prevState: 1
+    nextState: 20
+    conditionType: '[PressGuard]'
+  - key: 8
+    prevState: 1
+    nextState: 21
+    conditionType: '[PressUltimate]'
+  - key: 9
+    prevState: 1
+    nextState: 4
+    conditionType: '[JumpDown]'
+  - key: 10
+    prevState: 2
+    nextState: 3
+    conditionType: '[JumpUp]'
+  - key: 11
+    prevState: 2
+    nextState: 12
+    conditionType: '[PressAttack]'
+  - key: 12
+    prevState: 2
+    nextState: 5
+    conditionType: '[Dash]'
+  - key: 13
+    prevState: 2
+    nextState: 9
+    conditionType: '[Damage]'
+  - key: 14
+    prevState: 2
+    nextState: 12
+    conditionType: '[PressAttack]'
+  - key: 15
+    prevState: 2
+    nextState: 17
+    conditionType: '[PressSkill]'
+  - key: 16
+    prevState: 2
+    nextState: 20
+    conditionType: '[PressGuard]'
+  - key: 17
+    prevState: 2
+    nextState: 21
+    conditionType: '[PressUltimate]'
+  - key: 18
+    prevState: 3
+    nextState: 4
+    conditionType: '[JumpDown]'
+  - key: 19
+    prevState: 3
+    nextState: 16
+    conditionType: '[PressAttack]'
+  - key: 20
+    prevState: 3
     nextState: 19
+    conditionType: '[PressSkill]'
+  - key: 21
+    prevState: 3
+    nextState: 7
+    conditionType: '[Grounded]'
+  - key: 22
+    prevState: 3
+    nextState: 10
+    conditionType: '[Damage]'
+  - key: 23
+    prevState: 4
+    nextState: 7
+    conditionType: '[Grounded]'
+  - key: 24
+    prevState: 4
+    nextState: 10
+    conditionType: '[Damage]'
+  - key: 25
+    prevState: 5
+    nextState: 15
+    conditionType: '[PressAttack]'
+  - key: 26
+    prevState: 5
+    nextState: 18
+    conditionType: '[PressSkill]'
+  - key: 27
+    prevState: 5
+    nextState: 20
     conditionType: '[PressGuard]'
   - key: 28
-    prevState: 4
-    nextState: 20
+    prevState: 5
+    nextState: 21
     conditionType: '[PressUltimate]'
   - key: 29
-    prevState: 5
-    nextState: 7
-    conditionType: '[AnimationWaitTime]'
-  - key: 30
-    prevState: 6
-    nextState: 1
-    conditionType: '[PressMove]'
-  - key: 31
-    prevState: 6
-    nextState: 2
-    conditionType: '[JumpUp]'
-  - key: 32
-    prevState: 6
-    nextState: 11
-    conditionType: '[PressAttack]'
-  - key: 33
-    prevState: 6
-    nextState: 4
-    conditionType: '[Dash]'
-  - key: 34
     prevState: 6
     nextState: 8
+    conditionType: '[AnimationWaitTime]'
+  - key: 30
+    prevState: 7
+    nextState: 2
+    conditionType: '[PressMove]'
+  - key: 31
+    prevState: 7
+    nextState: 3
+    conditionType: '[JumpUp]'
+  - key: 32
+    prevState: 7
+    nextState: 12
+    conditionType: '[PressAttack]'
+  - key: 33
+    prevState: 7
+    nextState: 5
+    conditionType: '[Dash]'
+  - key: 34
+    prevState: 7
+    nextState: 9
     conditionType: '[Damage]'
   - key: 35
-    prevState: 6
-    nextState: 11
+    prevState: 7
+    nextState: 12
     conditionType: '[PressAttack]'
   - key: 36
-    prevState: 6
-    nextState: 16
+    prevState: 7
+    nextState: 17
     conditionType: '[PressSkill]'
   - key: 37
-    prevState: 6
-    nextState: 19
+    prevState: 7
+    nextState: 20
     conditionType: '[PressGuard]'
   - key: 38
-    prevState: 6
-    nextState: 20
+    prevState: 7
+    nextState: 21
     conditionType: '[PressUltimate]'
   - key: 39
-    prevState: 9
-    nextState: 5
+    prevState: 10
+    nextState: 6
     conditionType: '[Grounded]'
   - key: 40
-    prevState: 11
-    nextState: 12
+    prevState: 12
+    nextState: 13
     conditionType: '[Combo]'
   transitionDictionary:
     m_keys: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a0000001b0000001c0000001d0000001e0000001f000000200000002100000022000000230000002400000025000000260000002700000028000000
     m_values:
     - key: 0
-      prevState: 0
-      nextState: 1
+      prevState: 1
+      nextState: 2
       conditionType: '[PressMove]'
     - key: 1
-      prevState: 0
-      nextState: 2
+      prevState: 1
+      nextState: 3
       conditionType: '[JumpUp]'
     - key: 2
-      prevState: 0
-      nextState: 11
+      prevState: 1
+      nextState: 12
       conditionType: '[PressAttack]'
     - key: 3
-      prevState: 0
-      nextState: 4
+      prevState: 1
+      nextState: 5
       conditionType: '[Dash]'
     - key: 4
-      prevState: 0
-      nextState: 8
+      prevState: 1
+      nextState: 9
       conditionType: '[Damage]'
     - key: 5
-      prevState: 0
-      nextState: 11
+      prevState: 1
+      nextState: 12
       conditionType: '[PressAttack]'
     - key: 6
-      prevState: 0
-      nextState: 16
-      conditionType: '[PressSkill]'
-    - key: 7
-      prevState: 0
-      nextState: 19
-      conditionType: '[PressGuard]'
-    - key: 8
-      prevState: 0
-      nextState: 20
-      conditionType: '[PressUltimate]'
-    - key: 9
-      prevState: 0
-      nextState: 3
-      conditionType: '[JumpDown]'
-    - key: 10
       prevState: 1
-      nextState: 2
-      conditionType: '[JumpUp]'
-    - key: 11
-      prevState: 1
-      nextState: 11
-      conditionType: '[PressAttack]'
-    - key: 12
-      prevState: 1
-      nextState: 4
-      conditionType: '[Dash]'
-    - key: 13
-      prevState: 1
-      nextState: 8
-      conditionType: '[Damage]'
-    - key: 14
-      prevState: 1
-      nextState: 11
-      conditionType: '[PressAttack]'
-    - key: 15
-      prevState: 1
-      nextState: 16
-      conditionType: '[PressSkill]'
-    - key: 16
-      prevState: 1
-      nextState: 19
-      conditionType: '[PressGuard]'
-    - key: 17
-      prevState: 1
-      nextState: 20
-      conditionType: '[PressUltimate]'
-    - key: 18
-      prevState: 2
-      nextState: 3
-      conditionType: '[JumpDown]'
-    - key: 19
-      prevState: 2
-      nextState: 15
-      conditionType: '[PressAttack]'
-    - key: 20
-      prevState: 2
-      nextState: 18
-      conditionType: '[PressSkill]'
-    - key: 21
-      prevState: 2
-      nextState: 6
-      conditionType: '[Grounded]'
-    - key: 22
-      prevState: 2
-      nextState: 9
-      conditionType: '[Damage]'
-    - key: 23
-      prevState: 3
-      nextState: 6
-      conditionType: '[Grounded]'
-    - key: 24
-      prevState: 3
-      nextState: 9
-      conditionType: '[Damage]'
-    - key: 25
-      prevState: 4
-      nextState: 14
-      conditionType: '[PressAttack]'
-    - key: 26
-      prevState: 4
       nextState: 17
       conditionType: '[PressSkill]'
-    - key: 27
-      prevState: 4
+    - key: 7
+      prevState: 1
+      nextState: 20
+      conditionType: '[PressGuard]'
+    - key: 8
+      prevState: 1
+      nextState: 21
+      conditionType: '[PressUltimate]'
+    - key: 9
+      prevState: 1
+      nextState: 4
+      conditionType: '[JumpDown]'
+    - key: 10
+      prevState: 2
+      nextState: 3
+      conditionType: '[JumpUp]'
+    - key: 11
+      prevState: 2
+      nextState: 12
+      conditionType: '[PressAttack]'
+    - key: 12
+      prevState: 2
+      nextState: 5
+      conditionType: '[Dash]'
+    - key: 13
+      prevState: 2
+      nextState: 9
+      conditionType: '[Damage]'
+    - key: 14
+      prevState: 2
+      nextState: 12
+      conditionType: '[PressAttack]'
+    - key: 15
+      prevState: 2
+      nextState: 17
+      conditionType: '[PressSkill]'
+    - key: 16
+      prevState: 2
+      nextState: 20
+      conditionType: '[PressGuard]'
+    - key: 17
+      prevState: 2
+      nextState: 21
+      conditionType: '[PressUltimate]'
+    - key: 18
+      prevState: 3
+      nextState: 4
+      conditionType: '[JumpDown]'
+    - key: 19
+      prevState: 3
+      nextState: 16
+      conditionType: '[PressAttack]'
+    - key: 20
+      prevState: 3
       nextState: 19
+      conditionType: '[PressSkill]'
+    - key: 21
+      prevState: 3
+      nextState: 7
+      conditionType: '[Grounded]'
+    - key: 22
+      prevState: 3
+      nextState: 10
+      conditionType: '[Damage]'
+    - key: 23
+      prevState: 4
+      nextState: 7
+      conditionType: '[Grounded]'
+    - key: 24
+      prevState: 4
+      nextState: 10
+      conditionType: '[Damage]'
+    - key: 25
+      prevState: 5
+      nextState: 15
+      conditionType: '[PressAttack]'
+    - key: 26
+      prevState: 5
+      nextState: 18
+      conditionType: '[PressSkill]'
+    - key: 27
+      prevState: 5
+      nextState: 20
       conditionType: '[PressGuard]'
     - key: 28
-      prevState: 4
-      nextState: 20
+      prevState: 5
+      nextState: 21
       conditionType: '[PressUltimate]'
     - key: 29
-      prevState: 5
-      nextState: 7
-      conditionType: '[AnimationWaitTime]'
-    - key: 30
-      prevState: 6
-      nextState: 1
-      conditionType: '[PressMove]'
-    - key: 31
-      prevState: 6
-      nextState: 2
-      conditionType: '[JumpUp]'
-    - key: 32
-      prevState: 6
-      nextState: 11
-      conditionType: '[PressAttack]'
-    - key: 33
-      prevState: 6
-      nextState: 4
-      conditionType: '[Dash]'
-    - key: 34
       prevState: 6
       nextState: 8
+      conditionType: '[AnimationWaitTime]'
+    - key: 30
+      prevState: 7
+      nextState: 2
+      conditionType: '[PressMove]'
+    - key: 31
+      prevState: 7
+      nextState: 3
+      conditionType: '[JumpUp]'
+    - key: 32
+      prevState: 7
+      nextState: 12
+      conditionType: '[PressAttack]'
+    - key: 33
+      prevState: 7
+      nextState: 5
+      conditionType: '[Dash]'
+    - key: 34
+      prevState: 7
+      nextState: 9
       conditionType: '[Damage]'
     - key: 35
-      prevState: 6
-      nextState: 11
+      prevState: 7
+      nextState: 12
       conditionType: '[PressAttack]'
     - key: 36
-      prevState: 6
-      nextState: 16
+      prevState: 7
+      nextState: 17
       conditionType: '[PressSkill]'
     - key: 37
-      prevState: 6
-      nextState: 19
+      prevState: 7
+      nextState: 20
       conditionType: '[PressGuard]'
     - key: 38
-      prevState: 6
-      nextState: 20
+      prevState: 7
+      nextState: 21
       conditionType: '[PressUltimate]'
     - key: 39
-      prevState: 9
-      nextState: 5
+      prevState: 10
+      nextState: 6
       conditionType: '[Grounded]'
     - key: 40
-      prevState: 11
-      nextState: 12
+      prevState: 12
+      nextState: 13
       conditionType: '[Combo]'
   priorityTransitionList:
   - key: '[Die]'
-    nextState: 10
+    nextState: 11
   priorityTransitionDictionary:
     m_keys:
     - '[Die]'
     m_values:
     - key: '[Die]'
-      nextState: 10
+      nextState: 11
   defaultTransitionList:
   - key: '[AnimationWaitTime]'
-    nextState: 0
+    nextState: 1
   defaultTransitionDictionary:
     m_keys:
     - '[AnimationWaitTime]'
     m_values:
     - key: '[AnimationWaitTime]'
-      nextState: 0
+      nextState: 1
   loopTransitionList:
-  - key: 1
-    conditionType: '[PressMove]'
   - key: 2
-    conditionType: '[JumpUp]'
+    conditionType: '[PressMove]'
   - key: 3
+    conditionType: '[JumpUp]'
+  - key: 4
     conditionType: '[JumpDown]'
   loopTransitionDictionary:
-    m_keys: 010000000200000003000000
+    m_keys: 020000000300000004000000
     m_values:
-    - key: 1
-      conditionType: '[PressMove]'
     - key: 2
-      conditionType: '[JumpUp]'
+      conditionType: '[PressMove]'
     - key: 3
+      conditionType: '[JumpUp]'
+    - key: 4
       conditionType: '[JumpDown]'

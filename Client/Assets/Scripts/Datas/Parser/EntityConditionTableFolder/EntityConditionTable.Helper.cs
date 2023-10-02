@@ -1,17 +1,17 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public partial class ConditionTable : ScriptParser
+public partial class EntityConditionTable : ScriptParser
 {
 	private Dictionary<string, IStateCondition> conditionDictionary = new Dictionary<string, IStateCondition>();
 	private const char ParameterSeparator = ':';
 	private const char ConditionAndSeparator = '*';
-    private const char ConditionOrSeparator = '+';
+	private const char ConditionOrSeparator = '+';
 
 
-    public IStateCondition GetCondition(string rawConditionType)
+	public IStateCondition GetCondition(string rawConditionType)
 	{
 		if (conditionDictionary.TryGetValue(rawConditionType, out var condition))
 		{
@@ -20,10 +20,10 @@ public partial class ConditionTable : ScriptParser
 
 		if (rawConditionType.Contains(ParameterSeparator) == false)
 		{
-            Debug.LogError($"Á¸ÀçÇÏÁö ¾Ê´Â ÄÁµð¼Ç Å¸ÀÔ : {rawConditionType}");
-        }
+			Debug.LogError($"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ : {rawConditionType}");
+		}
 
-        return null;
+		return null;
 	}
 
 
@@ -48,7 +48,7 @@ public partial class ConditionTable : ScriptParser
 
 	public IEnumerable<KeyValuePair<IStateCondition, bool>> ParseStateConditions(string compositeRawCondition)
 	{
-		foreach(var orSeparatedCondition in compositeRawCondition.Split(ConditionOrSeparator))
+		foreach (var orSeparatedCondition in compositeRawCondition.Split(ConditionOrSeparator))
 		{
 			string[] andSeparatedConditions = orSeparatedCondition.Split(ConditionAndSeparator);
 
@@ -104,7 +104,7 @@ public partial class ConditionTable : ScriptParser
 			case "[Damage]":
 				return new DamageCondition();
 
-            case "[PressJump]":
+			case "[PressJump]":
 				return new PressJumpCondition();
 
 			case "[Combo]":
@@ -112,8 +112,8 @@ public partial class ConditionTable : ScriptParser
 			case "[JumpDown]":
 			case "[Dash]":
 			case "[PressSkill]":
-            case "[PressUltimate]":
-                return new CompositeStateCondition(this);
+			case "[PressUltimate]":
+				return new CompositeStateCondition(this);
 
 			default:
 				return null;

@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11d24c45b12be47438f6fa11a30b049e, type: 3}
-  m_Name: ConditionTable
+  m_Script: {fileID: 11500000, guid: 4a6d390744a04694ab02afba92d9860a, type: 3}
+  m_Name: EntityConditionTable
   m_EditorClassIdentifier: 
   characterRawconditionList:
   - key: '[PressDash]'

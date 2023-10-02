@@ -7,10 +7,10 @@ using UnityEngine;
 
 public class CompositeStateCondition : IStateCondition
 {
-	private ConditionTable conditionTable;
+	private EntityConditionTable conditionTable;
 	private List<KeyValuePair<IStateCondition, bool>> conditions = new List<KeyValuePair<IStateCondition, bool>>();
 
-	public CompositeStateCondition(ConditionTable table) 
+	public CompositeStateCondition(EntityConditionTable table) 
 	{
 		conditionTable = table;
 	}

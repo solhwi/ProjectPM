@@ -33,7 +33,7 @@ public struct FrameEntityMessage : NetworkMessage, IStateMessage
 public struct FrameEntityAnimationMessage : NetworkMessage, IStateMessage
 {
 	public int keyFrame;
-	public float normalizeTime;
+	public float normalizedTime;
 }
 
 [System.Serializable]
@@ -46,11 +46,6 @@ public struct FrameInputSnapShotMessage : NetworkMessage, IStateMessage
 
 	public FrameEntityMessage playerEntityMessage;
 	public FrameInputMessage playerInputMessage;
-
-	public FrameEntityAnimationMessage GetMyEntityAnimationMessage()
-	{
-		return playerEntityMessage.animationMessage;
-	}
 }
 
 [System.Serializable]

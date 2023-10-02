@@ -1,6 +1,13 @@
+
+
 public interface IStateMessage
 {
 
+}
+
+public struct NoStateMessage : IStateMessage
+{
+	
 }
 
 public static class StateMessageConverter
@@ -21,10 +28,15 @@ public static class StateMessageConverter
 
 	public static FrameEntityAnimationMessage ConvertToAnimationMessage(this IStateMessage stateInfo)
 	{
-		return stateInfo.ConvertToEntity().ConvertAnimationFrame();
+		if (stateInfo is FrameEntityAnimationMessage animationMessage)
+		{
+			return animationMessage;
+		}
+
+		return stateInfo.ConvertToEntity().ConvertToAnimationMessage();
 	}
 
-	public static FrameEntityAnimationMessage ConvertAnimationFrame(this FrameEntityMessage entityMessage)
+	public static FrameEntityAnimationMessage ConvertToAnimationMessage(this FrameEntityMessage entityMessage)
 	{
 		return entityMessage.animationMessage;
 	}

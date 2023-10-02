@@ -16,10 +16,10 @@ GameObject:
   - component: {fileID: 2725238379644671886}
   - component: {fileID: 2111098085485975088}
   - component: {fileID: 2207896231629970980}
-  - component: {fileID: 875410190796969756}
   - component: {fileID: 581437186035518913}
+  - component: {fileID: 3577131548055984871}
   m_Layer: 11
-  m_Name: NormalCharacter
+  m_Name: EntityMeditator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -202,7 +202,7 @@ MonoBehaviour:
     m_Bits: 192
   groundedRaycastDistance: 0.1
   hitOffset: {x: 0, y: 0.256}
-  hitBox: {x: 2.56, y: 2.56}
+  HitBox: {x: 2.56, y: 2.56}
   isEnabled: 1
 --- !u!114 &2111098085485975088
 MonoBehaviour:
@@ -228,18 +228,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f74455b9b0ae28c4bb0701a8ea82e5e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &875410190796969756
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3984707968245006999}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c60a96f22d2403140b38987e32655af5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  transitionTable: {fileID: 11400000, guid: 4cfad2ca468ca2f4f850d7973d02e136, type: 2}
+  conditionTable: {fileID: 11400000, guid: e892a0e1d1562d543a040f270a218caa, type: 2}
 --- !u!114 &581437186035518913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,3 +243,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEnable: 1
+--- !u!114 &3577131548055984871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3984707968245006999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 947edf45f17f02d41a5f534c87cdbd5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderingComponent: {fileID: 2111098085485975088}
+  physicsComponent: {fileID: 2725238379644671886}
+  stateMachineComponent: {fileID: 2207896231629970980}

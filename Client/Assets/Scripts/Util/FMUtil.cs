@@ -3,17 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterAttribute : ObjectAttribute
+public class EntityAttribute : ResourceAttribute
 {
-    public CharacterAttribute(string path) : base("Character/" + path)
-    {
-
-    }
-}
-
-public class ObjectAttribute : ResourceAttribute
-{
-    public ObjectAttribute(string path) : base("Prefabs/Object/" + path, ResourceType.Prefab)
+    public EntityAttribute(string path) : base("Prefabs/Entity/" + path, ResourceType.Prefab)
     {
 
     }

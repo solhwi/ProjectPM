@@ -58,7 +58,7 @@ public class AnimationWaitCondition : FloatParameterStateCondition
 	public override bool IsSatisfied(IStateMessage stateInfo)
 	{
 		var entityStateInfo = stateInfo.ConvertToAnimationMessage();
-		return entityStateInfo.normalizeTime >= value;
+		return entityStateInfo.normalizedTime >= value;
 	}
 }
 

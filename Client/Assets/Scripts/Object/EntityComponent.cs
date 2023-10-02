@@ -43,6 +43,17 @@ public abstract class EntityComponent : MonoBehaviour
 		get;
 	}
 
+	public abstract int CurrentKeyFrame
+	{
+		get;
+	}
+
+	public abstract float CurrentNormalizedTime
+	{
+		get;
+	}
+
+
 	public int OwnerGuid { get; private set; }
 
     public int Guid { get; private set; } = 0;

@@ -17,20 +17,23 @@ public class OfflineBattleManager : Singleton<OfflineBattleManager>, IEntityCapt
 		EntityManager.Instance.UnRegister(this);
 	}
 
-	public void OnCapture(FrameEntityMessage playerEntityMessage, FrameEntityMessage[] entitiyMessages)
+	public void OnCapture(FrameEntityMessage playerEntityMessage, FrameEntityMessage[] entityMessages)
 	{
-		currentFrameEntitiesSnapshot = entitiyMessages;
+		currentFrameEntitiesSnapshot = entityMessages;
 	}
 
 	public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
 	{
+		if (currentFrameEntitiesSnapshot == null)
+			return;
+
 		var frameSnapShot = new FrameSyncSnapShotMessage();
 		frameSnapShot.entityMessages = FlushFrameSyncEntityMessage(currentFrameEntitiesSnapshot).ToArray();
 
 		OnReceiveFrameSyncMessage(frameSnapShot);
 	}
 
-	private IEnumerable<FrameEntityMessage> FlushFrameSyncEntityMessage(FrameEntityMessage[] entityMessages)
+	private IEnumerable<FrameEntityMessage> FlushFrameSyncEntityMessage(IEnumerable<FrameEntityMessage> entityMessages)
 	{
 		// 충돌 체크한다.
 		foreach (var entityMessage in entityMessages)

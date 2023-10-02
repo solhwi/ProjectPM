@@ -164,7 +164,7 @@ public class InputManager : Singleton<InputManager>
 	// 프레임에 마지막으로 누른 인풋들만을 넣는 것으로 한다.
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
-		int validFrameCount = Time.frameCount;
+		int validFrameCount = deltaFrameCount;
 
 		Vector2 moveVec = prevInputData.moveInput;
 		ENUM_ATTACK_KEY pressedAttackKey = ENUM_ATTACK_KEY.MAX;
@@ -173,7 +173,7 @@ public class InputManager : Singleton<InputManager>
 
 		while (inputDataQueue.TryDequeue(out var result))
 		{
-			if (result.frameCount < validFrameCount)
+			if (result.frameCount < validFrameCount - 1)
 				continue;
 
 			if (result is MoveInputData moveInputResult)

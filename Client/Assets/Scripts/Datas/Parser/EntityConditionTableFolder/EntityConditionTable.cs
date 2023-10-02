@@ -6,8 +6,8 @@ using System.Collections.Generic;
 /// !주의! 수동으로 조작하지 마시오. .Helper.cs에 편의성 함수를 추가하시오.
 /// </summary>
 [Serializable]
-[ScriptParserAttribute("ConditionTable.asset")]
-public partial class ConditionTable : ScriptParser
+[ScriptParserAttribute("EntityConditionTable.asset")]
+public partial class EntityConditionTable : ScriptParser
 {
 	public override void Parser()
 	{

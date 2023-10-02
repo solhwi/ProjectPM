@@ -51,7 +51,7 @@ public class EntityManager : Singleton<EntityManager>
         return entityDictionary[guid];
     }
 
-    public IEnumerable<EntityComponent> GetMyEntities(int ownerGuid)
+    private IEnumerable<EntityComponent> GetMyEntities(int ownerGuid)
     {
         foreach(var entity in entityDictionary.Values)
         {
@@ -151,7 +151,7 @@ public class EntityManager : Singleton<EntityManager>
 
 	private IEnumerable<FrameEntityMessage> MakeFrameEntityMessages(int ownerGuid)
 	{
-		foreach (var entity in EntityManager.Instance.GetMyEntities(ownerGuid))
+		foreach (var entity in GetMyEntities(ownerGuid))
 		{
 			yield return MakeFrameEntityMessage(entity);
 		}
@@ -176,6 +176,9 @@ public class EntityManager : Singleton<EntityManager>
 		entityMessage.myEntityHitBox = entity.HitBox;
 		entityMessage.myEntityPos = entity.Position;
 		entityMessage.entityState = (int)entity.CurrentState;
+        entityMessage.animationMessage = new FrameEntityAnimationMessage();
+        entityMessage.animationMessage.keyFrame = entity.CurrentKeyFrame;
+        entityMessage.animationMessage.normalizedTime = entity.CurrentNormalizedTime;
 
 		return entityMessage;
 	}

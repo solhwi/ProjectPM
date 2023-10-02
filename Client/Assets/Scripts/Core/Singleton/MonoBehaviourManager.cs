@@ -27,6 +27,7 @@ public class MonoBehaviourManager : MonoBehaviour
     [SerializeField] private SingletonDictionary singletonDictionary = new SingletonDictionary();
     [SerializeField] private SingletonObjectDictionary singletonObjectDictionary = new SingletonObjectDictionary();
 
+    public event Action onFixedUpdate;
     public event Action onUpdate;
     public event Action onLateUpdate;
 
@@ -88,7 +89,12 @@ public class MonoBehaviourManager : MonoBehaviour
         base.StopCoroutine(routine);
     }
 
-    private void Update()
+	private void FixedUpdate()
+	{
+        onFixedUpdate?.Invoke();
+	}
+
+	private void Update()
     {
         onUpdate?.Invoke();
     }

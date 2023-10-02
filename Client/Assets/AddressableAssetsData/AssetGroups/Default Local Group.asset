@@ -57,18 +57,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2b9f60bd0b987ab4ab0ece351f1f10f8
-    m_Address: Assets/Bundle/Datas/Parser/CharacterTransitionTable.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 206b3dcb795429d47bcf976656974648
-    m_Address: Assets/Bundle/Datas/Parser/ConditionTable.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8cc096f9f106f1b4391035a663492bb5
     m_Address: Assets/Bundle/Prefabs/AI/NormalMonsterAI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9494fe2014e02a741a3618ebcb73650f
+    m_Address: Assets/Bundle/Animation/RedMan/RedMan.overrideController
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72a8c5e859715f34188dd52f0ec0e15f
+    m_Address: Assets/Bundle/Datas/Parser
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

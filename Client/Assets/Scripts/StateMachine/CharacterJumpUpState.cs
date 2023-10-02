@@ -7,23 +7,25 @@ namespace StateMachine
 {
 	public class CharacterJumpUpState : EntityAnimatorState
     {
-		private float jumpYPower = 0.0f;
         private Vector2 jumpVector = new Vector2 (0, 0);
 		
-		public override void OnSLStateEnter(EntityMeditatorComponent owner, EntityAnimatorStateInfo animatorStateInfo)
+		public override void OnSLStateEnter(EntityMeditatorComponent owner, IStateMessage message)
 		{
             if (owner == null)
                 return;
 
-            owner.Move(jumpVector * Time.deltaTime);
+			var inputMessage = message.ConvertToInput();
+			jumpVector = inputMessage.moveInput;
+
+			owner.Move(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, EntityAnimatorStateInfo animatorStateInfo)
+		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, IStateMessage message)
 		{
             owner.Move(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateExit(EntityMeditatorComponent owner, EntityAnimatorStateInfo animatorStateInfo)
+		public override void OnSLStateExit(EntityMeditatorComponent owner, IStateMessage message)
 		{
             owner.Move(jumpVector * Time.deltaTime);
         }

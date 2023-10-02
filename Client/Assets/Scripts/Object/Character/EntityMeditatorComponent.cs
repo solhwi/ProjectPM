@@ -67,10 +67,10 @@ public enum ENUM_ENTITY_STATE
 [RequireComponent(typeof(RenderingComponent))]
 [RequireComponent(typeof(PhysicsComponent))]
 [RequireComponent(typeof(EntityStateMachineComponent))]
-[Character("EntityMeditator.prefab")]
+[EntityAttribute("EntityMeditator.prefab")]
 public class EntityMeditatorComponent : EntityComponent
 {
-	[SerializeField] private RenderingComponent renderingCompoonent = null;
+	[SerializeField] private RenderingComponent renderingComponent = null;
 	[SerializeField] private PhysicsComponent physicsComponent = null;
 	[SerializeField] private EntityStateMachineComponent stateMachineComponent = null;
 
@@ -84,6 +84,10 @@ public class EntityMeditatorComponent : EntityComponent
 
 	public override ENUM_ENTITY_STATE CurrentState => stateMachineComponent.CurrentState;
 
+	public override int CurrentKeyFrame => stateMachineComponent.CurrentKeyFrame;
+
+	public override float CurrentNormalizedTime => stateMachineComponent.CurrentNormalizedTime;
+
 	public override void Initialize(int ownerGuid, ENUM_ENTITY_TYPE type)
 	{
 		base.Initialize(ownerGuid, type);
@@ -92,7 +96,7 @@ public class EntityMeditatorComponent : EntityComponent
 
 	public void SetEntityLayer(ENUM_LAYER_TYPE layerType)
 	{
-		renderingCompoonent.Initialize(layerType, Guid);
+		renderingComponent.Initialize(layerType, Guid);
     }
 
     public override ENUM_ENTITY_STATE GetSimulatedNextState(IStateMessage stateInfo)
@@ -100,19 +104,20 @@ public class EntityMeditatorComponent : EntityComponent
 		return stateMachineComponent.GetSimulatedNextState(stateInfo);
     }
 
-	public override bool TryChangeState(IStateMessage stateInfo)
+	public override bool TryChangeState(IStateMessage stateMessage)
     {
-		var entityFrameInfo = stateInfo.ConvertToEntity();
+		var entityFrameInfo = stateMessage.ConvertToEntity();
+		if (entityFrameInfo.entityState > 0)
+		{
+			stateMachineComponent.ChangeState((ENUM_ENTITY_STATE)entityFrameInfo.entityState);
+		}
 
-		var fixedCurrentState = entityFrameInfo.entityState > 0 ? (ENUM_ENTITY_STATE)entityFrameInfo.entityState : CurrentState;
-		stateMachineComponent.ChangeState(fixedCurrentState);
+		var nextState = GetSimulatedNextState(stateMessage);
 
-		var nextState = GetSimulatedNextState(stateInfo);
-
-		bool isChanged = fixedCurrentState != nextState;
+		bool isChanged = CurrentState != nextState;
 		if (isChanged)
 		{
-            stateMachineComponent.ChangeState(nextState);
+            stateMachineComponent.ChangeState(nextState, stateMessage);
         }
 
         return isChanged;
