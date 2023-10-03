@@ -38,7 +38,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ffea75aa23a1f734c9d0ff4100dae656
-    m_Address: Assets/Bundle/Prefabs/Object/Character/NormalCharacter.prefab
+    m_Address: Assets/Bundle/Prefabs/Entity/EntityMeditator.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
