@@ -19,6 +19,8 @@ public class BossSceneModule : SceneModule
 	{
         MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntityManager.Instance.PlayerEntity);
 		ControllerManager.Instance.SetPlayerController(EntityManager.Instance.PlayerEntity);
+
+		Application.targetFrameRate = 30;
     }
 
 	public override IEnumerator OnPrepareEnterRoutine(SceneModuleParam param)
@@ -56,6 +58,7 @@ public class BossSceneModule : SceneModule
 	{
 		EntityManager.Instance.OnPostUpdate(deltaFrameCount, deltaTime);
 	}
+
     public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
     {
         EntityManager.Instance.OnLateUpdate(deltaFrameCount, deltaTime);

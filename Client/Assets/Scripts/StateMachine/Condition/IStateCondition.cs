@@ -4,14 +4,14 @@ using UnityEngine;
 public interface IStateCondition
 {
 	public bool Parse(params string[] rawParameters);
-	public bool IsSatisfied(IStateMessage stateInfo);
+	public bool IsSatisfied(FrameInputSnapShotMessage stateInfo);
 }
 
 public abstract class FloatParameterStateCondition : IStateCondition
 {
     protected float value = 0.0f;
 
-	public abstract bool IsSatisfied(IStateMessage stateInfo);
+	public abstract bool IsSatisfied(FrameInputSnapShotMessage stateInfo);
 
     public bool Parse(params string[] rawParameters)
     {
@@ -26,7 +26,7 @@ public abstract class FloatParameterStateCondition : IStateCondition
 
 public abstract class NoParameterStateCondition : IStateCondition
 {
-	public abstract bool IsSatisfied(IStateMessage stateInfo);
+	public abstract bool IsSatisfied(FrameInputSnapShotMessage stateInfo);
 
     public bool Parse(params string[] rawParameters)
     {
@@ -39,7 +39,7 @@ public abstract class IntStateCondition : IStateCondition
 {
 	protected int value;
 
-    public abstract bool IsSatisfied(IStateMessage stateInfo);
+    public abstract bool IsSatisfied(FrameInputSnapShotMessage stateInfo);
 
     public bool Parse(params string[] rawParameters)
     {
@@ -55,7 +55,7 @@ public abstract class IntStateCondition : IStateCondition
 
 public class AnimationWaitCondition : FloatParameterStateCondition
 {
-	public override bool IsSatisfied(IStateMessage stateInfo)
+	public override bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
 	{
 		var entityStateInfo = stateInfo.ConvertToAnimationMessage();
 		return entityStateInfo.normalizedTime >= value;
@@ -64,7 +64,7 @@ public class AnimationWaitCondition : FloatParameterStateCondition
 
 public class DashCondition : NoParameterStateCondition
 {
-	public override bool IsSatisfied(IStateMessage stateInfo)
+	public override bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
 	{
 		var entityStateInfo = stateInfo.ConvertToInput();
 		return entityStateInfo.isDash;
@@ -73,7 +73,7 @@ public class DashCondition : NoParameterStateCondition
 
 public class PressGuardCondition : NoParameterStateCondition
 {
-	public override bool IsSatisfied(IStateMessage stateInfo)
+	public override bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
 	{
 		var entityStateInfo = stateInfo.ConvertToInput();
 		return entityStateInfo.isGuard;
@@ -82,7 +82,7 @@ public class PressGuardCondition : NoParameterStateCondition
 
 public class GoUpCondition : FloatParameterStateCondition
 {
-	public override bool IsSatisfied(IStateMessage stateInfo)
+	public override bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
 	{
 		var entityStateInfo = stateInfo.ConvertToEntity();
 		return entityStateInfo.myEntityVelocity.y < -1 * Mathf.Epsilon;
@@ -91,7 +91,7 @@ public class GoUpCondition : FloatParameterStateCondition
 
 public class PressJumpCondition : NoParameterStateCondition
 {
-    public override bool IsSatisfied(IStateMessage stateInfo)
+    public override bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
     {
 		var entityStateInfo = stateInfo.ConvertToInput();
 		return entityStateInfo.moveInput.y < -1 * Mathf.Epsilon;
@@ -100,7 +100,7 @@ public class PressJumpCondition : NoParameterStateCondition
 
 public class FallDownCondition : FloatParameterStateCondition
 {
-	public override bool IsSatisfied(IStateMessage stateInfo)
+	public override bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
 	{
 		var entityStateInfo = stateInfo.ConvertToEntity();
 		return entityStateInfo.myEntityVelocity.y < -1 * Mathf.Epsilon;
@@ -109,7 +109,7 @@ public class FallDownCondition : FloatParameterStateCondition
 
 public class MoveCondition : FloatParameterStateCondition
 {
-	public override bool IsSatisfied(IStateMessage stateInfo)
+	public override bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
 	{
 		var entityStateInfo = stateInfo.ConvertToInput();
 		float currX = entityStateInfo.moveInput.x;
@@ -119,7 +119,7 @@ public class MoveCondition : FloatParameterStateCondition
 
 public class DamageCondition : IntStateCondition
 {
-    public override bool IsSatisfied(IStateMessage stateInfo)
+    public override bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
     {
 		var entityStateInfo = stateInfo.ConvertToEntity();
 		if (entityStateInfo.attackerEntities == null)
@@ -131,7 +131,7 @@ public class DamageCondition : IntStateCondition
 
 public class GroundedCondition : IntStateCondition
 {
-	public override bool IsSatisfied(IStateMessage stateInfo)
+	public override bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
 	{
 		var entityStateInfo = stateInfo.ConvertToEntity();
 		return entityStateInfo.isGrounded == (value > 0);
@@ -142,7 +142,7 @@ public class AttackCondition : IStateCondition
 {
 	private ENUM_ATTACK_KEY key = ENUM_ATTACK_KEY.NONE;
 
-	public bool IsSatisfied(IStateMessage stateInfo)
+	public bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
 	{
 		var entityStateInfo = stateInfo.ConvertToInput();
 		return entityStateInfo.pressedAttackKeyNum == (int)key;

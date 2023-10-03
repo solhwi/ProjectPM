@@ -46,8 +46,8 @@ public partial class BattleSessionManager
             // 스냅샷을 찍는다.
 			int lastTickCount = inputMessageQueue.LastOrDefault().tickCount;
 
-			var frameSnapShot = new FrameSyncSnapShotMessage();
-			frameSnapShot.entityMessages = FlushFrameSyncEntityMessage(inputMessageQueue, lastTickCount).ToArray();
+			var frameSnapShot = new FrameSyncInputSnapShotMessage();
+			frameSnapShot.snapshotMessages = FlushFrameSyncEntityMessage(inputMessageQueue, lastTickCount).ToArray();
             frameSnapShot.tickCount = lastTickCount + 1;
 
 			// 스냅샷을 발송한다.
@@ -55,14 +55,14 @@ public partial class BattleSessionManager
 		}
 	}
 
-    private IEnumerable<FrameEntityMessage> FlushFrameSyncEntityMessage(Queue<FrameInputSnapShotMessage> inputQueue, int tickIndex)
+    private IEnumerable<FrameInputSnapShotMessage> FlushFrameSyncEntityMessage(Queue<FrameInputSnapShotMessage> inputQueue, int tickIndex)
     {
 		while (inputQueue.TryDequeue(out var inputMessage))
 		{
             if (inputMessage.tickCount != tickIndex)
                 continue;
 
-            // 우선 프레임 당시 상황으로 이동 시킨 후
+            // 앤티티들을 우선 프레임 당시 상황으로 이동 시킨 후
             foreach(var entityMessage in inputMessage.entityMessages)
             {
 				var entity = EntityManager.Instance.GetEntityComponent(entityMessage.entityGuid);
@@ -72,23 +72,21 @@ public partial class BattleSessionManager
 				entity.Teleport(entityMessage.myEntityPos);
 			}
 
-            // 충돌 체크한다.
-			foreach (var entityMessage in inputMessage.entityMessages)
+            // 충돌 정보를 넣어 보낸다.
+			for (int i = 0; i < inputMessage.entityMessages.Length; i++)
 			{
-				var entity = EntityManager.Instance.GetEntityComponent(entityMessage.entityGuid);
+                var entity = EntityManager.Instance.GetEntityComponent(inputMessage.entityMessages[i].entityGuid);
 				if (entity == null)
 					continue;
 
-				var frameSyncMessage = new FrameEntityMessage();
-				frameSyncMessage.entityGuid = entityMessage.entityGuid;
-				frameSyncMessage.attackerEntities = EntityManager.Instance.GetOverlapEntitiyGuids(entityMessage).ToArray();
-                frameSyncMessage.entityState = (int)entity.GetSimulatedNextState(inputMessage.playerInputMessage);
-				yield return frameSyncMessage;
+                inputMessage.entityMessages[i].attackerEntities = EntityManager.Instance.GetOverlapEntitiyGuids(inputMessage.entityMessages[i]).ToArray();
 			}
 
+            yield return inputMessage;
+
             // 문제가 된다면, 여기서 되돌려도 됨
-		}
-	}
+        }
+    }
 
 	private void OnReceiveFrameMessage(NetworkConnectionToClient connectionToClient, FrameInputSnapShotMessage message)
     {

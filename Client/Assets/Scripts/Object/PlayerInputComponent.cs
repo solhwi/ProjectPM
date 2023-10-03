@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInputComponent : MonoBehaviour, IInputReceiver
+public class PlayerInputComponent : MonoBehaviour
 {
 	public bool isEnable = true;
 
@@ -15,22 +15,22 @@ public class PlayerInputComponent : MonoBehaviour, IInputReceiver
 
 	private void OnEnable()
 	{
-		InputManager.Instance.RegisterInputReceiver(this);
+		// InputManager.Instance.RegisterInputReceiver(this);
 	}
 
 	private void OnDisable()
 	{
-		InputManager.Instance.UnregisterInputReceiver(this);
+		// InputManager.Instance.UnregisterInputReceiver(this);
 	}
 
-	public void OnInput(FrameInputMessage message)
-	{
-		if (!isEnable)
-			return;
+	//public void OnInput(FrameInputMessage message)
+	//{
+	//	if (!isEnable)
+	//		return;
 
-		if (characterComponent == null)
-			return;
+	//	if (characterComponent == null)
+	//		return;
 
-		characterComponent.TryChangeState(message);
-	}
+	//	characterComponent.TryChangeState(message);
+	//}
 }

@@ -16,7 +16,7 @@ public partial class BattleSessionManager : IInputReceiver, IEntityCaptureReceiv
 	{
 		base.OnStartClient();
 
-		NetworkClient.RegisterHandler<FrameSyncSnapShotMessage>(OnReceiveFrameSyncMessage);
+		NetworkClient.RegisterHandler<FrameSyncInputSnapShotMessage>(OnReceiveFrameSyncMessage);
 		InputManager.Instance.RegisterInputReceiver(this);
 		EntityManager.Instance.Register(this);
 		IsServerSession = false;
@@ -62,20 +62,23 @@ public partial class BattleSessionManager : IInputReceiver, IEntityCaptureReceiv
 		}
 	}
 
-	private void OnReceiveFrameSyncMessage(FrameSyncSnapShotMessage message)
+	private void OnReceiveFrameSyncMessage(FrameSyncInputSnapShotMessage message)
 	{
 		// 틱 카운트에 문제가 있다면 폐기한다.
 		if (currentTickCount > message.tickCount)
 			return;
 
-		foreach (var entityMessage in message.entityMessages)
+		foreach (var snapshotMessage in message.snapshotMessages)
 		{
-			var entity = EntityManager.Instance.GetEntityComponent(entityMessage.entityGuid);
-			if (entity == null)
-				return;
+			foreach(var entity in snapshotMessage.entityMessages)
+			{
+				var entityComponent = EntityManager.Instance.GetEntityComponent(entity.entityGuid);
+				if (entityComponent == null)
+					continue;
 
-			entity.Teleport(entityMessage.myEntityPos);
-			entity.TryChangeState(entityMessage);
+                entityComponent.Teleport(entity.myEntityPos);
+                entityComponent.TryChangeState(snapshotMessage);
+            }
 		}
 
 		currentTickCount = message.tickCount + 1;

@@ -51,7 +51,7 @@ public class EntityManager : Singleton<EntityManager>
         return entityDictionary[guid];
     }
 
-    private IEnumerable<EntityComponent> GetMyEntities(int ownerGuid)
+    public IEnumerable<EntityComponent> GetMyEntities(int ownerGuid)
     {
         foreach(var entity in entityDictionary.Values)
         {

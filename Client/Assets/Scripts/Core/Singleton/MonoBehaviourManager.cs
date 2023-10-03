@@ -31,6 +31,20 @@ public class MonoBehaviourManager : MonoBehaviour
     public event Action onUpdate;
     public event Action onLateUpdate;
 
+    private WaitForEndOfFrame endOfFrameWait = new WaitForEndOfFrame();
+    private Coroutine lateUpdateCoroutine = null;
+
+    private void Awake()
+    {
+        lateUpdateCoroutine = StartCoroutine(OnLateUpdate());
+    }
+
+    private void OnDestroy()
+    {
+        if(lateUpdateCoroutine != null)
+            StopCoroutine(lateUpdateCoroutine);
+    }
+
     public void RegisterSingleton(Singleton singleton)
     {
         var type = singleton.GetType();
@@ -99,9 +113,13 @@ public class MonoBehaviourManager : MonoBehaviour
         onUpdate?.Invoke();
     }
 
-    private void LateUpdate()
+    private IEnumerator OnLateUpdate()
     {
-        onLateUpdate?.Invoke();
+        while (true)
+        {
+            yield return endOfFrameWait;
+            onLateUpdate?.Invoke();
+        }
     }
 
     private void OnApplicationQuit()

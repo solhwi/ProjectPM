@@ -7,13 +7,13 @@ namespace StateMachine
 {
 	public class CharacterMoveState : EntityAnimatorState
     {
-		public override void OnSLStateEnter(EntityMeditatorComponent owner, IStateMessage message)
+		public override void OnSLStateEnter(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
 		{
 			var inputMessage = message.ConvertToInput();
             Move(owner, inputMessage.moveInput.x);
 		}
 
-		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, IStateMessage message)
+		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
         {
 			var inputMessage = message.ConvertToInput();
 			Move(owner, inputMessage.moveInput.x);

@@ -44,21 +44,17 @@ public class EntityStateMachineComponent : MonoBehaviour
 
 	public void Initialize(EntityMeditatorComponent owner)
 	{
-		animator = GetComponent<Animator>();
+        CurrentState = ENUM_ENTITY_STATE.Idle;
+
+        animator = GetComponent<Animator>();
 		animatorStates = animator.GetBehaviours<EntityAnimatorState>();
 		foreach (var state in animatorStates)
 		{
 			state.Initialize(owner);
 		}
-		CurrentState = ENUM_ENTITY_STATE.Idle;
 	}
 
-	public void ChangeState(ENUM_ENTITY_STATE nextState)
-	{
-		ChangeState(nextState, new NoStateMessage());
-	}
-
-	public void ChangeState(ENUM_ENTITY_STATE nextState, IStateMessage stateMessage)
+	public void ChangeState(ENUM_ENTITY_STATE nextState, FrameInputSnapShotMessage stateMessage)
     {
 		foreach (var state in animatorStates)
 		{
@@ -67,20 +63,22 @@ public class EntityStateMachineComponent : MonoBehaviour
 
 		if (CurrentState != nextState)
 		{
-			Debug.Log($"스테이트 변경 : {CurrentState} => {nextState}");
+			Debug.Log($"스테이트 변경 {Time.frameCount} : {CurrentState} => {nextState}");
 			animator.Play(nextState.ToString());
 			CurrentState = nextState;
 		}
 	}
 
-	public ENUM_ENTITY_STATE GetSimulatedNextState(IStateMessage stateInfo)
+	public ENUM_ENTITY_STATE GetSimulatedNextState(FrameInputSnapShotMessage snapShotMessage, ENUM_ENTITY_STATE currentState = ENUM_ENTITY_STATE.None)
 	{
-		foreach (var transition in transitionTable.transitionList)
+		currentState = currentState == ENUM_ENTITY_STATE.None ? CurrentState : currentState;
+
+        foreach (var transition in transitionTable.transitionList)
 		{
-			if (transition.prevState == CurrentState)
+			if (transition.prevState == currentState)
 			{
 				var condition = conditionTable.GetCondition(transition.conditionType);
-				if (condition.IsSatisfied(stateInfo))
+				if (condition.IsSatisfied(snapShotMessage))
 				{
 					return transition.nextState;
 				}
@@ -90,9 +88,9 @@ public class EntityStateMachineComponent : MonoBehaviour
 		if (transitionTable.loopTransitionDictionary.TryGetValue(CurrentState, out var loopTransition))
 		{
 			var condition = conditionTable.GetCondition(loopTransition.conditionType);
-			if (condition.IsSatisfied(stateInfo))
+			if (condition.IsSatisfied(snapShotMessage))
 			{
-				return CurrentState;
+				return currentState;
 			}
 			else
 			{
@@ -103,13 +101,13 @@ public class EntityStateMachineComponent : MonoBehaviour
 		{
 			var defaultTransition = transitionTable.defaultTransitionList.FirstOrDefault();
 			var condition = conditionTable.GetCondition(defaultTransition.key);
-			if (condition.IsSatisfied(stateInfo))
+			if (condition.IsSatisfied(snapShotMessage))
 			{
 				return defaultTransition.nextState;
 			}
 			else
 			{
-				return CurrentState;
+				return currentState;
 			}
 		}
 	}

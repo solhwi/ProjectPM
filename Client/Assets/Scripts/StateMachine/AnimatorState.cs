@@ -24,6 +24,9 @@ public static class AnimatorExtension
 		return Mathf.FloorToInt(currentClip.length * stateInfo.normalizedTime * currentClip.frameRate);
 	}
 
+    // 동작이 이상하다.
+    // 두 프레임 뒤에야 이 값이 유효하다...ㅠㅠ
+    // 이 값은 쓰면 안될 것 같다...
     public static float GetCurrentNormalizedTime(this Animator animator)
     {
 		var stateInfo = animator.GetCurrentAnimatorStateInfo(myLayerIndex);
@@ -36,7 +39,7 @@ namespace StateMachine
 	public class EntityAnimatorState : SealedStateMachineBehaviour
     {	
 		private EntityMeditatorComponent owner;
-        private IStateMessage message;
+        private FrameInputSnapShotMessage message;
 
 		private bool m_FirstFrameHappened;
 		private bool m_LastFrameHappened;
@@ -49,18 +52,9 @@ namespace StateMachine
             OnInitialize(owner);
         }
 
-        public void SetStateMessage(IStateMessage message)
+        public void SetStateMessage(FrameInputSnapShotMessage message)
         {
             this.message = message;
-		}
-
-        private FrameEntityAnimationMessage MakeFrameMessage(Animator animator)
-        {
-			var message = new FrameEntityAnimationMessage();
-            message.keyFrame = animator.GetCurrentKeyFrame();
-            message.normalizedTime = animator.GetCurrentNormalizedTime();
-
-			return message;
 		}
 
 		public sealed override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex, AnimatorControllerPlayable controller)
@@ -106,10 +100,6 @@ namespace StateMachine
             {
                 OnSLTransitionFromStateUpdate(owner, message);
             }
-
-			// 애니메이션 처리로 인한 스테이트 변경을 시도한다.
-			var animationMessage = MakeFrameMessage(animator);
-			owner.TryChangeState(animationMessage);
 		}
 
 		public sealed override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex, AnimatorControllerPlayable controller)
@@ -130,37 +120,37 @@ namespace StateMachine
         /// <summary>
         /// Called before Updates when execution of the state first starts (on transition to the state).
         /// </summary>
-        public virtual void OnSLStateEnter(EntityMeditatorComponent animator, IStateMessage message) { }
+        public virtual void OnSLStateEnter(EntityMeditatorComponent animator, FrameInputSnapShotMessage message) { }
 
         /// <summary>
         /// Called after OnSLStateEnter every frame during transition to the state.
         /// </summary>
-        public virtual void OnSLTransitionToStateUpdate(EntityMeditatorComponent animator, IStateMessage message) { }
+        public virtual void OnSLTransitionToStateUpdate(EntityMeditatorComponent animator, FrameInputSnapShotMessage message) { }
 
         /// <summary>
         /// Called on the first frame after the transition to the state has finished.
         /// </summary>
-        public virtual void OnSLStatePostEnter(EntityMeditatorComponent animator, IStateMessage message) { }
+        public virtual void OnSLStatePostEnter(EntityMeditatorComponent animator, FrameInputSnapShotMessage message) { }
 
         /// <summary>
         /// Called every frame after PostEnter when the state is not being transitioned to or from.
         /// </summary>
-        public virtual void OnSLStateNoTransitionUpdate(EntityMeditatorComponent animator, IStateMessage message) { }
+        public virtual void OnSLStateNoTransitionUpdate(EntityMeditatorComponent animator, FrameInputSnapShotMessage message) { }
 
         /// <summary>
         /// Called on the first frame after the transition from the state has started.  Note that if the transition has a duration of less than a frame, this will not be called.
         /// </summary>
-        public virtual void OnSLStatePreExit(EntityMeditatorComponent animator, IStateMessage message) { }
+        public virtual void OnSLStatePreExit(EntityMeditatorComponent animator, FrameInputSnapShotMessage message) { }
 
         /// <summary>
         /// Called after OnSLStatePreExit every frame during transition to the state.
         /// </summary>
-        public virtual void OnSLTransitionFromStateUpdate(EntityMeditatorComponent animator, IStateMessage message) { }
+        public virtual void OnSLTransitionFromStateUpdate(EntityMeditatorComponent animator, FrameInputSnapShotMessage message) { }
 
         /// <summary>
         /// Called after Updates when execution of the state first finshes (after transition from the state).
         /// </summary>
-        public virtual void OnSLStateExit(EntityMeditatorComponent animator, IStateMessage message) { }
+        public virtual void OnSLStateExit(EntityMeditatorComponent animator, FrameInputSnapShotMessage message) { }
 
     }
 

@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct FrameSyncSnapShotMessage : NetworkMessage
+public struct FrameSyncInputSnapShotMessage : NetworkMessage
 {
 	public int tickCount;
 
-	public FrameEntityMessage[] entityMessages;
+	public FrameInputSnapShotMessage[] snapshotMessages;
 }
 
 [System.Serializable]
-public struct FrameEntityMessage : NetworkMessage, IStateMessage
+public struct FrameEntityMessage : NetworkMessage
 {
 	public int entityGuid;
 	public int entityState;
@@ -30,14 +30,14 @@ public struct FrameEntityMessage : NetworkMessage, IStateMessage
 }
 
 [System.Serializable]
-public struct FrameEntityAnimationMessage : NetworkMessage, IStateMessage
+public struct FrameEntityAnimationMessage : NetworkMessage
 {
 	public int keyFrame;
 	public float normalizedTime;
 }
 
 [System.Serializable]
-public struct FrameInputSnapShotMessage : NetworkMessage, IStateMessage
+public struct FrameInputSnapShotMessage : NetworkMessage
 {
 	public int ownerGuid;
 	public int tickCount;
@@ -49,7 +49,7 @@ public struct FrameInputSnapShotMessage : NetworkMessage, IStateMessage
 }
 
 [System.Serializable]
-public struct FrameInputMessage : NetworkMessage, IStateMessage
+public struct FrameInputMessage : NetworkMessage
 {
 	public Vector2 moveInput;
 	public int pressedAttackKeyNum;

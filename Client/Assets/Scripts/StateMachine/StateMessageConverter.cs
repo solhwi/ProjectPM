@@ -12,28 +12,14 @@ public struct NoStateMessage : IStateMessage
 
 public static class StateMessageConverter
 {
-	public static FrameEntityMessage ConvertToEntity(this IStateMessage stateInfo)
+	public static FrameEntityMessage ConvertToEntity(this FrameInputSnapShotMessage snapShotMessage)
 	{
-		if (stateInfo is FrameInputSnapShotMessage snapShotMessage)
-		{
-			return snapShotMessage.playerEntityMessage;
-		}
-		else if (stateInfo is FrameEntityMessage entityMessage)
-		{
-			return entityMessage;
-		}
+		return snapShotMessage.playerEntityMessage;
+    }
 
-		return new FrameEntityMessage();
-	}
-
-	public static FrameEntityAnimationMessage ConvertToAnimationMessage(this IStateMessage stateInfo)
+	public static FrameEntityAnimationMessage ConvertToAnimationMessage(this FrameInputSnapShotMessage snapShotMessage)
 	{
-		if (stateInfo is FrameEntityAnimationMessage animationMessage)
-		{
-			return animationMessage;
-		}
-
-		return stateInfo.ConvertToEntity().ConvertToAnimationMessage();
+		return snapShotMessage.ConvertToEntity().ConvertToAnimationMessage();
 	}
 
 	public static FrameEntityAnimationMessage ConvertToAnimationMessage(this FrameEntityMessage entityMessage)
@@ -41,17 +27,8 @@ public static class StateMessageConverter
 		return entityMessage.animationMessage;
 	}
 
-	public static FrameInputMessage ConvertToInput(this IStateMessage stateInfo)
+	public static FrameInputMessage ConvertToInput(this FrameInputSnapShotMessage snapShotMessage)
 	{
-		if (stateInfo is FrameInputSnapShotMessage snapShotMessage)
-		{
-			return snapShotMessage.playerInputMessage;
-		}
-		else if (stateInfo is FrameInputMessage inputMessage)
-		{
-			return inputMessage;
-		}
-
-		return new FrameInputMessage();
-	}
+		return snapShotMessage.playerInputMessage;
+    }
 }

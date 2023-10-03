@@ -9,7 +9,7 @@ namespace StateMachine
     {
         private Vector2 jumpVector = new Vector2 (0, 0);
 		
-		public override void OnSLStateEnter(EntityMeditatorComponent owner, IStateMessage message)
+		public override void OnSLStateEnter(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
 		{
             if (owner == null)
                 return;
@@ -20,12 +20,12 @@ namespace StateMachine
 			owner.Move(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, IStateMessage message)
+		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
 		{
             owner.Move(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateExit(EntityMeditatorComponent owner, IStateMessage message)
+		public override void OnSLStateExit(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
 		{
             owner.Move(jumpVector * Time.deltaTime);
         }

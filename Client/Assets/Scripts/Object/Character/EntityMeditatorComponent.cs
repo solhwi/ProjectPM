@@ -38,6 +38,7 @@ public enum ENUM_ENTITY_TYPE
 [Serializable]
 public enum ENUM_ENTITY_STATE
 {
+	None = 0,
 	Idle = 1, // 멈춤
 	Move, // 좌, 우
 	JumpUp, // 점프 (하면서 물리적인 이동이 가능)
@@ -116,25 +117,20 @@ public class EntityMeditatorComponent : EntityComponent
 		renderingComponent.Initialize(layerType, Guid);
     }
 
-    public override ENUM_ENTITY_STATE GetSimulatedNextState(IStateMessage stateInfo)
+    public override ENUM_ENTITY_STATE GetSimulatedNextState(FrameInputSnapShotMessage snapShotMessage)
     {
-		return stateMachineComponent.GetSimulatedNextState(stateInfo);
+        var entityFrameInfo = snapShotMessage.ConvertToEntity();
+        return stateMachineComponent.GetSimulatedNextState(snapShotMessage, (ENUM_ENTITY_STATE)entityFrameInfo.entityState);
     }
 
-	public override bool TryChangeState(IStateMessage stateMessage)
+	public override bool TryChangeState(FrameInputSnapShotMessage snapShotMessage)
     {
-		var entityFrameInfo = stateMessage.ConvertToEntity();
-		if (entityFrameInfo.entityState > 0)
-		{
-			stateMachineComponent.ChangeState((ENUM_ENTITY_STATE)entityFrameInfo.entityState);
-		}
-
-		var nextState = GetSimulatedNextState(stateMessage);
+        var nextState = GetSimulatedNextState(snapShotMessage);
 
 		bool isChanged = CurrentState != nextState;
 		if (isChanged) 
 		{
-            stateMachineComponent.ChangeState(nextState, stateMessage);
+            stateMachineComponent.ChangeState(nextState, snapShotMessage);
         }
 
         return isChanged;

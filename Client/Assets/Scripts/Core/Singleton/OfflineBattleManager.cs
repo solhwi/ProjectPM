@@ -3,40 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class OfflineBattleManager : Singleton<OfflineBattleManager>, IEntityCaptureReceiver
+public class OfflineBattleManager : Singleton<OfflineBattleManager>, IInputReceiver, IEntityCaptureReceiver
 {
-	private FrameEntityMessage[] currentFrameEntitiesSnapshot = null;
+	private FrameInputSnapShotMessage snapShotMessage;
 
 	protected override void OnAwakeInstance()
 	{
+		InputManager.Instance.RegisterInputReceiver(this);
 		EntityManager.Instance.Register(this);
 	}
 
 	protected override void OnReleaseInstance()
 	{
 		EntityManager.Instance.UnRegister(this);
-	}
+        InputManager.Instance.UnregisterInputReceiver(this);
+    }
+
+    public void OnInput(FrameInputMessage message)
+	{
+        snapShotMessage.playerInputMessage = message;
+    }
 
 	public void OnCapture(FrameEntityMessage playerEntityMessage, FrameEntityMessage[] entityMessages)
 	{
-		currentFrameEntitiesSnapshot = entityMessages;
-	}
+        snapShotMessage.entityMessages = entityMessages;
+		snapShotMessage.playerEntityMessage = playerEntityMessage;
+    }
 
 	public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
 	{
-		if (currentFrameEntitiesSnapshot == null)
-			return;
+		var frameSnapShot = new FrameSyncInputSnapShotMessage();
+		frameSnapShot.snapshotMessages = new FrameInputSnapShotMessage[1];
+		frameSnapShot.snapshotMessages[0] = snapShotMessage;
+		frameSnapShot.snapshotMessages[0].entityMessages = FlushFrameSyncEntityMessage(snapShotMessage).ToArray();
 
-		var frameSnapShot = new FrameSyncSnapShotMessage();
-		frameSnapShot.entityMessages = FlushFrameSyncEntityMessage(currentFrameEntitiesSnapshot).ToArray();
-
-		OnReceiveFrameSyncMessage(frameSnapShot);
+        OnReceiveFrameSyncMessage(frameSnapShot);
 	}
 
-	private IEnumerable<FrameEntityMessage> FlushFrameSyncEntityMessage(IEnumerable<FrameEntityMessage> entityMessages)
+	private IEnumerable<FrameEntityMessage> FlushFrameSyncEntityMessage(FrameInputSnapShotMessage snapShotMessage)
 	{
+		if (snapShotMessage.entityMessages == null)
+			yield break;
+
 		// 충돌 체크한다.
-		foreach (var entityMessage in entityMessages)
+		foreach (var entityMessage in snapShotMessage.entityMessages)
 		{
 			var entity = EntityManager.Instance.GetEntityComponent(entityMessage.entityGuid);
 			if (entity == null)
@@ -51,21 +61,31 @@ public class OfflineBattleManager : Singleton<OfflineBattleManager>, IEntityCapt
 			frameSyncMessage.myEntityPos = entityMessage.myEntityPos;
 
 			frameSyncMessage.attackerEntities = EntityManager.Instance.GetOverlapEntitiyGuids(entityMessage).ToArray();
-			frameSyncMessage.animationMessage = entityMessage.animationMessage;
+            frameSyncMessage.animationMessage = entityMessage.animationMessage;
 
-			yield return frameSyncMessage;
+            var simulatedNextState = entity.GetSimulatedNextState(snapShotMessage);
+			if (simulatedNextState != (ENUM_ENTITY_STATE)entityMessage.entityState)
+			{
+				frameSyncMessage.animationMessage.normalizedTime = 0.0f;
+				frameSyncMessage.animationMessage.keyFrame = 0;
+            }
+
+            yield return frameSyncMessage;
 		}
 	}
 
-	private void OnReceiveFrameSyncMessage(FrameSyncSnapShotMessage message)
+	private void OnReceiveFrameSyncMessage(FrameSyncInputSnapShotMessage message)
 	{
-		foreach (var entityMessage in message.entityMessages)
+		foreach (var snapShotMessage in message.snapshotMessages)
 		{
-			var entity = EntityManager.Instance.GetEntityComponent(entityMessage.entityGuid);
-			if (entity == null)
+			var entities = EntityManager.Instance.GetMyEntities(snapShotMessage.ownerGuid);
+			if (entities == null)
 				return;
-
-			entity.TryChangeState(entityMessage);
-		}
+			
+			foreach(var entity in entities)
+			{
+                entity.TryChangeState(snapShotMessage);
+            }
+        }
 	}
 }
