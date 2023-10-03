@@ -126,14 +126,8 @@ public class EntityMeditatorComponent : EntityComponent
 	public override bool TryChangeState(FrameInputSnapShotMessage snapShotMessage)
     {
         var nextState = GetSimulatedNextState(snapShotMessage);
-
-		bool isChanged = CurrentState != nextState;
-		if (isChanged) 
-		{
-            stateMachineComponent.ChangeState(nextState, snapShotMessage);
-        }
-
-        return isChanged;
+		stateMachineComponent.ChangeState(nextState, snapShotMessage);
+		return true;
 	}
 
     public void Move(Vector2 moveVec)

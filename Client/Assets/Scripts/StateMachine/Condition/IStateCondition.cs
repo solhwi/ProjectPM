@@ -85,7 +85,7 @@ public class GoUpCondition : FloatParameterStateCondition
 	public override bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
 	{
 		var entityStateInfo = stateInfo.ConvertToEntity();
-		return entityStateInfo.myEntityVelocity.y < -1 * Mathf.Epsilon;
+		return entityStateInfo.myEntityVelocity.y > Mathf.Epsilon;
 	}
 }
 
@@ -94,7 +94,7 @@ public class PressJumpCondition : NoParameterStateCondition
     public override bool IsSatisfied(FrameInputSnapShotMessage stateInfo)
     {
 		var entityStateInfo = stateInfo.ConvertToInput();
-		return entityStateInfo.moveInput.y < -1 * Mathf.Epsilon;
+		return entityStateInfo.moveInput.y > Mathf.Epsilon;
     }
 }
 

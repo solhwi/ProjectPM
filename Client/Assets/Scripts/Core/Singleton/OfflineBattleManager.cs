@@ -30,7 +30,7 @@ public class OfflineBattleManager : Singleton<OfflineBattleManager>, IInputRecei
 		snapShotMessage.playerEntityMessage = playerEntityMessage;
     }
 
-	public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
+	public override void OnPostUpdate(int deltaFrameCount, float deltaTime)
 	{
 		var frameSnapShot = new FrameSyncInputSnapShotMessage();
 		frameSnapShot.snapshotMessages = new FrameInputSnapShotMessage[1];

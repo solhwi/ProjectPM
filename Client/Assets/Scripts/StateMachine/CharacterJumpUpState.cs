@@ -15,7 +15,7 @@ namespace StateMachine
                 return;
 
 			var inputMessage = message.ConvertToInput();
-			jumpVector = inputMessage.moveInput;
+			jumpVector = new Vector2(inputMessage.moveInput.x, inputMessage.moveInput.y * 20.0f);
 
 			owner.Move(jumpVector * Time.deltaTime);
         }

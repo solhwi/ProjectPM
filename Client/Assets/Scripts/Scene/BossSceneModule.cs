@@ -57,11 +57,11 @@ public class BossSceneModule : SceneModule
 	public override void OnPostUpdate(int deltaFrameCount, float deltaTime)
 	{
 		EntityManager.Instance.OnPostUpdate(deltaFrameCount, deltaTime);
+		OfflineBattleManager.Instance.OnPostUpdate(deltaFrameCount, deltaTime);
 	}
 
-    public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
+	public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
     {
         EntityManager.Instance.OnLateUpdate(deltaFrameCount, deltaTime);
-		OfflineBattleManager.Instance.OnLateUpdate(deltaFrameCount, deltaTime);
     }
 }

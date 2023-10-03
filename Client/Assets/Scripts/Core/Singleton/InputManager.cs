@@ -173,7 +173,7 @@ public class InputManager : Singleton<InputManager>
 
 		while (inputDataQueue.TryDequeue(out var result))
 		{
-			if (result.frameCount < validFrameCount - 1)
+			if (result.frameCount < validFrameCount)
 				continue;
 
 			if (result is MoveInputData moveInputResult)
