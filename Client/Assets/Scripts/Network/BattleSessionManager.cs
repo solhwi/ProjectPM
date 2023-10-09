@@ -5,13 +5,12 @@ using UnityEngine;
 public partial class BattleSessionManager : NetworkManager<BattleSessionManager>, ISessionComponent
 {
 	private BattleSceneModuleParam battleParam = null;
-
 	private Coroutine sessionCoroutine = null;
-	private bool IsServerSession = false;
 
 	private int currentTickCount = 0;
+    private WaitForSecondsRealtime latency = null;
 
-	public void Connect(SceneModuleParam param)
+    public void Connect(SceneModuleParam param)
 	{
 		if (param is BattleSceneModuleParam battleParam)
 		{

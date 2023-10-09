@@ -9,11 +9,15 @@ namespace MBT
     public class MBTExecutor : MonoBehaviour
     {
         public bool isEnable = true;
-        public MonoBehaviourTree monoBehaviourTree;
+        private MonoBehaviourTree monoBehaviourTree;
+
+        public void Initialize(MonoBehaviourTree tree)
+        {
+            monoBehaviourTree = tree;
+        }
 
         void Reset()
         {
-            monoBehaviourTree = GetComponent<MonoBehaviourTree>();
             OnValidate();
         }
 

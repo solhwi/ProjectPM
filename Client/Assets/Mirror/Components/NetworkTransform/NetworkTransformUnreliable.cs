@@ -321,6 +321,7 @@ namespace Mirror
         // local authority client sends sync message to server for broadcasting
         protected virtual void OnClientToServerSync(Vector3? position, Quaternion? rotation, Vector3? scale)
         {
+            Debug.Log(Time.frameCount);
             // only apply if in client authority mode
             if (syncDirection != SyncDirection.ClientToServer) return;
 
@@ -357,6 +358,8 @@ namespace Mirror
             // -> we can ignore any rpc on the host client
             // => otherwise host objects would have ever growing clientBuffers
             // (rpc goes to clients. if isServer is true too then we are host)
+            Debug.Log(Time.frameCount);
+
             if (isServer) return;
 
             // don't apply for local player with authority

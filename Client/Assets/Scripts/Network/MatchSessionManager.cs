@@ -14,8 +14,6 @@ public interface ISessionComponent
 	void Connect(SceneModuleParam param);
 
 	void Disconnect();
-
-    void Tick();
 }
 
 public interface IMatchSessionSubscriber

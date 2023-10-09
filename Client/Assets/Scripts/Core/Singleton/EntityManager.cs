@@ -30,7 +30,12 @@ public class EntityManager : Singleton<EntityManager>
         }
     }
 
+    private const int OFFLINE_PLAYER = -1;
+    private const int OFFLINE_ENEMY = -2;
+
     public int PlayerGuid { get; private set; }
+    public int EnemyGuid => OFFLINE_ENEMY;
+
 	public int PlayerEntityGuid { get; private set; }
     private Dictionary<int, EntityComponent> entityDictionary = new Dictionary<int, EntityComponent>();
     private List<IEntityCaptureReceiver> entityCaptureReceivers = new List<IEntityCaptureReceiver>();
@@ -40,8 +45,8 @@ public class EntityManager : Singleton<EntityManager>
 
 	protected override void OnAwakeInstance()
 	{
-        PlayerGuid = 0;
-	}
+        PlayerGuid = OFFLINE_PLAYER;
+    }
 
 	public EntityComponent GetEntityComponent(int guid)
     {
@@ -51,15 +56,14 @@ public class EntityManager : Singleton<EntityManager>
         return entityDictionary[guid];
     }
 
-    public IEnumerable<EntityComponent> GetMyEntities(int ownerGuid)
+    public IEnumerable<EntityComponent> GetAllEntities()
     {
-        foreach(var entity in entityDictionary.Values)
-        {
-            if(entity.OwnerGuid == ownerGuid)
-            {
-                yield return entity;
-            }
-        }
+        return entityDictionary.Values;
+    }
+
+    public IEnumerable<EntityComponent> GetEntities(int ownerGuid)
+    {
+        return GetAllEntities().Where(e => e.OwnerGuid == ownerGuid);
     }
 
     public IEnumerator LoadAsyncPlayer(ENUM_ENTITY_TYPE characterType)
@@ -150,8 +154,8 @@ public class EntityManager : Singleton<EntityManager>
     }
 
 	private IEnumerable<FrameEntityMessage> MakeFrameEntityMessages(int ownerGuid)
-	{
-		foreach (var entity in GetMyEntities(ownerGuid))
+    {
+		foreach (var entity in GetEntities(ownerGuid))
 		{
 			yield return MakeFrameEntityMessage(entity);
 		}

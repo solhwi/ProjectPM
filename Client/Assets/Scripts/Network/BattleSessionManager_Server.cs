@@ -12,16 +12,14 @@ using UnityEngine;
 public partial class BattleSessionManager
 {
     Queue<FrameInputSnapShotMessage> inputMessageQueue = new Queue<FrameInputSnapShotMessage>();
-    private float latency = 1.0f;
-
    
     public override void OnStartServer()
     {
         base.OnStartServer();
 
         NetworkServer.RegisterHandler<FrameInputSnapShotMessage>(OnReceiveFrameMessage, false);
-		IsServerSession = true;
 
+        latency = new WaitForSecondsRealtime(NetworkServer.tickInterval);
         sessionCoroutine = StartCoroutine(DoServerRoutine());
     }
 
@@ -30,7 +28,7 @@ public partial class BattleSessionManager
         base.OnStopServer();
 
         NetworkServer.UnregisterHandler<FrameInputSnapShotMessage>();
-		IsServerSession = false;
+        latency = null;
 
         if (sessionCoroutine != null)
             StopCoroutine(sessionCoroutine);
@@ -41,14 +39,14 @@ public partial class BattleSessionManager
         while(true)
         {
             // 서버 입장에서 적절한 레이턴시를 계산하여 코루틴을 돈다. 
-            yield return new WaitForSeconds(latency);
+            yield return latency;
 
             // 스냅샷을 찍는다.
-			int lastTickCount = inputMessageQueue.LastOrDefault().tickCount;
+            int lastTickCount = inputMessageQueue.LastOrDefault().tickCount;
 
 			var frameSnapShot = new FrameSyncInputSnapShotMessage();
 			frameSnapShot.snapshotMessages = FlushFrameSyncEntityMessage(inputMessageQueue, lastTickCount).ToArray();
-            frameSnapShot.tickCount = lastTickCount + 1;
+            frameSnapShot.tickCount = lastTickCount;
 
 			// 스냅샷을 발송한다.
 			NetworkServer.SendToAll(frameSnapShot);
@@ -62,6 +60,8 @@ public partial class BattleSessionManager
             if (inputMessage.tickCount != tickIndex)
                 continue;
 
+            var entityPrevPosList = new List<KeyValuePair<EntityComponent, Vector2>>();
+            
             // 앤티티들을 우선 프레임 당시 상황으로 이동 시킨 후
             foreach(var entityMessage in inputMessage.entityMessages)
             {
@@ -69,7 +69,8 @@ public partial class BattleSessionManager
 				if (entity == null)
 					continue;
 
-				entity.Teleport(entityMessage.myEntityPos);
+                entityPrevPosList.Add(new KeyValuePair<EntityComponent, Vector2>(entity, entity.Position));
+                entity.SetPosition(entityMessage.myEntityPos);
 			}
 
             // 충돌 정보를 넣어 보낸다.
@@ -84,7 +85,14 @@ public partial class BattleSessionManager
 
             yield return inputMessage;
 
-            // 문제가 된다면, 여기서 되돌려도 됨
+            // 원래 위치대로 되돌림
+            foreach(var entityPair in entityPrevPosList)
+            {
+                var entity = entityPair.Key;
+                var prevPos = entityPair.Value;
+
+                entity.SetPosition(prevPos);
+            }
         }
     }
 

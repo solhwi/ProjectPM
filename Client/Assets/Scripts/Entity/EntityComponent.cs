@@ -74,8 +74,13 @@ public abstract class EntityComponent : MonoBehaviour
 
 	public virtual void Teleport(Vector2 posVec)
 	{
-		transform.position = posVec;
+        SetPosition(posVec);
 	}
+
+	public void SetPosition(Vector2 posVec)
+	{
+        transform.position = posVec;
+    }
 
     public virtual ENUM_ENTITY_STATE GetSimulatedNextState(FrameInputSnapShotMessage snapShotMessage)
     {

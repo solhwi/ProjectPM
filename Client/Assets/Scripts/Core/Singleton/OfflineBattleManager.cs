@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class OfflineBattleManager : Singleton<OfflineBattleManager>, IInputReceiver, IEntityCaptureReceiver
 {
-	private FrameInputSnapShotMessage snapShotMessage;
+	private FrameInputSnapShotMessage snapShotMessage = new FrameInputSnapShotMessage();
 
 	protected override void OnAwakeInstance()
 	{
@@ -26,18 +26,17 @@ public class OfflineBattleManager : Singleton<OfflineBattleManager>, IInputRecei
 
 	public void OnCapture(FrameEntityMessage playerEntityMessage, FrameEntityMessage[] entityMessages)
 	{
+        snapShotMessage.playerEntityMessage = playerEntityMessage;
         snapShotMessage.entityMessages = entityMessages;
-		snapShotMessage.playerEntityMessage = playerEntityMessage;
     }
 
 	public override void OnPostUpdate(int deltaFrameCount, float deltaTime)
 	{
-		var frameSnapShot = new FrameSyncInputSnapShotMessage();
-		frameSnapShot.snapshotMessages = new FrameInputSnapShotMessage[1];
-		frameSnapShot.snapshotMessages[0] = snapShotMessage;
-		frameSnapShot.snapshotMessages[0].entityMessages = FlushFrameSyncEntityMessage(snapShotMessage).ToArray();
+		snapShotMessage.ownerGuid = EntityManager.Instance.PlayerGuid;
+		snapShotMessage.tickCount = deltaFrameCount;
+		snapShotMessage.entityMessages = FlushFrameSyncEntityMessage(snapShotMessage).ToArray();
 
-        OnReceiveFrameSyncMessage(frameSnapShot);
+        OnReceiveFrameSyncMessage(snapShotMessage);
 	}
 
 	private IEnumerable<FrameEntityMessage> FlushFrameSyncEntityMessage(FrameInputSnapShotMessage snapShotMessage)
@@ -63,29 +62,19 @@ public class OfflineBattleManager : Singleton<OfflineBattleManager>, IInputRecei
 			frameSyncMessage.attackerEntities = EntityManager.Instance.GetOverlapEntitiyGuids(entityMessage).ToArray();
             frameSyncMessage.animationMessage = entityMessage.animationMessage;
 
-            var simulatedNextState = entity.GetSimulatedNextState(snapShotMessage);
-			if (simulatedNextState != (ENUM_ENTITY_STATE)entityMessage.entityState)
-			{
-				frameSyncMessage.animationMessage.normalizedTime = 0.0f;
-				frameSyncMessage.animationMessage.keyFrame = 0;
-            }
-
             yield return frameSyncMessage;
 		}
 	}
 
-	private void OnReceiveFrameSyncMessage(FrameSyncInputSnapShotMessage message)
+	private void OnReceiveFrameSyncMessage(FrameInputSnapShotMessage message)
 	{
-		foreach (var snapShotMessage in message.snapshotMessages)
-		{
-			var entities = EntityManager.Instance.GetMyEntities(snapShotMessage.ownerGuid);
-			if (entities == null)
-				return;
-			
-			foreach(var entity in entities)
-			{
-                entity.TryChangeState(snapShotMessage);
-            }
+        var entities = EntityManager.Instance.GetAllEntities();
+        if (entities == null)
+            return;
+
+        foreach (var entity in entities)
+        {
+            entity.TryChangeState(message);
         }
-	}
+    }
 }

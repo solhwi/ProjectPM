@@ -18,7 +18,6 @@ public class BossSceneModule : SceneModule
     public override void OnEnter(SceneModuleParam param)
 	{
         MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntityManager.Instance.PlayerEntity);
-		ControllerManager.Instance.SetPlayerController(EntityManager.Instance.PlayerEntity);
 
 		Application.targetFrameRate = 30;
     }
