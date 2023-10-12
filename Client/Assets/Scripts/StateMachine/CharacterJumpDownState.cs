@@ -5,33 +5,33 @@ using UnityEngine;
 
 namespace StateMachine
 {
-    public class CharacterJumpDownState : EntityAnimatorState
+    public class CharacterJumpDownState : CharacterAnimatorState
     {
-		public override void OnSLStateEnter(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
+		public override void OnSLStateEnter(CharacterComponent owner, FrameCommandMessage command)
 		{
 			if (owner == null)
 				return;
-
-			var inputMessage = message.ConvertToInput();
+				
+			var inputMessage = command.ToInput();
 			var jumpVector = new Vector2(inputMessage.moveInput.x, 0.0f);
 
-			owner.Move(jumpVector * Time.deltaTime);
+			owner.AddMovement(jumpVector * Time.deltaTime);
 		}
 
-		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
+		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameCommandMessage command)
 		{
-			var inputMessage = message.ConvertToInput();
+			var inputMessage = command.ToInput();
 			var jumpVector = new Vector2(inputMessage.moveInput.x, 0.0f);
 
-			owner.Move(jumpVector * Time.deltaTime);
+			owner.AddMovement(jumpVector * Time.deltaTime);
 		}
 
-		public override void OnSLStateExit(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
+		public override void OnSLStateExit(CharacterComponent owner, FrameCommandMessage command)
 		{
-			var inputMessage = message.ConvertToInput();
+			var inputMessage = command.ToInput();
 			var jumpVector = new Vector2(inputMessage.moveInput.x, 0.0f);
 
-			owner.Move(jumpVector * Time.deltaTime);
+			owner.AddMovement(jumpVector * Time.deltaTime);
 		}
 	}
 

@@ -1,84 +1,75 @@
 using MBTEditor;
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public partial class BattleSessionManager : IInputReceiver, IEntityCaptureReceiver
+public partial class BattleSessionManager
 {
-	private FrameInputSnapShotMessage currentSnapShot = new FrameInputSnapShotMessage();
+	/// <summary>
+	/// 틱 카운트 / 레이턴시
+	/// </summary>
+	public event Action<int, float> OnTick = null;
 
     public override void OnStartClient()
 	{
 		base.OnStartClient();
 
-		NetworkClient.RegisterHandler<FrameSyncInputSnapShotMessage>(OnReceiveFrameSyncMessage);
-
-        latency = new WaitForSecondsRealtime(NetworkClient.sendInterval);
-        sessionCoroutine = StartCoroutine(DoClientRoutine());
+		NetworkClient.RegisterHandler<FrameSyncSnapShotMessage>(OnReceiveFrameSyncMessage);
 	}
-
-	private IEnumerator DoClientRoutine()
-	{
-		yield return null;
-		// 내 오브젝트를 생성할 것이라는 요청을 보냅니다.
-
-		yield return null;
-        // 받아온 모든 오브젝트 리스트를 ObjectManager에 반영합니다.
-
-        while (true)
-        {
-            yield return latency;
-
-            currentSnapShot.ownerGuid = EntityManager.Instance.PlayerGuid;
-            currentSnapShot.tickCount = currentTickCount;
-
-            NetworkClient.Send(currentSnapShot);
-        }
-    }
 
 	public override void OnStopClient()
 	{
 		base.OnStopClient();
 
-		NetworkClient.UnregisterHandler<FrameEntityMessage>();
-        latency = null;
-
-        if (sessionCoroutine != null)
-			StopCoroutine(sessionCoroutine);
+		NetworkClient.UnregisterHandler<FrameSyncSnapShotMessage>();
 	}
 
-	private void OnReceiveFrameSyncMessage(FrameSyncInputSnapShotMessage message)
+	public override void Update()
 	{
-		// 틱 카운트에 문제가 있다면 폐기한다.
+		base.Update();
+		clientLatencyTime += Time.deltaTime;
+	}
+
+	private void OnReceiveFrameSyncMessage(FrameSyncSnapShotMessage message)
+	{
+		// 클라이언트 선틱 처리
+		OnTick?.Invoke(currentTickCount, clientLatencyTime);
+
+		// 틱 카운트에 문제가 있다면 폐기
 		if (currentTickCount > message.tickCount)
 			return;
 
-		foreach (var snapshotMessage in message.snapshotMessages)
+		// 위치는 기본적으로 알아서 동기화를 하고 있으므로, 무조건 재조정하지 않는다.
+		foreach (var userSnapShot in message.snapshotMessages)
 		{
-			foreach(var entity in snapshotMessage.entityMessages)
+			foreach(var entityMessage in userSnapShot.entityMessages)
 			{
-				var entityComponent = EntityManager.Instance.GetEntityComponent(entity.entityGuid);
-				if (entityComponent == null)
+				if (entityMessage.overlappedEntities == null)
 					continue;
 
-                entityComponent.Teleport(entity.myEntityPos);
-                entityComponent.TryChangeState(snapshotMessage);
-            }
+				if (entityMessage.overlappedEntities.Length <= 0)
+					continue;
+
+				var entityGuid = entityMessage.entityGuid;
+
+				var entity = EntityManager.Instance.GetEntityComponent(entityGuid);
+				if (entity == null)
+					continue;
+
+				// 충돌이 발생하여 위치값 보정이 필요한 Entity만 위치를 재조정한다.
+				entity.Teleport(entityMessage.pos);
+
+				// 스테이트도 당시 상황에 맞게 재조정
+				entity.TryChangeState(userSnapShot.commandMessage);
+			}
 		}
 
-		currentTickCount = message.tickCount + 1;
+		var sendMessage = MessageHelper.MakeSnapShot(GameManager.Instance.PlayerGuid, ++currentTickCount);
+
+		NetworkClient.Send(sendMessage);
+		clientLatencyTime = 0.0f;
 	}
-
-    public void OnInput(FrameInputMessage resultInput)
-    {
-        currentSnapShot.playerInputMessage = resultInput;
-    }
-
-    public void OnCapture(FrameEntityMessage playerEntityMessage, FrameEntityMessage[] entitiyMessages)
-    {
-        currentSnapShot.playerEntityMessage = playerEntityMessage;
-        currentSnapShot.entityMessages = entitiyMessages;
-    }
 }

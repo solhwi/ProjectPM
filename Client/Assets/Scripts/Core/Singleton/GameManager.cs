@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DamageableComponent : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-
+    public int PlayerGuid;
 }

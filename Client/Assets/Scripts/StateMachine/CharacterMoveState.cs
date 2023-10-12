@@ -5,24 +5,24 @@ using UnityEngine.Animations;
 
 namespace StateMachine
 {
-	public class CharacterMoveState : EntityAnimatorState
+	public class CharacterMoveState : CharacterAnimatorState
     {
-		public override void OnSLStateEnter(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
+		public override void OnSLStateEnter(CharacterComponent owner, FrameCommandMessage command)
 		{
-			var inputMessage = message.ConvertToInput();
+			var inputMessage = command.ToInput();
             Move(owner, inputMessage.moveInput.x);
 		}
 
-		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
+		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameCommandMessage command)
         {
-			var inputMessage = message.ConvertToInput();
+			var inputMessage = command.ToInput();
 			Move(owner, inputMessage.moveInput.x);
 		}
 
-		private void Move(EntityMeditatorComponent owner, float x)
+		private void Move(CharacterComponent owner, float x)
 		{
 			var moveVec = new Vector2(x * Time.deltaTime, 0);
-			owner.Move(moveVec);
+			owner.AddMovement(moveVec);
 		}
 	}
 

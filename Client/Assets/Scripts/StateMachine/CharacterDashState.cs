@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace StateMachine
-{
-	public class CharacterDashState : EntityAnimatorState
+{	
+	public class CharacterDashState : CharacterAnimatorState
     {
 
 	}

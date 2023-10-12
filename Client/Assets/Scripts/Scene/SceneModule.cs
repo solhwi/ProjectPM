@@ -5,6 +5,7 @@ using UnityEngine;
 
 public interface IUpdater
 {
+	void OnPrevUpdate(int deltaFrameCount, float deltaTime);
 	void OnUpdate(int deltaFrameCount, float deltaTime);
 	void OnPostUpdate(int deltaFrameCount, float deltaTime);
 	void OnLateUpdate(int deltaFrameCount, float deltaTime);
@@ -61,7 +62,7 @@ public abstract class SceneModule : MonoBehaviour, IUpdater
 		yield return null;
 	}
 
-    public virtual void OnFixedUpdate()
+    public virtual void OnFixedUpdate(int deltaFrameCount, float deltaTime)
     {
         
     }
@@ -77,6 +78,11 @@ public abstract class SceneModule : MonoBehaviour, IUpdater
 	}
 
 	public virtual void OnLateUpdate(int deltaFrameCount, float deltaTime)
+	{
+		
+	}
+
+	public virtual void OnPrevUpdate(int deltaFrameCount, float deltaTime)
 	{
 		
 	}

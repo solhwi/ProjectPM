@@ -92,11 +92,12 @@ public class InputManager : Singleton<InputManager>
 	public static bool SnapX { get; private set; } = true;
 	public static bool SnapY { get; private set; } = true;
 
-	private List<IInputReceiver> inputReceivers = new List<IInputReceiver>();
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
 
-	private FrameInputMessage prevInputData = new FrameInputMessage();
+	private FrameInputMessage currentInputData = new FrameInputMessage();
 
+	private List<InputComponent> inputComponents = new List<InputComponent>();
+	
 	protected override void OnAwakeInstance()
 	{
 		SceneManager.Instance.onSceneChanged += SetJoystick;
@@ -117,20 +118,20 @@ public class InputManager : Singleton<InputManager>
 		SceneManager.Instance.onSceneChanged -= SetJoystick;
 	}
 
-	public void RegisterInputReceiver(IInputReceiver inputReceiver)
+	public void Register(InputComponent physicsComponent)
 	{
-		if (inputReceivers.Contains(inputReceiver))
+		if (inputComponents.Contains(physicsComponent))
 			return;
 
-		inputReceivers.Add(inputReceiver);
+		inputComponents.Add(physicsComponent);
 	}
 
-	public void UnregisterInputReceiver(IInputReceiver inputReceiver)
+	public void UnRegister(InputComponent physicsComponent)
 	{
-		if (!inputReceivers.Contains(inputReceiver))
+		if (inputComponents.Contains(physicsComponent) == false)
 			return;
 
-		inputReceivers.Remove(inputReceiver);
+		inputComponents.Remove(physicsComponent);
 	}
 
 	public void OnMoveInputChanged(Vector2 input, int frameCount)
@@ -160,13 +161,23 @@ public class InputManager : Singleton<InputManager>
 		inputDataQueue.Enqueue(inputData);
 	}
 
-	// 이 업데이트 문에서 인풋 큐를 모두 빼는데, 인풋을 받는 리시버의 상황에 따라 인풋이 무시될 수도 있다.
-	// 프레임에 마지막으로 누른 인풋들만을 넣는 것으로 한다.
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
-		int validFrameCount = deltaFrameCount;
+		foreach(var input in inputComponents)
+		{
+			input.OnUpdate(deltaFrameCount, deltaTime);
+		}
+	}
 
-		Vector2 moveVec = prevInputData.moveInput;
+	public FrameInputMessage FlushInput()
+	{
+		int validFrameCount = Time.frameCount;
+
+		// 같은 프레임에 두 번 호출한 경우
+		if (currentInputData.frameCount == validFrameCount)
+			return currentInputData;
+
+		Vector2 moveVec = currentInputData.moveInput;
 		ENUM_ATTACK_KEY pressedAttackKey = ENUM_ATTACK_KEY.MAX;
 		bool isDash = false;
 		bool isGuard = false;
@@ -197,12 +208,8 @@ public class InputManager : Singleton<InputManager>
 			}
 		}
 
-		prevInputData = new FrameInputMessage(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount);
-
-		foreach (var receiver in inputReceivers)
-		{
-			receiver.OnInput(prevInputData);
-		}
+		currentInputData = new FrameInputMessage(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount);
+		return currentInputData;
 	}
 
 	private float SnapFloat(Vector2 input, float value, AxisOptions snapAxis)

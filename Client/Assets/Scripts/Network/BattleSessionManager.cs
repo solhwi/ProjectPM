@@ -8,9 +8,11 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 	private Coroutine sessionCoroutine = null;
 
 	private int currentTickCount = 0;
-    private WaitForSecondsRealtime latency = null;
 
-    public void Connect(SceneModuleParam param)
+	private WaitForSecondsRealtime serverTickFrequency = null;
+	private float clientLatencyTime = 0.0f;
+
+	public void Connect(SceneModuleParam param)
 	{
 		if (param is BattleSceneModuleParam battleParam)
 		{
@@ -38,5 +40,4 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 			StopClient();
 		}
 	}
-
 }

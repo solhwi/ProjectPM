@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterDashAttackState : EntityAnimatorState
+	public class CharacterDashAttackState : CharacterAnimatorState
     {
 
 	}

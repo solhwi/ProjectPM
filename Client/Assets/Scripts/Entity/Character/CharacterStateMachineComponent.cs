@@ -1,4 +1,5 @@
 using StateMachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,10 +7,10 @@ using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class EntityStateMachineComponent : MonoBehaviour
+public class CharacterStateMachineComponent : MonoBehaviour
 {
 	private Animator animator;
-	private EntityAnimatorState[] animatorStates;
+	private CharacterAnimatorState[] animatorStates;
 
 	[SerializeField] private EntityTransitionTable transitionTable = null;
 	[SerializeField] private EntityConditionTable conditionTable = null;
@@ -20,11 +21,11 @@ public class EntityStateMachineComponent : MonoBehaviour
 		conditionTable = AssetDatabase.LoadAssetAtPath<EntityConditionTable>("Assets/Bundle/Datas/Parser/EntityConditionTable.asset");
 	}
 
-	public ENUM_ENTITY_STATE CurrentState
+	public ENUM_CHARACTER_STATE CurrentState
 	{
 		get;
 		private set;
-	} = ENUM_ENTITY_STATE.Idle;
+	} = ENUM_CHARACTER_STATE.Idle;
 
 	public float CurrentNormalizedTime
 	{
@@ -34,44 +35,38 @@ public class EntityStateMachineComponent : MonoBehaviour
 		}
 	}
 
-	public int CurrentKeyFrame
+	public void Initialize(CharacterComponent owner)
 	{
-		get
-		{
-			return animator.GetCurrentKeyFrame();
-		}
-	}
-
-	public void Initialize(EntityMeditatorComponent owner)
-	{
-        CurrentState = ENUM_ENTITY_STATE.Idle;
+        CurrentState = ENUM_CHARACTER_STATE.Idle;
 
         animator = GetComponent<Animator>();
-		animatorStates = animator.GetBehaviours<EntityAnimatorState>();
+		animatorStates = animator.GetBehaviours<CharacterAnimatorState>();
 		foreach (var state in animatorStates)
 		{
 			state.Initialize(owner);
 		}
 	}
 
-	public void ChangeState(ENUM_ENTITY_STATE nextState, FrameInputSnapShotMessage stateMessage)
+	public bool ChangeState(ENUM_CHARACTER_STATE nextState, FrameCommandMessage stateMessage)
     {
 		foreach (var state in animatorStates)
 		{
-			state.SetStateMessage(stateMessage);
+			state.AddCommand(stateMessage);
 		}
 
-		if (CurrentState != nextState)
+		bool isChangedState = CurrentState != nextState;
+		if (isChangedState)
 		{
-			Debug.Log($"스테이트 변경 {Time.frameCount} : {CurrentState} => {nextState}");
+			Debug.Log($"스테이트 변경 : {CurrentState} => {nextState}");
 			animator.Play(nextState.ToString());
 			CurrentState = nextState;
 		}
+		return isChangedState;
 	}
 
-	public ENUM_ENTITY_STATE GetSimulatedNextState(FrameInputSnapShotMessage snapShotMessage, ENUM_ENTITY_STATE currentState = ENUM_ENTITY_STATE.None)
+	public ENUM_CHARACTER_STATE GetSimulatedNextState(FrameCommandMessage snapShotMessage, ENUM_CHARACTER_STATE currentState = ENUM_CHARACTER_STATE.None)
 	{
-		currentState = currentState == ENUM_ENTITY_STATE.None ? CurrentState : currentState;
+		currentState = currentState == ENUM_CHARACTER_STATE.None ? CurrentState : currentState;
 
         foreach (var transition in transitionTable.transitionList)
 		{
@@ -94,7 +89,7 @@ public class EntityStateMachineComponent : MonoBehaviour
 			}
 			else
 			{
-				return ENUM_ENTITY_STATE.Idle;
+				return ENUM_CHARACTER_STATE.Idle;
 			}
 		}
 		else

@@ -11,15 +11,15 @@ using UnityEngine;
 
 public partial class BattleSessionManager
 {
-    Queue<FrameInputSnapShotMessage> inputMessageQueue = new Queue<FrameInputSnapShotMessage>();
+    Queue<FrameSnapShotMessage> inputMessageQueue = new Queue<FrameSnapShotMessage>();
    
     public override void OnStartServer()
     {
         base.OnStartServer();
 
-        NetworkServer.RegisterHandler<FrameInputSnapShotMessage>(OnReceiveFrameMessage, false);
+        NetworkServer.RegisterHandler<FrameSnapShotMessage>(OnReceiveFrameMessage, false);
 
-        latency = new WaitForSecondsRealtime(NetworkServer.tickInterval);
+		serverTickFrequency = new WaitForSecondsRealtime(NetworkServer.tickInterval);
         sessionCoroutine = StartCoroutine(DoServerRoutine());
     }
 
@@ -27,8 +27,8 @@ public partial class BattleSessionManager
     {
         base.OnStopServer();
 
-        NetworkServer.UnregisterHandler<FrameInputSnapShotMessage>();
-        latency = null;
+        NetworkServer.UnregisterHandler<FrameSnapShotMessage>();
+		serverTickFrequency = null;
 
         if (sessionCoroutine != null)
             StopCoroutine(sessionCoroutine);
@@ -38,13 +38,13 @@ public partial class BattleSessionManager
     {
         while(true)
         {
-            // 서버 입장에서 적절한 레이턴시를 계산하여 코루틴을 돈다. 
-            yield return latency;
+            // 서버 입장에서 적절한 레이턴시를 선 계산하여 코루틴을 돈다. 
+            yield return serverTickFrequency;
 
-            // 스냅샷을 찍는다.
+            // 적절한 tick count 사용 고민
             int lastTickCount = inputMessageQueue.LastOrDefault().tickCount;
 
-			var frameSnapShot = new FrameSyncInputSnapShotMessage();
+			var frameSnapShot = new FrameSyncSnapShotMessage();
 			frameSnapShot.snapshotMessages = FlushFrameSyncEntityMessage(inputMessageQueue, lastTickCount).ToArray();
             frameSnapShot.tickCount = lastTickCount;
 
@@ -53,7 +53,8 @@ public partial class BattleSessionManager
 		}
 	}
 
-    private IEnumerable<FrameInputSnapShotMessage> FlushFrameSyncEntityMessage(Queue<FrameInputSnapShotMessage> inputQueue, int tickIndex)
+    // 서버에서 충돌을 처리하여 넣어 보냄
+    private IEnumerable<FrameSnapShotMessage> FlushFrameSyncEntityMessage(Queue<FrameSnapShotMessage> inputQueue, int tickIndex)
     {
 		while (inputQueue.TryDequeue(out var inputMessage))
 		{
@@ -70,7 +71,7 @@ public partial class BattleSessionManager
 					continue;
 
                 entityPrevPosList.Add(new KeyValuePair<EntityComponent, Vector2>(entity, entity.Position));
-                entity.SetPosition(entityMessage.myEntityPos);
+                entity.Teleport(entityMessage.pos);
 			}
 
             // 충돌 정보를 넣어 보낸다.
@@ -80,7 +81,7 @@ public partial class BattleSessionManager
 				if (entity == null)
 					continue;
 
-                inputMessage.entityMessages[i].attackerEntities = EntityManager.Instance.GetOverlapEntitiyGuids(inputMessage.entityMessages[i]).ToArray();
+                inputMessage.entityMessages[i].overlappedEntities = EntityManager.Instance.GetOverlapEntitiyGuids(inputMessage.entityMessages[i]).ToArray();
 			}
 
             yield return inputMessage;
@@ -91,12 +92,12 @@ public partial class BattleSessionManager
                 var entity = entityPair.Key;
                 var prevPos = entityPair.Value;
 
-                entity.SetPosition(prevPos);
+                entity.Teleport(prevPos);
             }
         }
     }
 
-	private void OnReceiveFrameMessage(NetworkConnectionToClient connectionToClient, FrameInputSnapShotMessage message)
+	private void OnReceiveFrameMessage(NetworkConnectionToClient connectionToClient, FrameSnapShotMessage message)
     {
         inputMessageQueue.Enqueue(message);
     }

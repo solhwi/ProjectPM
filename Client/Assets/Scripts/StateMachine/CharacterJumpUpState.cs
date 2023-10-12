@@ -5,29 +5,29 @@ using UnityEngine.Animations;
 
 namespace StateMachine
 {
-	public class CharacterJumpUpState : EntityAnimatorState
+	public class CharacterJumpUpState : CharacterAnimatorState
     {
         private Vector2 jumpVector = new Vector2 (0, 0);
 		
-		public override void OnSLStateEnter(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
+		public override void OnSLStateEnter(CharacterComponent owner, FrameCommandMessage command)
 		{
             if (owner == null)
                 return;
 
-			var inputMessage = message.ConvertToInput();
+			var inputMessage = command.ToInput();
 			jumpVector = new Vector2(inputMessage.moveInput.x, inputMessage.moveInput.y * 20.0f);
 
-			owner.Move(jumpVector * Time.deltaTime);
+			owner.AddMovement(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateNoTransitionUpdate(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
+		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameCommandMessage command)
 		{
-            owner.Move(jumpVector * Time.deltaTime);
+            owner.AddMovement(jumpVector * Time.deltaTime);
         }
 
-		public override void OnSLStateExit(EntityMeditatorComponent owner, FrameInputSnapShotMessage message)
+		public override void OnSLStateExit(CharacterComponent owner, FrameCommandMessage command)
 		{
-            owner.Move(jumpVector * Time.deltaTime);
+            owner.AddMovement(jumpVector * Time.deltaTime);
         }
 	}
 

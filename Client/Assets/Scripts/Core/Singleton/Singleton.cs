@@ -39,6 +39,10 @@ public class Singleton : IUpdater
 		
 	}
 
+	public virtual void OnFixedUpdate(int deltaFrameCount, float deltaTime)
+	{
+
+	}
 
 	public virtual void OnLateUpdate(int deltaFrameCount, float deltaTime)
 	{
@@ -51,6 +55,11 @@ public class Singleton : IUpdater
 	}
 
 	public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
+	{
+
+	}
+
+	public virtual void OnPrevUpdate(int deltaFrameCount, float deltaTime)
 	{
 
 	}

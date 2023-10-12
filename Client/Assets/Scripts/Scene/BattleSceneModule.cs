@@ -7,8 +7,10 @@ using UnityEngine;
 
 public class BattleSceneModule : NetworkSceneModule
 {
+    private BattleSessionManager battleSessionManager = null;
+
 #if UNITY_EDITOR
-    protected override NetworkManager CreateNetworkManager()
+	protected override NetworkManager CreateNetworkManager()
 	{
         var networkManager = FindObjectOfType<BattleSessionManager>();
         if (networkManager == null)
@@ -36,18 +38,36 @@ public class BattleSceneModule : NetworkSceneModule
     }
 #endif
 
-	public override void OnUpdate(int deltaFrameCount, float deltaTime)
+	public override void OnEnter(SceneModuleParam param)
 	{
-		InputManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
-		PhysicsManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
+		base.OnEnter(param);
+
+		battleSessionManager =  currentSession as BattleSessionManager;
+        if (battleSessionManager == null)
+            return;
+
+        battleSessionManager.OnTick += OnTick;
 	}
 
-	public override void OnPostUpdate(int deltaFrameCount, float deltaTime)
+	public override void OnExit()
 	{
-		EntityManager.Instance.OnPostUpdate(deltaFrameCount, deltaTime);
+		battleSessionManager.OnTick -= OnTick;
+
+		base.OnExit();
 	}
-    public override void OnLateUpdate(int deltaFrameCount, float deltaTime)
+
+	private void OnTick(int tickCount, float latencyTime)
     {
-        EntityManager.Instance.OnLateUpdate(deltaFrameCount, deltaTime);
+        PhysicsManager.Instance.OnFixedUpdate(tickCount, latencyTime);
     }
+
+	public override void OnPrevUpdate(int deltaFrameCount, float deltaTime)
+	{
+		InputManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
+	}
+
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
+	{
+        EntityManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
+	}
 }

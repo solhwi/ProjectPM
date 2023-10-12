@@ -63,6 +63,7 @@ public abstract class NetworkSceneModule : SceneModule
         }
 
         currentSession.Connect(param);
+        
     }
 
 	public override void OnExit()

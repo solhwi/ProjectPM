@@ -5,7 +5,7 @@ using UnityEngine.Animations;
 
 namespace StateMachine
 {
-	public class CharacterLandingState : EntityAnimatorState
+	public class CharacterLandingState : CharacterAnimatorState
     {
 
 	}

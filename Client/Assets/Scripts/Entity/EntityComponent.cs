@@ -3,6 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// 이 곳에 타입이 추가되면 Unity Layer에도 추가해야 합니다.
+public enum ENUM_LAYER_TYPE
+{
+	Map = 3,
+	Ground = 6,
+	Platform = 7,
+	Object = 8,
+	Enemy = 9,
+	Boss = 10,
+	Friendly = 11,
+	Projectile = 12,
+	UI = 13,
+}
+
+public enum ENUM_TEAM_TYPE
+{
+	None = -1,
+	Friendly = 0,
+	Enemy = 1,
+}
+
+public enum ENUM_ENTITY_TYPE
+{
+	None = -1,
+	RedMan = 0,
+	BlueMan = 1,
+	GreenMan = 2,
+}
+
+// component는 entity를 기반으로 view를 반영한다.
+
+// 이게 정석같기는 한데...
+// 1. 그럼 충돌에 대한 부분을 직접 구현해야 한다.
+// 2. 애니메이션도 직접 구현해서 데이터 레벨로 내려야 한다.
+
+// 분리는 안하기로 결정...
+// Entity 데이터를 분리하는 게 아니라 EntityComponent를 상속받는 형식으로 간다.
+// Entity엔 사용할 데이터 형식을 정의한다.
+
+
 public abstract class EntityComponent : MonoBehaviour
 {
 	public ENUM_ENTITY_TYPE EntityType
@@ -10,7 +50,7 @@ public abstract class EntityComponent : MonoBehaviour
 		get; private set;
 	}
 
-    public abstract ENUM_ENTITY_STATE CurrentState
+    public abstract int CurrentState
 	{
 		get;
 	}
@@ -43,20 +83,14 @@ public abstract class EntityComponent : MonoBehaviour
 		get;
 	}
 
-	public abstract int CurrentKeyFrame
-	{
-		get;
-	}
-
 	public abstract float CurrentNormalizedTime
 	{
 		get;
 	}
 
-
 	public int OwnerGuid { get; private set; }
 
-    public int Guid { get; private set; } = 0;
+    public int Guid { get; private set; }
 
 	public virtual void Initialize(int ownerGuid, ENUM_ENTITY_TYPE type)
 	{
@@ -77,27 +111,22 @@ public abstract class EntityComponent : MonoBehaviour
         SetPosition(posVec);
 	}
 
-	public void SetPosition(Vector2 posVec)
+	private void SetPosition(Vector2 posVec)
 	{
         transform.position = posVec;
     }
 
-    public virtual ENUM_ENTITY_STATE GetSimulatedNextState(FrameInputSnapShotMessage snapShotMessage)
+    public virtual int GetSimulatedNextState(ICommand command)
     {
         return CurrentState;
 	}
 
-	public virtual bool TryChangeState(FrameInputSnapShotMessage stateInfo)
+	public virtual bool TryChangeState(ICommand command)
 	{
 		return false;
 	}
 
-    public virtual void OnPostUpdate()
-	{
-		
-	}
-
-	public virtual void OnLateUpdate()
+	public virtual void OnUpdate()
 	{
 
 	}

@@ -61,7 +61,7 @@ public class SceneManager : Singleton<SceneManager>
 	private void FixedUpdate()
 	{
 		if (currentSceneModule != null)
-			currentSceneModule.OnFixedUpdate();
+			currentSceneModule.OnFixedUpdate(Time.frameCount, Time.deltaTime);
     }
 
 	private void Update()

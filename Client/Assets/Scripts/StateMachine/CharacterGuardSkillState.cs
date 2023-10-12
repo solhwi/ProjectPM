@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StateMachine
 {
-	public class CharacterGuardSkillState : EntityAnimatorState
+	public class CharacterGuardSkillState : CharacterAnimatorState
     {
 
 	}

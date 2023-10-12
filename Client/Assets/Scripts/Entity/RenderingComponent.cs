@@ -10,11 +10,6 @@ public class RenderingComponent : MonoBehaviour
 		if (spriteRenderer == null)
 			return;
 
-		var onwerComponent = GetComponent<EntityMeditatorComponent>();
-		if (onwerComponent == null) 
-			return;
-
-		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sortingOrder = LayerHelper.GetSortingLayer(layerType, orderIndex);
 	}
 }

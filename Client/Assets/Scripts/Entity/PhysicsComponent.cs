@@ -12,10 +12,12 @@ public class PhysicsComponent : MonoBehaviour
     [Tooltip("The distance down to check for ground.")]
     [SerializeField] private float groundedRaycastDistance = 0.1f;
 
-    public Vector2 hitOffset = new Vector2 (0, 0);
-    public Vector2 HitBox = new Vector2(2.56f, 2.56f);
+	[SerializeField] private bool useGravity;
 
-    Rigidbody2D m_Rigidbody2D;
+	[SerializeField] private float gravityScale = 1.0f;
+	[SerializeField] private float gravity = 9.8f;
+
+	Rigidbody2D m_Rigidbody2D;
     BoxCollider2D m_BoxColider2D;
     Vector2 m_PreviousPosition;
     Vector2 m_CurrentPosition;
@@ -26,19 +28,17 @@ public class PhysicsComponent : MonoBehaviour
     Collider2D[] m_GroundColliders = new Collider2D[3];
     Vector2[] m_RaycastPositions = new Vector2[3];
 
-	float gravityPower = 9.8f;
-	float jumpDeltaTime = 0.0f;
+    public Vector2 HitBox => m_BoxColider2D.size;
+    public Vector2 HitOffset => m_BoxColider2D.offset;
 
-    public bool isEnabled = true;
-    public bool IsGrounded { get; protected set; }
-
+    private float jumpDeltaTime = 0.0f;
+	public bool IsGrounded { get; protected set; }
 
     private Queue<Vector2> vectorQueue = new Queue<Vector2>();
-	private Coroutine endofFrameRoutine = null;
 
     public Vector2 Velocity => m_NextMovement;
 
-	void Awake()
+	private void OnEnable()
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
         m_BoxColider2D = GetComponent<BoxCollider2D>();
@@ -51,93 +51,62 @@ public class PhysicsComponent : MonoBehaviour
         m_ContactFilter.useTriggers = false;
 
 		Physics2D.queriesStartInColliders = false;
+        PhysicsManager.Instance.Register(this);
     }
 
-    private void OnEnable()
+	private void OnDisable()
+	{
+		PhysicsManager.Instance.UnRegister(this);
+	}
+
+	public void OnFixedUpdate(int deltaFrameCount, float deltaTime)
     {
-        isEnabled = true;
-        endofFrameRoutine = StartCoroutine(OnUpdateEndOfFrame());
-    }
-
-    private void OnDisable()
-    {
-        isEnabled = false;
-        if (endofFrameRoutine != null)
-        {
-            StopCoroutine(endofFrameRoutine);
-        }
-    }
-
-    void FixedUpdate()
-    {
-        if (isEnabled == false)
-            return;
-
-        m_PreviousPosition = m_Rigidbody2D.position;
-		m_CurrentPosition = m_PreviousPosition;
-
-		while(vectorQueue.TryDequeue(out var movement))
-        {
-            m_CurrentPosition += movement;
-		}  
-
-        m_Rigidbody2D.MovePosition(m_CurrentPosition);
-
-        SetCollsionOffset(hitOffset);
-		SetCollisionBox(HitBox);
+        FlushMovement();
 
 		CheckCapsuleEndCollisions(true);
         CheckCapsuleEndCollisions(false);
+	}
+
+    public void OnUpdate(int deltaFrameCount, float deltaTime)
+    {
+        if (useGravity == false)
+            return;
+
+		if (IsGrounded == false)
+		{
+			float velocity = gravity * gravityScale * jumpDeltaTime;
+			AddMovement(Vector2.down * velocity);
+			jumpDeltaTime += deltaTime;
+		}
+		else
+		{
+			jumpDeltaTime = 0.0f;
+		}
+	}
+
+    private void FlushMovement()
+    {
+		m_PreviousPosition = m_Rigidbody2D.position;
+		m_CurrentPosition = m_PreviousPosition;
+
+		while (vectorQueue.TryDequeue(out var movement))
+		{
+			m_CurrentPosition += movement;
+		}
+		m_NextMovement = default;
+
+		m_Rigidbody2D.MovePosition(m_CurrentPosition);
 	}
 
     /// <summary>
     /// This moves a rigidbody and so should only be called from FixedUpdate or other Physics messages.
     /// </summary>
     /// <param name="movement">The amount moved in global coordinates relative to the rigidbody2D's position.</param>
-    public void Move(Vector2 movement)
+    public void AddMovement(Vector2 movement)
     {
         vectorQueue.Enqueue(movement);
 		m_NextMovement += movement;
     }
-
-    private void SetCollsionOffset(Vector2 offset) 
-    {
-		if (m_BoxColider2D.offset != offset)
-        {
-			m_BoxColider2D.offset = offset;
-		}
-	}
-
-    private void SetCollisionBox(Vector2 box)
-    {
-        if (m_BoxColider2D.size != box)
-        {
-			m_BoxColider2D.size = box;
-		}
-	}
-
-    private void Update()
-    {
-        if (isEnabled == false)
-            return;
-        
-        if (IsGrounded == false)
-        {
-            float totalGravity = gravityPower + (gravityPower * jumpDeltaTime);
-            Move(Vector2.down * totalGravity * Time.deltaTime);
-            jumpDeltaTime += Time.deltaTime;
-        }
-        else
-        {
-            jumpDeltaTime = 0.0f;
-        }
-	}
-
-	private IEnumerator OnUpdateEndOfFrame()
-	{
-        yield return new WaitForEndOfFrame();
-		m_NextMovement = Vector2.zero;
-	}
 
 	/// <summary>
 	/// This moves the character without any implied velocity.

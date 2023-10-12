@@ -258,3 +258,4 @@ MonoBehaviour:
   renderingComponent: {fileID: 2111098085485975088}
   physicsComponent: {fileID: 2725238379644671886}
   stateMachineComponent: {fileID: 2207896231629970980}
+  damageableComponent: {fileID: 581437186035518913}
