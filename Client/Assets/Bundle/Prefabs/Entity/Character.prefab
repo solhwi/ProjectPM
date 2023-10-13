@@ -202,8 +202,9 @@ MonoBehaviour:
     m_Bits: 192
   groundedRaycastDistance: 0.1
   useGravity: 1
-  gravityScale: 1
+  gravityScale: 0.3
   gravity: 9.8
+  IsGrounded: 0
 --- !u!114 &2111098085485975088
 MonoBehaviour:
   m_ObjectHideFlags: 0

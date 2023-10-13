@@ -35,7 +35,6 @@ public class BossSceneModule : SceneModule
 	public override void OnPrevUpdate(int deltaFrameCount, float deltaTime)
 	{
 		InputManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
-		PhysicsManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
 	}
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)

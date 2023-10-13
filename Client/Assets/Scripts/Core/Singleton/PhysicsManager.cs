@@ -14,14 +14,6 @@ public class PhysicsManager : Singleton<PhysicsManager>
 		}
 	}
 
-	public override void OnUpdate(int deltaFrameCount, float deltaTime)
-	{
-		foreach (var component in physicsComponents)
-		{
-			component.OnUpdate(deltaFrameCount, deltaTime);
-		}
-	}
-
 	public void Register(PhysicsComponent physicsComponent)
 	{
 		if (physicsComponents.Contains(physicsComponent))

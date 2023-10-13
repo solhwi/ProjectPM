@@ -56,6 +56,8 @@ public class MessageHelper
 		playerEntityMessage.hitbox = entity.HitBox;
 		playerEntityMessage.offset = entity.Offset;
 		playerEntityMessage.entityState = entity.CurrentState;
+		playerEntityMessage.normalizedTime = entity.CurrentNormalizedTime;
+		playerEntityMessage.isGrounded = entity.IsGrounded;
 
 		return playerEntityMessage;
 	}

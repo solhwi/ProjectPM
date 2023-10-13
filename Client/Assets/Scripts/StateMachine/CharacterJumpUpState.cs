@@ -7,6 +7,7 @@ namespace StateMachine
 {
 	public class CharacterJumpUpState : CharacterAnimatorState
     {
+		[SerializeField] private float jumpPower = 20.0f;
         private Vector2 jumpVector = new Vector2 (0, 0);
 		
 		public override void OnSLStateEnter(CharacterComponent owner, FrameCommandMessage command)
@@ -15,19 +16,25 @@ namespace StateMachine
                 return;
 
 			var inputMessage = command.ToInput();
-			jumpVector = new Vector2(inputMessage.moveInput.x, inputMessage.moveInput.y * 20.0f);
+			jumpVector = new Vector2(inputMessage.moveInput.x, inputMessage.moveInput.y * jumpPower);
 
 			owner.AddMovement(jumpVector * Time.deltaTime);
         }
 
 		public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameCommandMessage command)
 		{
-            owner.AddMovement(jumpVector * Time.deltaTime);
+			var inputMessage = command.ToInput();
+			jumpVector.x = inputMessage.moveInput.x;
+
+			owner.AddMovement(jumpVector * Time.deltaTime);
         }
 
 		public override void OnSLStateExit(CharacterComponent owner, FrameCommandMessage command)
 		{
-            owner.AddMovement(jumpVector * Time.deltaTime);
+			var inputMessage = command.ToInput();
+			jumpVector.x = inputMessage.moveInput.x;
+
+			owner.AddMovement(jumpVector * Time.deltaTime);
         }
 	}
 

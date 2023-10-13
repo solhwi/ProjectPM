@@ -31,10 +31,10 @@ public class PhysicsComponent : MonoBehaviour
     public Vector2 HitBox => m_BoxColider2D.size;
     public Vector2 HitOffset => m_BoxColider2D.offset;
 
-    private float jumpDeltaTime = 0.0f;
-	public bool IsGrounded { get; protected set; }
+    public bool IsGrounded = false;
+	private float airborneDeltaTime = 0.0f;
 
-    private Queue<Vector2> vectorQueue = new Queue<Vector2>();
+	private Queue<Vector2> vectorQueue = new Queue<Vector2>();
 
     public Vector2 Velocity => m_NextMovement;
 
@@ -61,30 +61,31 @@ public class PhysicsComponent : MonoBehaviour
 
 	public void OnFixedUpdate(int deltaFrameCount, float deltaTime)
     {
-        FlushMovement();
-
 		CheckCapsuleEndCollisions(true);
         CheckCapsuleEndCollisions(false);
+
+		FlushGravity(deltaTime);
+		FlushMovement();
 	}
 
-    public void OnUpdate(int deltaFrameCount, float deltaTime)
+	private void FlushGravity(float deltaTime)
     {
-        if (useGravity == false)
-            return;
+		if (useGravity == false)
+			return;
 
 		if (IsGrounded == false)
 		{
-			float velocity = gravity * gravityScale * jumpDeltaTime;
+			float velocity = gravity * gravityScale * airborneDeltaTime;
 			AddMovement(Vector2.down * velocity);
-			jumpDeltaTime += deltaTime;
+			airborneDeltaTime += deltaTime;
 		}
 		else
 		{
-			jumpDeltaTime = 0.0f;
+			airborneDeltaTime = 0.0f;
 		}
 	}
 
-    private void FlushMovement()
+	private void FlushMovement()
     {
 		m_PreviousPosition = m_Rigidbody2D.position;
 		m_CurrentPosition = m_PreviousPosition;
@@ -212,7 +213,7 @@ public class PhysicsComponent : MonoBehaviour
             }
             else
             {
-                IsGrounded = Velocity.y <= 0f;
+                IsGrounded = m_Rigidbody2D.velocity.y <= 0f;
 
                 if (m_BoxColider2D != null)
                 {

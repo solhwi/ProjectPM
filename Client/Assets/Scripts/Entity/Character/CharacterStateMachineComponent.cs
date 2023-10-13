@@ -57,7 +57,7 @@ public class CharacterStateMachineComponent : MonoBehaviour
 		bool isChangedState = CurrentState != nextState;
 		if (isChangedState)
 		{
-			Debug.Log($"스테이트 변경 : {CurrentState} => {nextState}");
+			Debug.Log($"{Time.frameCount} 스테이트 변경 : {CurrentState} => {nextState}");
 			animator.Play(nextState.ToString());
 			CurrentState = nextState;
 		}
