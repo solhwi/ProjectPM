@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TheKiwiCoder;
 
-public class #SCRIPTNAME# : ActionNode
+public class AttackToEnemy : ActionNode
 {
     protected override void OnStart() 
     {

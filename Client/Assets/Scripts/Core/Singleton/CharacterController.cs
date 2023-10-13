@@ -7,7 +7,7 @@ using UnityEngine;
 public class CharacterController : Singleton<CharacterController>
 {
     private PlayerInputComponent playerInputComponent = null;
-    private Dictionary<int, TheKiwiCoder.AIInputComponent> aiInputComponentDictionary = new Dictionary<int, TheKiwiCoder.AIInputComponent>();
+    private Dictionary<int, AIInputComponent> aiInputComponentDictionary = new Dictionary<int, AIInputComponent>();
 	
     public void RegisterControl(CharacterComponent character)
     {
@@ -39,7 +39,7 @@ public class CharacterController : Singleton<CharacterController>
         if (character == null)
             return;
 
-        var runner = character.GetOrAddComponent<TheKiwiCoder.AIInputComponent>();
+        var runner = character.GetOrAddComponent<AIInputComponent>();
         if (runner == null) 
             return;
 

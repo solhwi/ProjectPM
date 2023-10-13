@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TheKiwiCoder;
 
-public class #SCRIPTNAME# : ActionNode
+public class SkillToEnemy : ActionNode
 {
     protected override void OnStart() 
     {

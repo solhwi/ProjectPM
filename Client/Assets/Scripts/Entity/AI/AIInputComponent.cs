@@ -28,6 +28,8 @@ public class AIInputComponent : InputComponent
 
 	public override void Run()
 	{
+		base.Run();
+
 		context = CreateBehaviourTreeContext();
 		tree = tree.Clone();
 		tree.Bind(context);
