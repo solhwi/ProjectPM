@@ -94,9 +94,7 @@ public class InputManager : Singleton<InputManager>
 
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
 	private FrameInputMessage currentInputMessage = new FrameInputMessage();
-	
-	private List<InputComponent> inputComponents = new List<InputComponent>();
-	
+		
 	protected override void OnAwakeInstance()
 	{
 		SceneManager.Instance.onSceneChanged += SetJoystick;
@@ -115,22 +113,6 @@ public class InputManager : Singleton<InputManager>
 	protected override void OnReleaseInstance()
 	{
 		SceneManager.Instance.onSceneChanged -= SetJoystick;
-	}
-
-	public void Register(InputComponent physicsComponent)
-	{
-		if (inputComponents.Contains(physicsComponent))
-			return;
-
-		inputComponents.Add(physicsComponent);
-	}
-
-	public void UnRegister(InputComponent physicsComponent)
-	{
-		if (inputComponents.Contains(physicsComponent) == false)
-			return;
-
-		inputComponents.Remove(physicsComponent);
 	}
 
 	public void OnMoveInputChanged(Vector2 input, int frameCount)
@@ -158,16 +140,6 @@ public class InputManager : Singleton<InputManager>
 	{
 		var inputData = new AttackInputData(key, isAttack, frameCount);
 		inputDataQueue.Enqueue(inputData);
-	}
-
-	// 오프라인 상황에선 매 프레임 수행
-	// 온라인 상황에선 매 서버 틱 수행
-	public override void OnUpdate(int deltaFrameCount, float deltaTime)
-	{
-		foreach(var input in inputComponents)
-		{
-			input.OnUpdate(deltaFrameCount, deltaTime);
-		}
 	}
 
 	public FrameInputMessage FlushInput(int targetFrameCount)

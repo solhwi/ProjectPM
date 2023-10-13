@@ -21,6 +21,11 @@ public class BossSceneModule : SceneModule
 		CharacterController.Instance.RegisterControl(EntityManager.Instance.PlayerEntity);
     }
 
+	public override void OnExit()
+	{
+		CharacterController.Instance.UnRegisterControl();
+	}
+
 	public override IEnumerator OnPrepareEnterRoutine(SceneModuleParam param)
 	{
 		yield return MapManager.Instance.LoadAsyncMap(ENUM_MAP_TYPE.City); // ¸Ê »ý¼º
@@ -34,7 +39,7 @@ public class BossSceneModule : SceneModule
 
 	public override void OnPrevUpdate(int deltaFrameCount, float deltaTime)
 	{
-		InputManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
+		CharacterController.Instance.OnPrevUpdate(deltaFrameCount, deltaTime);
 	}
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
