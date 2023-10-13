@@ -103,6 +103,16 @@ public class MonoBehaviourManager : MonoBehaviour
         base.StopCoroutine(routine);
     }
 
+    public void Destroy(MonoBehaviour m)
+    {
+        UnityEngine.Object.Destroy(m);
+    }
+
+    public void Destroy(GameObject go)
+    {
+		UnityEngine.Object.Destroy(go);
+	}
+
 	private void FixedUpdate()
 	{
         onFixedUpdate?.Invoke();

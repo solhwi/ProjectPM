@@ -10,27 +10,33 @@ public class MessageHelper
 	public static FrameSnapShotMessage MakeSnapShot(int ownerGuid, int tickCount)
 	{
 		var newSnapShot = new FrameSnapShotMessage();
-		newSnapShot.commandMessage.playerInputMessage = InputManager.Instance.FlushInput();
-
-		var playerEntity = EntityManager.Instance.PlayerEntity;
-		if (playerEntity == null)
-			return default;
-
-		newSnapShot.commandMessage.playerEntityMessage = MakeEntityMessage(playerEntity);
 
 		var entities = EntityManager.Instance.GetEntities(ownerGuid);
 		if (entities == null || entities.Any() == false)
 			return default;
 
 		newSnapShot.entityMessages = entities.Select(MakeEntityMessage).ToArray();
+
+		var playerEntity = EntityManager.Instance.PlayerEntity;
+		if (playerEntity == null)
+			return default;
+
+		newSnapShot.commandMessage.playerEntityMessage = MakeEntityMessage(playerEntity);
+		newSnapShot.commandMessage.playerInputMessage = MakeInputMessage();
+		
 		newSnapShot.tickCount = tickCount;
 		return newSnapShot;
+	}
+	
+	public static FrameInputMessage MakeInputMessage()
+	{
+		return InputManager.Instance.FlushInput(Time.frameCount);
 	}
 
 	public static FrameCommandMessage MakeCommand()
 	{
 		var message = new FrameCommandMessage();
-		message.playerInputMessage = InputManager.Instance.FlushInput();
+		message.playerInputMessage = MakeInputMessage();
 
 		var playerEntity = EntityManager.Instance.PlayerEntity;
 		if (playerEntity == null)

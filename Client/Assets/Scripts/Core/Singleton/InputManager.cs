@@ -93,9 +93,8 @@ public class InputManager : Singleton<InputManager>
 	public static bool SnapY { get; private set; } = true;
 
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
-
-	private FrameInputMessage currentInputData = new FrameInputMessage();
-
+	private FrameInputMessage currentInputMessage = new FrameInputMessage();
+	
 	private List<InputComponent> inputComponents = new List<InputComponent>();
 	
 	protected override void OnAwakeInstance()
@@ -161,6 +160,8 @@ public class InputManager : Singleton<InputManager>
 		inputDataQueue.Enqueue(inputData);
 	}
 
+	// 오프라인 상황에선 매 프레임 수행
+	// 온라인 상황에선 매 서버 틱 수행
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
 		foreach(var input in inputComponents)
@@ -169,22 +170,26 @@ public class InputManager : Singleton<InputManager>
 		}
 	}
 
-	public FrameInputMessage FlushInput()
+	public FrameInputMessage FlushInput(int targetFrameCount)
 	{
-		int validFrameCount = Time.frameCount;
-
 		// 같은 프레임에 두 번 호출한 경우
-		if (currentInputData.frameCount == validFrameCount)
-			return currentInputData;
+		if (currentInputMessage.frameCount == targetFrameCount)
+			return currentInputMessage;
 
-		Vector2 moveVec = currentInputData.moveInput;
+		currentInputMessage = MakeCurrentFrameMessage(targetFrameCount);
+		return currentInputMessage;
+	}
+
+	private FrameInputMessage MakeCurrentFrameMessage(int targetFrameCount)
+	{
+		Vector2 moveVec = currentInputMessage.moveInput;
 		ENUM_ATTACK_KEY pressedAttackKey = ENUM_ATTACK_KEY.MAX;
 		bool isDash = false;
 		bool isGuard = false;
 
 		while (inputDataQueue.TryDequeue(out var result))
 		{
-			if (result.frameCount < validFrameCount)
+			if (result.frameCount < targetFrameCount)
 				continue;
 
 			if (result is MoveInputData moveInputResult)
@@ -202,14 +207,13 @@ public class InputManager : Singleton<InputManager>
 			{
 				isDash = jumpInputResult.isPress;
 			}
-			else if(result is GuardInputData guardInputData)
+			else if (result is GuardInputData guardInputData)
 			{
 				isGuard = guardInputData.isPress;
 			}
 		}
 
-		currentInputData = new FrameInputMessage(moveVec, pressedAttackKey, isDash, isGuard, validFrameCount);
-		return currentInputData;
+		return new FrameInputMessage(moveVec, pressedAttackKey, isDash, isGuard, targetFrameCount);
 	}
 
 	private float SnapFloat(Vector2 input, float value, AxisOptions snapAxis)

@@ -58,13 +58,9 @@ public class BattleSceneModule : NetworkSceneModule
 
 	private void OnTick(int tickCount, float latencyTime)
     {
-        PhysicsManager.Instance.OnFixedUpdate(tickCount, latencyTime);
+		InputManager.Instance.OnUpdate(tickCount, latencyTime);
+		PhysicsManager.Instance.OnFixedUpdate(tickCount, latencyTime);
     }
-
-	public override void OnPrevUpdate(int deltaFrameCount, float deltaTime)
-	{
-		InputManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
-	}
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{

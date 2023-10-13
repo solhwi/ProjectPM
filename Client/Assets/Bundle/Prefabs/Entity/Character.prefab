@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 581437186035518913}
   - component: {fileID: 3577131548055984871}
   m_Layer: 11
-  m_Name: EntityMeditator
+  m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,9 +201,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   groundedRaycastDistance: 0.1
-  hitOffset: {x: 0, y: 0.256}
-  HitBox: {x: 2.56, y: 2.56}
-  isEnabled: 1
+  useGravity: 1
+  gravityScale: 1
+  gravity: 9.8
 --- !u!114 &2111098085485975088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,7 +242,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ac417eaf776c0a48b44d76d14ba10fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isEnable: 1
 --- !u!114 &3577131548055984871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,4 +257,3 @@ MonoBehaviour:
   renderingComponent: {fileID: 2111098085485975088}
   physicsComponent: {fileID: 2725238379644671886}
   stateMachineComponent: {fileID: 2207896231629970980}
-  damageableComponent: {fileID: 581437186035518913}

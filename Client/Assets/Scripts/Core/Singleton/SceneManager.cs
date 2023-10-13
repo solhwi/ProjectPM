@@ -70,6 +70,9 @@ public class SceneManager : Singleton<SceneManager>
 			return;
 
 		if (currentSceneModule != null)
+			currentSceneModule.OnPrevUpdate(Time.frameCount, Time.deltaTime);
+
+		if (currentSceneModule != null)
 			currentSceneModule.OnUpdate(Time.frameCount, Time.deltaTime);
 
 		if (currentSceneModule != null)

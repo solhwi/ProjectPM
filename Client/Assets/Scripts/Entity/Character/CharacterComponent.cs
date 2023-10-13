@@ -40,7 +40,7 @@ public enum ENUM_CHARACTER_STATE
 [RequireComponent(typeof(RenderingComponent))]
 [RequireComponent(typeof(PhysicsComponent))]
 [RequireComponent(typeof(CharacterStateMachineComponent))]
-[EntityAttribute("CharacterComponent.prefab")]
+[EntityAttribute("Character.prefab")]
 public class CharacterComponent : EntityComponent
 {
 	[SerializeField] private RenderingComponent renderingComponent = null;

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public abstract class InputComponent : MonoBehaviour
 {
-	protected virtual void OnEnable()
+	private void OnEnable()
 	{
 		InputManager.Instance.Register(this);
 	}
 
-	protected virtual void OnDisable()
+	private void OnDisable()
 	{
 		InputManager.Instance.UnRegister(this);
 	}
@@ -22,15 +22,28 @@ public abstract class InputComponent : MonoBehaviour
 
 public class PlayerInputComponent : InputComponent
 {
+	private bool isEnable = false;
     private CharacterComponent characterComponent;
 
-	protected override void OnEnable()
+	public void Run()
 	{
-		characterComponent = GetComponent<CharacterComponent>();
+		if(characterComponent == null)
+			characterComponent = GetComponent<CharacterComponent>();
+
+		isEnable = true;
+	}
+
+	public void Stop()
+	{
+		characterComponent = null;
+		isEnable = false;
 	}
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
+		if (isEnable == false)
+			return;
+
 		if (characterComponent == null)
 			return;
 
