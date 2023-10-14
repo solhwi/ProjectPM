@@ -28,13 +28,8 @@ MonoBehaviour:
     mass: 10
     moveSpeed: 5
     attackSpeed: 3
-  - key: 3
-    jumpPower: 10
-    mass: 6
-    moveSpeed: 7
-    attackSpeed: 6
   characterStatDictionary:
-    m_keys: 00000000010000000200000003000000
+    m_keys: 000000000100000002000000
     m_values:
     - key: 0
       jumpPower: 10
@@ -51,8 +46,3 @@ MonoBehaviour:
       mass: 10
       moveSpeed: 5
       attackSpeed: 3
-    - key: 3
-      jumpPower: 10
-      mass: 6
-      moveSpeed: 7
-      attackSpeed: 6

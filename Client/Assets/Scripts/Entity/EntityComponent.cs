@@ -30,6 +30,7 @@ public enum ENUM_ENTITY_TYPE
 	RedMan = 0,
 	BlueMan = 1,
 	GreenMan = 2,
+    PencilMan = 3,
 }
 
 // component는 entity를 기반으로 view를 반영한다.
@@ -65,7 +66,7 @@ public abstract class EntityComponent : MonoBehaviour
 		get;
 	}
 
-	public abstract Vector2 Offset
+    public abstract Vector2 HitOffset
 	{
 		get;
 	}
@@ -88,20 +89,24 @@ public abstract class EntityComponent : MonoBehaviour
 		get;
 	}
 
+	public bool IsPlayer { get; private set; }
+
 	public int OwnerGuid { get; private set; }
 
     public int Guid { get; private set; }
 
-	public virtual void Initialize(int ownerGuid, ENUM_ENTITY_TYPE type)
+	public virtual void Initialize(int ownerGuid, ENUM_ENTITY_TYPE type, bool isPlayer)
 	{
-		OwnerGuid = ownerGuid;
+		IsPlayer = isPlayer;
+        OwnerGuid = ownerGuid;
 		EntityType = type;
         Guid = EntityManager.Instance.Register(this);
 	}
 
 	public void Clear()
 	{
-		OwnerGuid = 0;
+		IsPlayer = false;
+        OwnerGuid = 0;
 		EntityType = ENUM_ENTITY_TYPE.None;
         Guid = EntityManager.Instance.UnRegister(Guid);
 	}

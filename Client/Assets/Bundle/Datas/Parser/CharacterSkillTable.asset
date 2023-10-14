@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 4
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d1abfe271e39844cb858d3f6bcfc972, type: 3}
+  m_Name: CharacterSkillTable
+  m_EditorClassIdentifier: 
+  skillInfoList:
+  - key: 0
+    searchBoxX: 2
+    searchBoxY: 1
+    searchOffsetX: 0
+    searchOffsetY: 0
+  - key: 1
+    searchBoxX: 4
+    searchBoxY: 1
+    searchOffsetX: 2
+    searchOffsetY: 0
+  skillInfoDictionary:
+    m_keys: 0000000001000000
+    m_values:
+    - key: 0
+      searchBoxX: 2
+      searchBoxY: 1
+      searchOffsetX: 0
+      searchOffsetY: 0
+    - key: 1
+      searchBoxX: 4
+      searchBoxY: 1
+      searchOffsetX: 2
+      searchOffsetY: 0
+  characterSkillMapInfoList:
+  - key: 0
+    entityType: 3
+  - key: 1
+    entityType: 3
+  characterSkillMapInfoDictionary:
+    m_keys: 0000000001000000
+    m_values:
+    - key: 0
+      entityType: 3
+    - key: 1
+      entityType: 3

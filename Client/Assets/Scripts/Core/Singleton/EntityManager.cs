@@ -82,13 +82,13 @@ public class EntityManager : Singleton<EntityManager>
         if (PlayerEntity == null)
             yield break;
 
-		PlayerEntity.Initialize(GameManager.Instance.PlayerGuid, characterType);
+		PlayerEntity.Initialize(GameManager.Instance.PlayerGuid, characterType, true);
 		PlayerEntity.SetEntityLayer(ENUM_LAYER_TYPE.Friendly);
 
 		mono.SetSingletonChild(this, PlayerEntity);
     }
 
-	private IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity)
+	private IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity, bool includeMine = false)
     {
         Collider2D[] colliders = Physics2D.OverlapBoxAll(pos + offset + velocity, size, 0);
         if (colliders == null || colliders.Length == 0)
@@ -109,20 +109,55 @@ public class EntityManager : Singleton<EntityManager>
 			if (entity == null)
 				continue;
 
-			if (entity.OwnerGuid == myEntity.OwnerGuid) // ³»²« Á¦¿Ü
-				continue;
-
+            if (includeMine == false && entity.OwnerGuid == entityGuid)
+                continue;
+                
 			yield return entity;
 		}
     }
 
-    private IEnumerable<EntityComponent> GetOverlapEntities(FrameEntityMessage message)
+    private IEnumerable<EntityComponent> GetOverlapEntities(FrameEntityMessage message, bool includeMine)
     {
-        return GetOverlapEntities(message.entityGuid, message.pos, message.hitbox, message.offset, message.velocity);
+        return GetOverlapEntities(message.entityGuid, message.pos, message.hitbox, message.offset, message.velocity, includeMine);
     }
 
-    public IEnumerable<int> GetOverlapEntitiyGuids(FrameEntityMessage message)
+    public Dictionary<ENUM_SKILL_TYPE, IEnumerable<EntityComponent>> GetSearchedEntities(EntityComponent entity, bool includeMine = false)
     {
-        return GetOverlapEntities(message).Select(entity => entity.Guid);
+        var skillTable = ScriptParserManager.Instance.GetTable<CharacterSkillTable>();
+        if (skillTable == null)
+            return null;
+
+        var searchedEntities = new Dictionary<ENUM_SKILL_TYPE, IEnumerable<EntityComponent>>();
+
+        var hasSkills = skillTable.GetSkills(entity.EntityType);
+        foreach(var skill in hasSkills)
+        {
+            Vector2 box = new(skill.searchBoxX, skill.searchBoxY);
+            Vector2 offset = new(skill.searchOffsetX, skill.searchOffsetY);
+
+            var entities = GetOverlapEntities(entity.Guid, entity.Position, box, offset, entity.Velocity, includeMine);
+            if(entities == null || entities.Any() == false) 
+                continue;
+
+            searchedEntities.Add(skill.key, entities);
+        }
+
+        return searchedEntities;
     }
+
+    private IEnumerable<EntityComponent> GetOverlapEntities(EntityComponent entity, Vector2 searchBox, Vector2 searchOffset, bool includeMine = false)
+    {
+        return GetOverlapEntities(entity.Guid, entity.Position, searchBox, searchOffset, entity.Velocity, includeMine);
+    }
+
+    public IEnumerable<EntityComponent> GetOverlapEntities(EntityComponent entity, bool includeMine = false)
+    {
+        return GetOverlapEntities(entity.Guid, entity.Position, entity.HitBox, entity.HitOffset, entity.Velocity, includeMine);
+    }
+
+    public IEnumerable<int> GetOverlapEntitiyGuids(FrameEntityMessage message, bool includeMine = false)
+    {
+        return GetOverlapEntities(message, includeMine).Select(entity => entity.Guid);
+    }
+
 }

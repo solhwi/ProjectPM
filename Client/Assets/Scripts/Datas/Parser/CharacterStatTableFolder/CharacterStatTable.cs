@@ -21,7 +21,7 @@ public partial class CharacterStatTable : ScriptParser
 	[Serializable]
 	public class CharacterStat
 	{
-		public int key;
+		public ENUM_ENTITY_TYPE key;
 		public int jumpPower;
 		public int mass;
 		public int moveSpeed;
@@ -30,7 +30,7 @@ public partial class CharacterStatTable : ScriptParser
 
 	public List<CharacterStat> characterStatList = new List<CharacterStat>();
 	[System.Serializable]
-	public class CharacterStatDictionary : SerializableDictionary<int, CharacterStat> {}
+	public class CharacterStatDictionary : SerializableDictionary<ENUM_ENTITY_TYPE, CharacterStat> {}
 	public CharacterStatDictionary characterStatDictionary = new CharacterStatDictionary();
 
 
