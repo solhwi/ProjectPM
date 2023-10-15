@@ -1,17 +1,18 @@
-using Mirror;
-using NPOI.HPSF;
-using StateMachine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class EntityManager : Singleton<EntityManager>
 {
     public CharacterComponent PlayerEntity
+    {
+        get;
+        private set;
+    }
+    
+    public CharacterComponent MonsterEntity
     {
         get;
         private set;
@@ -44,22 +45,30 @@ public class EntityManager : Singleton<EntityManager>
         }
 	}
 
-	public EntityComponent GetEntityComponent(int guid)
+    public IEnumerator LoadAsyncMonster(ENUM_ENTITY_TYPE characterType)
     {
-        if (entityDictionary.ContainsKey(guid) == false)
-            return null;
+        var handle = ResourceManager.Instance.LoadAsync<CharacterComponent>();
+        while (!handle.IsDone || handle.Status != AsyncOperationStatus.Succeeded)
+        {
+            yield return null;
+        }
 
-        return entityDictionary[guid];
-    }
+        var prefab = handle.Result as GameObject;
+        if (prefab == null)
+            yield break;
 
-    public IEnumerable<EntityComponent> GetAllEntities()
-    {
-        return entityDictionary.Values;
-    }
+        var obj = UnityEngine.Object.Instantiate(prefab);
+        if (obj == null)
+            yield break;
 
-    public IEnumerable<EntityComponent> GetEntities(int ownerGuid)
-    {
-        return GetAllEntities().Where(e => e.OwnerGuid == ownerGuid);
+        MonsterEntity = obj.GetComponent<CharacterComponent>();
+        if (MonsterEntity == null)
+            yield break;
+
+        MonsterEntity.Initialize(0, characterType, false);
+        MonsterEntity.SetEntityLayer(ENUM_LAYER_TYPE.Enemy);
+
+        mono.SetSingletonChild(this, MonsterEntity);
     }
 
     public IEnumerator LoadAsyncPlayer(ENUM_ENTITY_TYPE characterType)
@@ -88,7 +97,26 @@ public class EntityManager : Singleton<EntityManager>
 		mono.SetSingletonChild(this, PlayerEntity);
     }
 
-	private IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity, bool includeMine = false)
+    public EntityComponent GetEntityComponent(int guid)
+    {
+        if (entityDictionary.ContainsKey(guid) == false)
+            return null;
+
+        return entityDictionary[guid];
+    }
+
+    public IEnumerable<EntityComponent> GetAllEntities()
+    {
+        return entityDictionary.Values;
+    }
+
+    public IEnumerable<EntityComponent> GetEntities(int ownerGuid)
+    {
+        return GetAllEntities().Where(e => e.OwnerGuid == ownerGuid);
+    }
+
+
+    private IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity, bool includeMine = false)
     {
         Collider2D[] colliders = Physics2D.OverlapBoxAll(pos + offset + velocity, size, 0);
         if (colliders == null || colliders.Length == 0)
@@ -143,11 +171,6 @@ public class EntityManager : Singleton<EntityManager>
         }
 
         return searchedEntities;
-    }
-
-    private IEnumerable<EntityComponent> GetOverlapEntities(EntityComponent entity, Vector2 searchBox, Vector2 searchOffset, bool includeMine = false)
-    {
-        return GetOverlapEntities(entity.Guid, entity.Position, searchBox, searchOffset, entity.Velocity, includeMine);
     }
 
     public IEnumerable<EntityComponent> GetOverlapEntities(EntityComponent entity, bool includeMine = false)

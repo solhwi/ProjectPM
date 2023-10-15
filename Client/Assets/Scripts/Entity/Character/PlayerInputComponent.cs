@@ -28,12 +28,16 @@ public class PlayerInputComponent : InputComponent
 
 	public override void Run()
 	{
+		base.Run();
+
 		if(characterComponent == null)
 			characterComponent = GetComponent<CharacterComponent>();
 	}
 
 	public override void Stop()
 	{
+		base.Stop();
+
 		characterComponent = null;
 	}
 

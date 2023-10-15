@@ -47,6 +47,8 @@ public class CharacterComponent : EntityComponent
 	[SerializeField] private PhysicsComponent physicsComponent = null;
 	[SerializeField] private CharacterStateMachineComponent stateMachineComponent = null;
 
+	public override bool IsLeftDirection => renderingComponent.IsLeftDirection;
+
     public override Vector2 Velocity => physicsComponent.Velocity;
 
 	public override Vector2 HitBox => physicsComponent.HitBox;
@@ -87,6 +89,12 @@ public class CharacterComponent : EntityComponent
 
 	public void AddMovement(Vector2 moveVec)
 	{
-		physicsComponent.AddMovement(moveVec);
+		SetDirection(moveVec); // 입력 타이밍일 지 Flush 타이밍일 지 고민 
+        physicsComponent.AddMovement(moveVec);
+	}
+	
+	public void SetDirection(Vector2 moveVec)
+	{
+        renderingComponent.Look(moveVec.x < Mathf.Epsilon);
 	}
 }

@@ -15,9 +15,10 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 7a8563e9c67f82346828f851c7d2aab8
-  position: {x: -241.60005, y: 53.600018}
+  position: {x: -242.40001, y: 53.599995}
   blackboard:
-    searchedEnemies: []
+    searchedEnemieDictionary:
+      m_keys: 
   description: 
   drawGizmos: 0
 --- !u!114 &-6892600704063241379
@@ -37,7 +38,8 @@ MonoBehaviour:
   guid: 320522e842849324c99a17c13dc819c5
   position: {x: -123.199936, y: -223.96367}
   blackboard:
-    searchedEnemies: []
+    searchedEnemieDictionary:
+      m_keys: 
   description: 
   drawGizmos: 0
   child: {fileID: 5071213805824063082}
@@ -58,7 +60,8 @@ MonoBehaviour:
   guid: f26104bd0f905694887b0ffb22075af4
   position: {x: 9.92728, y: 53.600018}
   blackboard:
-    searchedEnemies: []
+    searchedEnemieDictionary:
+      m_keys: 
   description: 
   drawGizmos: 0
   children:
@@ -81,7 +84,8 @@ MonoBehaviour:
   guid: 0f1d5f8cb7afe224eae3d0866a9553ed
   position: {x: -92, y: 198.97275}
   blackboard:
-    searchedEnemies: []
+    searchedEnemieDictionary:
+      m_keys: 
   description: 
   drawGizmos: 0
   children:
@@ -111,7 +115,8 @@ MonoBehaviour:
   - {fileID: -8482767344978346315}
   - {fileID: 5071213805824063082}
   blackboard:
-    searchedEnemies: []
+    searchedEnemieDictionary:
+      m_keys: 
 --- !u!114 &3319446566328676507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,7 +134,8 @@ MonoBehaviour:
   guid: 49dbdca7ed2861545a818b04ecf412a5
   position: {x: 112.44542, y: 198.39996}
   blackboard:
-    searchedEnemies: []
+    searchedEnemieDictionary:
+      m_keys: 
   description: 
   drawGizmos: 0
   speed: 5
@@ -152,9 +158,10 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: f6e2f37e6a5258741b15a7efb1ab70db
-  position: {x: 27.199995, y: 369.60004}
+  position: {x: 27.200054, y: 369.6}
   blackboard:
-    searchedEnemies: []
+    searchedEnemieDictionary:
+      m_keys: 
   description: 
   drawGizmos: 0
 --- !u!114 &5071213805824063082
@@ -174,7 +181,8 @@ MonoBehaviour:
   guid: 7cd2bc24c02523f46ac5fa778a982bc8
   position: {x: -114.396355, y: -90.98363}
   blackboard:
-    searchedEnemies: []
+    searchedEnemieDictionary:
+      m_keys: 
   description: 
   drawGizmos: 0
   children:
@@ -197,6 +205,7 @@ MonoBehaviour:
   guid: 04ab7877f06542d4fbb48737cfd3805f
   position: {x: -198.40004, y: 369.60004}
   blackboard:
-    searchedEnemies: []
+    searchedEnemieDictionary:
+      m_keys: 
   description: 
   drawGizmos: 0

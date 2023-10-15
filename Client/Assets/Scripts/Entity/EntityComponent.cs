@@ -71,6 +71,11 @@ public abstract class EntityComponent : MonoBehaviour
 		get;
 	}
 
+	public abstract bool IsLeftDirection
+	{
+		get;
+	}
+
 	public Vector2 Position
 	{
 		get

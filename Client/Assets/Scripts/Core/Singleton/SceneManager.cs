@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public enum SceneType
 {
+	Start = -1,
 	Title = 0,
 	Lobby = 1,
 	Boss = 2,
@@ -37,9 +38,9 @@ public class SceneManager : Singleton<SceneManager>
 	{
 		currentSceneModule = UnityEngine.Object.FindObjectOfType<SceneModule>();
 		if(currentSceneModule != null)
-			currentSceneModule.OnEnter(null);
+            currentSceneModule.OnEnter(currentParam);
 
-		mono.onFixedUpdate += FixedUpdate;
+        mono.onFixedUpdate += FixedUpdate;
 		mono.onUpdate += Update;
 		mono.onLateUpdate += LateUpdate;
 
@@ -61,7 +62,7 @@ public class SceneManager : Singleton<SceneManager>
 	private void FixedUpdate()
 	{
 		if (currentSceneModule != null)
-			currentSceneModule.OnFixedUpdate(Time.frameCount,Time .fixedDeltaTime);
+			currentSceneModule.OnFixedUpdate(Time.frameCount, Time.fixedDeltaTime);
     }
 
 	private void Update()

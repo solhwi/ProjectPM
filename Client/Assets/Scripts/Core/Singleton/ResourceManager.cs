@@ -9,18 +9,30 @@ using Object = UnityEngine.Object;
 
 public class ResourceManager : Singleton<ResourceManager>
 {
-    Dictionary<Type, List<Object>> resourceDictionary = new Dictionary<Type, List<Object>>();
+	private class ObjectPathData
+	{
+		public readonly string Path;
+		public readonly Object Obj;
 
-	public T Load<T>() where T : Object
+		public ObjectPathData(string path, Object obj)
+		{
+			Path = path;
+			Obj = obj;
+		}
+	}
+
+	private Dictionary<Type, List<ObjectPathData>> resourceDictionary = new Dictionary<Type, List<ObjectPathData>>();
+
+    public T Load<T>(string path = default) where T : Object
 	{
 		if(resourceDictionary.TryGetValue(typeof(T), out var list))
 		{
-			var obj = list.First();
-			if (obj != null)
-			{
-				return obj as T;
-			}
-		}
+            ObjectPathData data = path == default ? list.FirstOrDefault() : list.Find(res => res.Path == path);
+            if (data == null)
+				return null;
+
+			return data.Obj as T;
+        }
 
 		return null;
 	}
@@ -75,7 +87,7 @@ public class ResourceManager : Singleton<ResourceManager>
 		return default;
     }
 
-	private AsyncOperationHandle<T> LoadUnityAsset<T>(string path) where T : Object
+	public AsyncOperationHandle<T> LoadUnityAsset<T>(string path) where T : Object
 	{
 		var handle = Addressables.LoadAssetAsync<T>(path);
 
@@ -84,9 +96,10 @@ public class ResourceManager : Singleton<ResourceManager>
 			if (op.IsDone && op.Status == AsyncOperationStatus.Succeeded)
 			{
                 if (resourceDictionary.ContainsKey(typeof(T)) == false)
-					resourceDictionary.Add(typeof(T), new List<Object>());
+					resourceDictionary.Add(typeof(T), new List<ObjectPathData>());
 
-				resourceDictionary[typeof(T)].Add(op.Result);
+                var data = new ObjectPathData(path, op.Result);
+                resourceDictionary[typeof(T)].Add(data);
 			}
 		};
 
@@ -101,11 +114,12 @@ public class ResourceManager : Singleton<ResourceManager>
 		{
 			if (op.IsDone && op.Status == AsyncOperationStatus.Succeeded)
 			{
-				if (resourceDictionary.ContainsKey(typeof(T)) == false)
-					resourceDictionary.Add(typeof(T), new List<Object>());
+                if (resourceDictionary.ContainsKey(typeof(T)) == false)
+                    resourceDictionary.Add(typeof(T), new List<ObjectPathData>());
 
-				resourceDictionary[typeof(T)].Add(op.Result);
-			}
+                var data = new ObjectPathData(path, op.Result);
+                resourceDictionary[typeof(T)].Add(data);
+            }
 		};
 
 		return handle;

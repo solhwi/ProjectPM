@@ -40,11 +40,24 @@ public class CharacterStateMachineComponent : MonoBehaviour
         CurrentState = ENUM_CHARACTER_STATE.Idle;
 
         animator = GetComponent<Animator>();
-		animatorStates = animator.GetBehaviours<CharacterAnimatorState>();
+        animator.runtimeAnimatorController = LoadAnimatorController(owner.EntityType);
+
+        animatorStates = animator.GetBehaviours<CharacterAnimatorState>();
 		foreach (var state in animatorStates)
 		{
 			state.Initialize(owner);
 		}
+    }
+
+	private RuntimeAnimatorController LoadAnimatorController(ENUM_ENTITY_TYPE entityType)
+	{
+		switch(entityType)
+		{
+			case ENUM_ENTITY_TYPE.RedMan:
+				return ResourceManager.Instance.Load<RuntimeAnimatorController>("Assets/Bundle/Animation/RedMan/RedMan.overrideController");
+		}
+
+		return null;
 	}
 
 	public bool ChangeState(ENUM_CHARACTER_STATE nextState, FrameCommandMessage stateMessage)

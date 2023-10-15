@@ -20,6 +20,9 @@ public abstract class SceneModule : MonoBehaviour, IUpdater
 	{
         switch(this)
 		{
+			case StartSceneModule:
+				mySceneType = SceneType.Start;
+				break;
 			case TitleSceneModule:
 				mySceneType = SceneType.Title;
                 break;
