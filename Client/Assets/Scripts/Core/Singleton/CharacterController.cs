@@ -26,9 +26,11 @@ public class CharacterController : Singleton<CharacterController>
 	public override void OnPrevUpdate(int deltaFrameCount, float deltaTime)
 	{
         if(playerInputComponent)
+        {
             playerInputComponent.OnPrevUpdate(deltaFrameCount, deltaTime);
+        }
 
-		foreach (var ai in aiInputComponentDictionary.Values)
+        foreach (var ai in aiInputComponentDictionary.Values)
         {
             ai.OnPrevUpdate(deltaFrameCount, deltaTime);
         }

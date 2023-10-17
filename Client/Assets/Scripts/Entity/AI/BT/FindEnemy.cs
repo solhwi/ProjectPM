@@ -8,7 +8,7 @@ public class FindEnemy : ActionNode
 {
     protected override void OnStart() 
     {
-
+        
     }
 
     protected override void OnStop() 
@@ -20,13 +20,17 @@ public class FindEnemy : ActionNode
     {
         blackboard.searchedEnemieDictionary.Clear();
 
-        var searchedEnemiesDictionary = EntityManager.Instance.GetSearchedEntities(context.entityComponent);
-        if (searchedEnemiesDictionary == null || searchedEnemiesDictionary.Any() == false)
+        var hasSkillTypes = context.characterSkillTable.GetSkillTypes(context.entityComponent.EntityType);
+        if (hasSkillTypes == null)
             return State.Failure;
 
-        foreach(var enemyPair in searchedEnemiesDictionary)
+        foreach(var skillType in hasSkillTypes)
         {
-            blackboard.searchedEnemieDictionary.Add(enemyPair.Key, enemyPair.Value);
+            var enemies = EntityManager.Instance.GetSearchedEntities(context.entityComponent, skillType);
+            if (enemies == null || enemies.Any() == false)
+                continue;
+
+            blackboard.searchedEnemieDictionary.Add(skillType, enemies);
         }
 
         return State.Success;

@@ -85,7 +85,12 @@ public abstract class SceneModule : MonoBehaviour, IUpdater
 		
 	}
 
-	public virtual void OnPrevUpdate(int deltaFrameCount, float deltaTime)
+    protected virtual void OnDrawGizmos()
+    {
+
+    }
+
+    public virtual void OnPrevUpdate(int deltaFrameCount, float deltaTime)
 	{
 		
 	}

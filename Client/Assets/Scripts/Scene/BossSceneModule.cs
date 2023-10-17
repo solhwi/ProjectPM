@@ -50,4 +50,10 @@ public class BossSceneModule : SceneModule
 	{
 		EntityManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
 	}
+
+    protected override void OnDrawGizmos()
+    {
+		base.OnDrawGizmos();
+		PhysicsManager.Instance.OnDrawGizmos();
+    }
 }

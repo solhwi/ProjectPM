@@ -1,8 +1,11 @@
+using NPOI.SS.Formula.Functions;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class EntityManager : Singleton<EntityManager>
 {
@@ -19,7 +22,6 @@ public class EntityManager : Singleton<EntityManager>
     }
 
     private Dictionary<int, EntityComponent> entityDictionary = new Dictionary<int, EntityComponent>();
-    private Dictionary<Collider2D, EntityComponent> colliderDictionary = new Dictionary<Collider2D, EntityComponent>();
 	
 	public int Register(EntityComponent objectComponent)
 	{
@@ -115,10 +117,9 @@ public class EntityManager : Singleton<EntityManager>
         return GetAllEntities().Where(e => e.OwnerGuid == ownerGuid);
     }
 
-
     private IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity, bool includeMine = false)
     {
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(pos + offset + velocity, size, 0);
+        Collider2D[] colliders = PhysicsManager.Instance.OverlapBoxAll(pos + offset + velocity, size);
         if (colliders == null || colliders.Length == 0)
             yield break;
 
@@ -128,16 +129,11 @@ public class EntityManager : Singleton<EntityManager>
         
         foreach (var collider in colliders)
         {
-            if (colliderDictionary.TryGetValue(collider, out var entity) == false)
-            {
-				entity = collider.GetComponent<EntityComponent>();
-				colliderDictionary.Add(collider, entity);
-			}
-
-			if (entity == null)
+            var entity = collider.GetComponent<EntityComponent>();
+            if (entity == null)
 				continue;
 
-            if (includeMine == false && entity.OwnerGuid == entityGuid)
+            if (includeMine == false && entity.OwnerGuid == myEntity.OwnerGuid)
                 continue;
                 
 			yield return entity;
@@ -149,28 +145,20 @@ public class EntityManager : Singleton<EntityManager>
         return GetOverlapEntities(message.entityGuid, message.pos, message.hitbox, message.offset, message.velocity, includeMine);
     }
 
-    public Dictionary<ENUM_SKILL_TYPE, IEnumerable<EntityComponent>> GetSearchedEntities(EntityComponent entity, bool includeMine = false)
+    public IEnumerable<EntityComponent> GetSearchedEntities(EntityComponent entity, ENUM_SKILL_TYPE skillType, bool includeMine = false)
     {
         var skillTable = ScriptParserManager.Instance.GetTable<CharacterSkillTable>();
         if (skillTable == null)
             return null;
 
-        var searchedEntities = new Dictionary<ENUM_SKILL_TYPE, IEnumerable<EntityComponent>>();
+        var hasSkill = skillTable.GetSkillInfo(skillType);
+        if (hasSkill == null)
+            return null;
 
-        var hasSkills = skillTable.GetSkills(entity.EntityType);
-        foreach(var skill in hasSkills)
-        {
-            Vector2 box = new(skill.searchBoxX, skill.searchBoxY);
-            Vector2 offset = new(skill.searchOffsetX, skill.searchOffsetY);
+        Vector2 box = new(hasSkill.searchBoxX, hasSkill.searchBoxY);
+        Vector2 offset = new(hasSkill.searchOffsetX, hasSkill.searchOffsetY);
 
-            var entities = GetOverlapEntities(entity.Guid, entity.Position, box, offset, entity.Velocity, includeMine);
-            if (entities == null || entities.Any() == false) 
-                continue;
-
-            searchedEntities.Add(skill.key, entities);
-        }
-
-        return searchedEntities;
+        return GetOverlapEntities(entity.Guid, entity.Position, box, offset, entity.Velocity, includeMine);
     }
 
     public IEnumerable<EntityComponent> GetOverlapEntities(EntityComponent entity, bool includeMine = false)

@@ -15,6 +15,17 @@ public partial class CharacterSkillTable : ScriptParser
         }
     }
 
+    public SkillInfo GetSkillInfo(ENUM_SKILL_TYPE skillType)
+    {
+        if(skillInfoDictionary.ContainsKey(skillType))
+        {
+            return skillInfoDictionary[skillType];
+        }
+
+        Debug.LogError($"존재하지 않는 스킬 타입 : {skillType}");
+        return null;
+    }
+
     public bool IsUseMana(ENUM_SKILL_TYPE skillType)
     {
         return GetUseMana(skillType) > 0;

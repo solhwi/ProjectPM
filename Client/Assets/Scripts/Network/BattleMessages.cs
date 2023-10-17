@@ -118,16 +118,11 @@ public class MessageHelper
 		return message;
 	}
 
-	public static FrameCommandMessage MakeCommand(ENUM_COMMAND_TYPE commandType)
+	public static FrameCommandMessage MakeCommand(ENUM_COMMAND_TYPE commandType, EntityComponent ownerEntity)
 	{
         var message = new FrameCommandMessage();
         message.playerInputMessage = MakeFrameMessageByCommand(commandType);
-
-        var playerEntity = EntityManager.Instance.PlayerEntity;
-        if (playerEntity == null)
-            return default;
-
-        message.playerEntityMessage = MakeEntityMessage(playerEntity);
+        message.playerEntityMessage = MakeEntityMessage(ownerEntity);
         return message;
     }
 

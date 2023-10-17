@@ -20,11 +20,10 @@ public class MoveToPosition : ActionNode
     protected override State OnUpdate() 
     {
         distance = EntityManager.Instance.GetXDistanceFromPlayer(context.entityComponent);
-        ENUM_COMMAND_TYPE commandType = distance > Mathf.Epsilon ? ENUM_COMMAND_TYPE.RightMove : ENUM_COMMAND_TYPE.LeftMove;
+        var commandType = distance > Mathf.Epsilon ? ENUM_COMMAND_TYPE.RightMove : ENUM_COMMAND_TYPE.LeftMove;
 
-        var command = MessageHelper.MakeCommand(commandType);
-        if (context.entityComponent.TryChangeState(command) == false)
-            return State.Failure;
+        var command = MessageHelper.MakeCommand(commandType, context.entityComponent);
+        context.entityComponent.TryChangeState(command);
 
         return State.Success;
     }

@@ -7,15 +7,9 @@ using System.Xml;
 
 public class SkillToEnemy : ActionNode
 {
-    private CharacterSkillTable skillTable = null;
-    private ENUM_SKILL_TYPE currentSkill = ENUM_SKILL_TYPE.None;
-
     protected override void OnStart()
     {
-        skillTable = ScriptParserManager.Instance.GetTable<CharacterSkillTable>();
-        var skillTypes = blackboard.searchedEnemieDictionary.Keys.ToList();
-        skillTypes = skillTypes.OrderByDescending(skillTable.GetUseMana).ToList();
-        currentSkill = skillTypes.FirstOrDefault(skillTable.IsUseMana);
+        
     }
 
     protected override void OnStop()
@@ -23,14 +17,23 @@ public class SkillToEnemy : ActionNode
 
     }
 
+    private ENUM_SKILL_TYPE GetBiggestManaSkill(IEnumerable<ENUM_SKILL_TYPE> skillTypes)
+    {
+        return skillTypes
+            .Where(context.characterSkillTable.IsUseMana) // 마나를 쓰는 스킬 중에
+            .OrderByDescending(context.characterSkillTable.GetUseMana) // 제일 큰 것
+            .FirstOrDefault();
+    }
+
     protected override State OnUpdate()
     {
-        if (currentSkill != ENUM_SKILL_TYPE.None)
+        var validSkillTypes = blackboard.searchedEnemieDictionary.Keys.ToList();
+        var currentSkill = GetBiggestManaSkill(validSkillTypes);
+        if (currentSkill == ENUM_SKILL_TYPE.None)
             return State.Failure;
 
-        var command = MessageHelper.MakeCommand(ENUM_COMMAND_TYPE.Skill);
-        if (context.entityComponent.TryChangeState(command) == false)
-            return State.Failure;
+        var command = MessageHelper.MakeCommand(ENUM_COMMAND_TYPE.Skill, context.entityComponent);
+        context.entityComponent.TryChangeState(command);
 
         return State.Success;
     }

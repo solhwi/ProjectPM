@@ -13,38 +13,42 @@ MonoBehaviour:
   m_Name: CharacterSkillTable
   m_EditorClassIdentifier: 
   skillInfoList:
-  - key: 0
-    searchBoxX: 2
-    searchBoxY: 1
+  - key: 1
+    searchBoxX: 3
+    searchBoxY: 5
     searchOffsetX: 0
     searchOffsetY: 0
-  - key: 1
-    searchBoxX: 4
-    searchBoxY: 1
-    searchOffsetX: 2
+    useMana: 0
+  - key: 2
+    searchBoxX: 10
+    searchBoxY: 5
+    searchOffsetX: 0
     searchOffsetY: 0
+    useMana: 10
   skillInfoDictionary:
-    m_keys: 0000000001000000
+    m_keys: 0100000002000000
     m_values:
-    - key: 0
-      searchBoxX: 2
-      searchBoxY: 1
+    - key: 1
+      searchBoxX: 3
+      searchBoxY: 5
       searchOffsetX: 0
       searchOffsetY: 0
-    - key: 1
-      searchBoxX: 4
-      searchBoxY: 1
-      searchOffsetX: 2
+      useMana: 0
+    - key: 2
+      searchBoxX: 10
+      searchBoxY: 5
+      searchOffsetX: 0
       searchOffsetY: 0
+      useMana: 10
   characterSkillMapInfoList:
-  - key: 0
-    entityType: 3
   - key: 1
     entityType: 3
+  - key: 2
+    entityType: 3
   characterSkillMapInfoDictionary:
-    m_keys: 0000000001000000
+    m_keys: 0100000002000000
     m_values:
-    - key: 0
-      entityType: 3
     - key: 1
+      entityType: 3
+    - key: 2
       entityType: 3
