@@ -20,7 +20,7 @@ public struct GizmoBox
 public class PhysicsManager : Singleton<PhysicsManager>
 {
 	private List<PhysicsComponent> physicsComponents = new List<PhysicsComponent>();
-	private Queue<GizmoBox> gizmoQueue = new Queue<GizmoBox>();
+	private readonly Queue<GizmoBox> gizmoQueue = new Queue<GizmoBox>();
 
 	public override void OnFixedUpdate(int deltaFrameCount, float deltaTime)
 	{

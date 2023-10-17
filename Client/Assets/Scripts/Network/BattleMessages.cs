@@ -52,6 +52,7 @@ public class MessageHelper
 		return InputManager.Instance.FlushInput(Time.frameCount);
 	}
 
+	// 나중에 스위치 문을 클래스 별로 분리할 필요가 있을까?
     private static FrameInputMessage MakeFrameMessageByCommand(ENUM_COMMAND_TYPE commandType)
     {
         var message = new FrameInputMessage();

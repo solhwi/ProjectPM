@@ -67,7 +67,7 @@ public class EntityManager : Singleton<EntityManager>
         if (MonsterEntity == null)
             yield break;
 
-        MonsterEntity.Initialize(0, characterType, false);
+        MonsterEntity.Initialize(GameConfig.MonsterGuid, characterType, false);
         MonsterEntity.SetEntityLayer(ENUM_LAYER_TYPE.Enemy);
 
         mono.SetSingletonChild(this, MonsterEntity);
@@ -93,7 +93,7 @@ public class EntityManager : Singleton<EntityManager>
         if (PlayerEntity == null)
             yield break;
 
-		PlayerEntity.Initialize(GameManager.Instance.PlayerGuid, characterType, true);
+		PlayerEntity.Initialize(GameConfig.PlayerGuid, characterType, true);
 		PlayerEntity.SetEntityLayer(ENUM_LAYER_TYPE.Friendly);
 
 		mono.SetSingletonChild(this, PlayerEntity);

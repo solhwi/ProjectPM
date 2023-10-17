@@ -6,10 +6,14 @@ using UnityEngine;
 public class BossSceneModuleParam : SceneModuleParam
 {
 	public readonly ENUM_MAP_TYPE mapType;
+	public readonly ENUM_ENTITY_TYPE playerType;
+	public readonly IEnumerable<ENUM_ENTITY_TYPE> enemyTypes;
 
-	public BossSceneModuleParam(ENUM_MAP_TYPE mapType)
+	public BossSceneModuleParam(ENUM_MAP_TYPE mapType, ENUM_ENTITY_TYPE playerType, IEnumerable<ENUM_ENTITY_TYPE> enemyTypes)
 	{
 		this.mapType = mapType;
+		this.playerType = playerType;
+		this.enemyTypes = enemyTypes;
 	}
 }
 
@@ -32,11 +36,12 @@ public class BossSceneModule : SceneModule
 	public override IEnumerator OnPrepareEnterRoutine(SceneModuleParam param)
 	{
 		yield return MapManager.Instance.LoadAsyncMap(ENUM_MAP_TYPE.City); // 맵 생성
-        yield return EntityManager.Instance.LoadAsyncPlayer(ENUM_ENTITY_TYPE.RedMan); // 현재 캐릭터 생성
-		yield return EntityManager.Instance.LoadAsyncMonster(ENUM_ENTITY_TYPE.PencilMan); // 현재 몬스터 생성
-	}
+		yield return EntityManager.Instance.LoadAsyncMonster(ENUM_ENTITY_TYPE.PencilMan); // 몬스터 생성
+        yield return EntityManager.Instance.LoadAsyncPlayer(ENUM_ENTITY_TYPE.RedMan); // 플레이어 생성
 
-	public override void OnFixedUpdate(int tickCount, float latencyTime)
+    }
+
+    public override void OnFixedUpdate(int tickCount, float latencyTime)
 	{
 		PhysicsManager.Instance.OnFixedUpdate(tickCount, latencyTime);
 	}
@@ -53,7 +58,6 @@ public class BossSceneModule : SceneModule
 
     protected override void OnDrawGizmos()
     {
-		base.OnDrawGizmos();
 		PhysicsManager.Instance.OnDrawGizmos();
     }
 }

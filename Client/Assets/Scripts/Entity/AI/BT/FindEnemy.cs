@@ -22,7 +22,7 @@ public class FindEnemy : ActionNode
 
         var hasSkillTypes = context.characterSkillTable.GetSkillTypes(context.entityComponent.EntityType);
         if (hasSkillTypes == null)
-            return State.Failure;
+            return State.Success;
 
         foreach(var skillType in hasSkillTypes)
         {

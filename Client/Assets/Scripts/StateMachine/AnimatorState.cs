@@ -36,7 +36,8 @@ namespace StateMachine
 		private bool m_FirstFrameHappened;
 		private bool m_LastFrameHappened;
 
-		private int frameDeltaCount = 0;
+		protected int frameDeltaCount = 0;
+        protected float frameDeltaTime = 0;
 
 		public void Initialize(TOwner owner)
         {
@@ -58,8 +59,9 @@ namespace StateMachine
         {
             m_FirstFrameHappened = false;
             frameDeltaCount = 0;
+            frameDeltaTime = 0;
 
-			OnSLStateEnter(owner, command);
+            OnSLStateEnter(owner, command);
             FlushCommand();
 		}
 
@@ -69,8 +71,9 @@ namespace StateMachine
                 return;
 
             frameDeltaCount++;
+            frameDeltaTime += Time.deltaTime;
 
-			if (animator.IsInTransition(layerIndex) && animator.GetNextAnimatorStateInfo(layerIndex).fullPathHash == animatorStateInfo.fullPathHash)
+            if (animator.IsInTransition(layerIndex) && animator.GetNextAnimatorStateInfo(layerIndex).fullPathHash == animatorStateInfo.fullPathHash)
             {
                 OnSLTransitionToStateUpdate(owner, command);
             }
@@ -111,7 +114,9 @@ namespace StateMachine
 			FlushCommand();
 
 			frameDeltaCount = 0;
-		}
+            frameDeltaTime = 0;
+
+        }
 
         /// <summary>
         /// Called by a MonoBehaviour in the scene during its Start function.

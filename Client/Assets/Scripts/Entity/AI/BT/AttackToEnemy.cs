@@ -23,7 +23,7 @@ public class AttackToEnemy : ActionNode
 
     protected override State OnUpdate() 
     {
-        var validSkillTypes = blackboard.searchedEnemieDictionary.Keys.ToList();
+        var validSkillTypes = blackboard.searchedEnemieDictionary.Keys;
         var currentSkill = validSkillTypes.FirstOrDefault(IsAttack);
         if (currentSkill == ENUM_SKILL_TYPE.None)
             return State.Failure;

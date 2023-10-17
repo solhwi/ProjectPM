@@ -66,7 +66,7 @@ public partial class BattleSessionManager
 			}
 		}
 
-		var sendMessage = MessageHelper.MakeSnapShot(GameManager.Instance.PlayerGuid, ++currentTickCount);
+		var sendMessage = MessageHelper.MakeSnapShot(GameConfig.PlayerGuid, ++currentTickCount);
 
 		NetworkClient.Send(sendMessage);
 		clientLatencyTime = 0.0f;
