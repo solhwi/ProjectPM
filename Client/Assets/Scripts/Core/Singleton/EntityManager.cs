@@ -164,7 +164,7 @@ public class EntityManager : Singleton<EntityManager>
             Vector2 offset = new(skill.searchOffsetX, skill.searchOffsetY);
 
             var entities = GetOverlapEntities(entity.Guid, entity.Position, box, offset, entity.Velocity, includeMine);
-            if(entities == null || entities.Any() == false) 
+            if (entities == null || entities.Any() == false) 
                 continue;
 
             searchedEntities.Add(skill.key, entities);
@@ -181,6 +181,16 @@ public class EntityManager : Singleton<EntityManager>
     public IEnumerable<int> GetOverlapEntitiyGuids(FrameEntityMessage message, bool includeMine = false)
     {
         return GetOverlapEntities(message, includeMine).Select(entity => entity.Guid);
+    }
+
+    public float GetXDistance(EntityComponent fromEntity, EntityComponent toEntity)
+    {
+       return toEntity.Position.x - fromEntity.Position.x;
+    }
+
+    public float GetXDistanceFromPlayer(EntityComponent fromEntity)
+    {
+        return GetXDistance(fromEntity, PlayerEntity);
     }
 
 }

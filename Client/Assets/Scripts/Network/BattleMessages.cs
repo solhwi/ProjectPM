@@ -2,8 +2,27 @@ using JetBrains.Annotations;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using UnityEngine;
+
+public enum ENUM_COMMAND_TYPE
+{
+	LeftMove,
+	RightMove,
+	LeftJump,
+	RightJump,
+    LeftDash,
+    RightDash,
+    Attack,
+	DashAttack,
+	JumpAttack,
+	Skill,
+	DashSkill,
+	JumpSkill,
+	Ultimate,
+    Guard,
+}
 
 public class MessageHelper
 {
@@ -33,7 +52,60 @@ public class MessageHelper
 		return InputManager.Instance.FlushInput(Time.frameCount);
 	}
 
-	public static FrameCommandMessage MakeCommand()
+    private static FrameInputMessage MakeFrameMessageByCommand(ENUM_COMMAND_TYPE commandType)
+    {
+        var message = new FrameInputMessage();
+
+        switch (commandType)
+        {
+            case ENUM_COMMAND_TYPE.LeftMove:
+                message.moveInput = Vector2.left;
+                break;
+
+            case ENUM_COMMAND_TYPE.RightMove:
+                message.moveInput = Vector2.right;
+                break;
+
+            case ENUM_COMMAND_TYPE.LeftJump:
+                message.moveInput = new Vector2(-1, 1);
+                break;
+
+            case ENUM_COMMAND_TYPE.RightJump:
+                message.moveInput = new Vector2(1, 1);
+                break;
+
+            case ENUM_COMMAND_TYPE.LeftDash:
+                message.moveInput = Vector2.left;
+                message.isDash = true;
+                break;
+
+            case ENUM_COMMAND_TYPE.RightDash:
+                message.moveInput = Vector2.right;
+                message.isDash = true;
+                break;
+
+            case ENUM_COMMAND_TYPE.Attack:
+                message.pressedAttackKeyNum = (int)ENUM_ATTACK_KEY.ATTACK;
+                break;
+
+            case ENUM_COMMAND_TYPE.Skill:
+                message.pressedAttackKeyNum = (int)ENUM_ATTACK_KEY.SKILL;
+                break;
+
+            case ENUM_COMMAND_TYPE.Ultimate:
+                message.pressedAttackKeyNum = (int)ENUM_ATTACK_KEY.ULTIMATE;
+                break;
+
+            case ENUM_COMMAND_TYPE.Guard:
+                message.isGuard = true;
+                break;
+        }
+
+        return message;
+
+    }
+
+    public static FrameCommandMessage MakeCommand()
 	{
 		var message = new FrameCommandMessage();
 		message.playerInputMessage = MakeInputMessage();
@@ -45,6 +117,19 @@ public class MessageHelper
 		message.playerEntityMessage = MakeEntityMessage(playerEntity);
 		return message;
 	}
+
+	public static FrameCommandMessage MakeCommand(ENUM_COMMAND_TYPE commandType)
+	{
+        var message = new FrameCommandMessage();
+        message.playerInputMessage = MakeFrameMessageByCommand(commandType);
+
+        var playerEntity = EntityManager.Instance.PlayerEntity;
+        if (playerEntity == null)
+            return default;
+
+        message.playerEntityMessage = MakeEntityMessage(playerEntity);
+        return message;
+    }
 
 	public static FrameEntityMessage MakeEntityMessage(EntityComponent entity)
 	{

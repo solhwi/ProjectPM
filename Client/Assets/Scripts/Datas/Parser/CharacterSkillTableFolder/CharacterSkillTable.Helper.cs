@@ -15,6 +15,24 @@ public partial class CharacterSkillTable : ScriptParser
         }
     }
 
+    public bool IsUseMana(ENUM_SKILL_TYPE skillType)
+    {
+        return GetUseMana(skillType) > 0;
+    }
+
+    public int GetUseMana(ENUM_SKILL_TYPE skillType)
+    {
+        foreach (var skill in skillInfoList)
+        {
+            if (skillType != skill.key)
+                continue;
+
+            return skill.useMana;
+        }
+
+        return 0;
+    }
+
     public IEnumerable<SkillInfo> GetSkills(ENUM_ENTITY_TYPE entityType)
     {
         var skillTypes = GetSkillTypes(entityType);

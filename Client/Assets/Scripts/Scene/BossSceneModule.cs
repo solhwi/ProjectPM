@@ -21,6 +21,7 @@ public class BossSceneModule : SceneModule
         MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, EntityManager.Instance.MonsterEntity);
 
         CharacterController.Instance.RegisterControl(EntityManager.Instance.PlayerEntity);
+		CharacterController.Instance.RegisterAI(EntityManager.Instance.MonsterEntity);
     }
 
 	public override void OnExit()

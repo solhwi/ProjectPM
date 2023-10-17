@@ -31,6 +31,7 @@ public partial class CharacterSkillTable : ScriptParser
 		public float searchBoxY;
 		public float searchOffsetX;
 		public float searchOffsetY;
+		public int useMana;
 	}
 
 	public List<SkillInfo> skillInfoList = new List<SkillInfo>();

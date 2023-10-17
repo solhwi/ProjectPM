@@ -25,7 +25,7 @@ public class ResourceManager : Singleton<ResourceManager>
 
     public T Load<T>(string path = default) where T : Object
 	{
-		if(resourceDictionary.TryGetValue(typeof(T), out var list))
+		if (resourceDictionary.TryGetValue(typeof(T), out var list))
 		{
             ObjectPathData data = path == default ? list.FirstOrDefault() : list.Find(res => res.Path == path);
             if (data == null)

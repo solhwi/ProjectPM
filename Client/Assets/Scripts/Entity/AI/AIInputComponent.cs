@@ -11,6 +11,11 @@ public class AIInputComponent : InputComponent
 	// Storage container object to hold game object subsystems
 	Context context;
 
+	public void Initialize()
+	{
+        tree = ResourceManager.Instance.Load<BehaviourTree>("Assets/Bundle/AI/PencilMan.asset");
+	}
+
 	public override void Run()
 	{
 		base.Run();

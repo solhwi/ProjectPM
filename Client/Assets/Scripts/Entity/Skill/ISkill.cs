@@ -4,8 +4,9 @@ using UnityEngine;
 
 public enum ENUM_SKILL_TYPE
 {
-    SlashPencil = 0,
-    ThrowPencil = 1,
+    None = 0,
+    SlashPencil = 1,
+    ThrowPencil = 2,
 }
 
 public abstract class Skill

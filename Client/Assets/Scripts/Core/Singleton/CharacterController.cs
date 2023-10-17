@@ -43,7 +43,9 @@ public class CharacterController : Singleton<CharacterController>
         if (runner == null) 
             return;
 
+        runner.Initialize();
         runner.Run();
+
         aiInputComponentDictionary[character.Guid] = runner;
 	}
 

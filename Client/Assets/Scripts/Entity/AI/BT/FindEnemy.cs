@@ -18,11 +18,17 @@ public class FindEnemy : ActionNode
 
     protected override State OnUpdate() 
     {
+        blackboard.searchedEnemieDictionary.Clear();
+
         var searchedEnemiesDictionary = EntityManager.Instance.GetSearchedEntities(context.entityComponent);
-        if (searchedEnemiesDictionary == null)
+        if (searchedEnemiesDictionary == null || searchedEnemiesDictionary.Any() == false)
             return State.Failure;
 
-        blackboard.searchedEnemieDictionary = (SearchEnemyDictionary)searchedEnemiesDictionary;
+        foreach(var enemyPair in searchedEnemiesDictionary)
+        {
+            blackboard.searchedEnemieDictionary.Add(enemyPair.Key, enemyPair.Value);
+        }
+
         return State.Success;
     }
 }
