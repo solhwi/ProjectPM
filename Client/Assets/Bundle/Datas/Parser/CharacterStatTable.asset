@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterStatList:
   - key: 0
-    jumpPower: 10
+    jumpPower: 30
     mass: 7
     moveSpeed: 8
     attackSpeed: 5
@@ -32,7 +32,7 @@ MonoBehaviour:
     m_keys: 000000000100000002000000
     m_values:
     - key: 0
-      jumpPower: 10
+      jumpPower: 30
       mass: 7
       moveSpeed: 8
       attackSpeed: 5

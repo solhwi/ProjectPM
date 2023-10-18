@@ -22,10 +22,10 @@ public class BossSceneModule : SceneModule
     public override void OnEnter(SceneModuleParam param)
 	{
         MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntityManager.Instance.PlayerEntity);
-        MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, EntityManager.Instance.MonsterEntity);
+        // MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, EntityManager.Instance.MonsterEntity);
 
         CharacterController.Instance.RegisterControl(EntityManager.Instance.PlayerEntity);
-		CharacterController.Instance.RegisterAI(EntityManager.Instance.MonsterEntity);
+		// CharacterController.Instance.RegisterAI(EntityManager.Instance.MonsterEntity);
     }
 
 	public override void OnExit()
@@ -36,7 +36,7 @@ public class BossSceneModule : SceneModule
 	public override IEnumerator OnPrepareEnterRoutine(SceneModuleParam param)
 	{
 		yield return MapManager.Instance.LoadAsyncMap(ENUM_MAP_TYPE.City); // 맵 생성
-		yield return EntityManager.Instance.LoadAsyncMonster(ENUM_ENTITY_TYPE.PencilMan); // 몬스터 생성
+		// yield return EntityManager.Instance.LoadAsyncMonster(ENUM_ENTITY_TYPE.PencilMan); // 몬스터 생성
         yield return EntityManager.Instance.LoadAsyncPlayer(ENUM_ENTITY_TYPE.RedMan); // 플레이어 생성
 
     }
@@ -53,7 +53,8 @@ public class BossSceneModule : SceneModule
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
-		EntityManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
+        PhysicsManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
+        EntityManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
 	}
 
     protected override void OnDrawGizmos()

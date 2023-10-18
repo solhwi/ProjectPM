@@ -202,8 +202,6 @@ MonoBehaviour:
     m_Bits: 192
   groundedRaycastDistance: 0.1
   useGravity: 1
-  gravityScale: 0.1
-  gravity: 9.8
   IsGrounded: 0
 --- !u!114 &2111098085485975088
 MonoBehaviour:
@@ -258,3 +256,4 @@ MonoBehaviour:
   renderingComponent: {fileID: 2111098085485975088}
   physicsComponent: {fileID: 2725238379644671886}
   stateMachineComponent: {fileID: 2207896231629970980}
+  statTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}

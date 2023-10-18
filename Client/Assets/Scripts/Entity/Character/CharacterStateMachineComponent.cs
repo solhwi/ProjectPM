@@ -9,6 +9,8 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class CharacterStateMachineComponent : MonoBehaviour
 {
+	private CharacterComponent characterComponent;
+
 	private Animator animator;
 	private CharacterAnimatorState[] animatorStates;
 
@@ -37,6 +39,7 @@ public class CharacterStateMachineComponent : MonoBehaviour
 
 	public void Initialize(CharacterComponent owner)
 	{
+        characterComponent = owner;	
         CurrentState = ENUM_CHARACTER_STATE.Idle;
 
         animator = GetComponent<Animator>();
@@ -71,7 +74,7 @@ public class CharacterStateMachineComponent : MonoBehaviour
 		bool isChangedState = CurrentState != nextState;
 		if (isChangedState)
 		{
-			Debug.Log($"{Time.frameCount} 스테이트 변경 : {CurrentState} => {nextState}");
+			Debug.Log($"{Time.frameCount}에 스테이트 변경 : {CurrentState} => {nextState}");
 			animator.Play(nextState.ToString());
 			CurrentState = nextState;
 		}
@@ -94,30 +97,6 @@ public class CharacterStateMachineComponent : MonoBehaviour
 			}
 		}
 
-		if (transitionTable.loopTransitionDictionary.TryGetValue(CurrentState, out var loopTransition))
-		{
-			var condition = conditionTable.GetCondition(loopTransition.conditionType);
-			if (condition.IsSatisfied(snapShotMessage))
-			{
-				return currentState;
-			}
-			else
-			{
-				return ENUM_CHARACTER_STATE.Idle;
-			}
-		}
-		else
-		{
-			var defaultTransition = transitionTable.defaultTransitionList.FirstOrDefault();
-			var condition = conditionTable.GetCondition(defaultTransition.key);
-			if (condition.IsSatisfied(snapShotMessage))
-			{
-				return defaultTransition.nextState;
-			}
-			else
-			{
-				return currentState;
-			}
-		}
+		return currentState;
 	}
 }

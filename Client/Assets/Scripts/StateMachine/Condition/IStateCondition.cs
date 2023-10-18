@@ -103,7 +103,7 @@ public class FallDownCondition : FloatParameterStateCondition
 	public override bool IsSatisfied(FrameCommandMessage command)
 	{
 		var entityStateInfo = command.ToEntity();
-		return entityStateInfo.velocity.y < -1 * Mathf.Epsilon;
+		return entityStateInfo.velocity.y <= 0.0f;
 	}
 }
 

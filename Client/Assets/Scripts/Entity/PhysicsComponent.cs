@@ -12,10 +12,8 @@ public class PhysicsComponent : MonoBehaviour
     [Tooltip("The distance down to check for ground.")]
     [SerializeField] private float groundedRaycastDistance = 0.1f;
 
-	[SerializeField] private bool useGravity;
-
-	[SerializeField] private float gravityScale = 1.0f;
-	[SerializeField] private float gravity = 9.8f;
+    [Tooltip("Use Gravity Toggle")]
+    [SerializeField] private bool useGravity;
 
 	Rigidbody2D m_Rigidbody2D;
     BoxCollider2D m_BoxColider2D;
@@ -31,10 +29,8 @@ public class PhysicsComponent : MonoBehaviour
     public Vector2 HitBox => m_BoxColider2D.size;
     public Vector2 HitOffset => m_BoxColider2D.offset;
 
-    public bool IsGrounded = false;
+    public bool IsGrounded { get; private set; }
 	private float airborneDeltaTime = 0.0f;
-
-	private Queue<Vector2> vectorQueue = new Queue<Vector2>();
 
     public Vector2 Velocity => m_NextMovement;
 
@@ -64,19 +60,23 @@ public class PhysicsComponent : MonoBehaviour
 		CheckCapsuleEndCollisions(true);
         CheckCapsuleEndCollisions(false);
 
-		FlushGravity(deltaTime);
-		FlushMovement();
+        AddGravity(deltaTime);
+        FlushMovement();
 	}
 
-	private void FlushGravity(float deltaTime)
+    public void OnUpdate(int deltaFrameCount, float deltaTime)
+    {
+        
+    }
+
+    private void AddGravity(float deltaTime)
     {
 		if (useGravity == false)
 			return;
 
 		if (IsGrounded == false)
 		{
-			float velocity = gravity * gravityScale * airborneDeltaTime;
-			AddMovement(Vector2.down * velocity);
+			AddMovement(Vector2.down * PhysicsManager.Instance.GetDistanceByGravity(airborneDeltaTime));
 			airborneDeltaTime += deltaTime;
 		}
 		else
@@ -88,14 +88,9 @@ public class PhysicsComponent : MonoBehaviour
 	private void FlushMovement()
     {
 		m_PreviousPosition = m_Rigidbody2D.position;
-		m_CurrentPosition = m_PreviousPosition;
+		m_CurrentPosition = m_PreviousPosition + m_NextMovement;
 
-		while (vectorQueue.TryDequeue(out var movement))
-		{
-			m_CurrentPosition += movement;
-		}
-		m_NextMovement = default;
-
+		m_NextMovement = Vector2.zero;
 		m_Rigidbody2D.MovePosition(m_CurrentPosition);
 	}
 
@@ -105,7 +100,6 @@ public class PhysicsComponent : MonoBehaviour
     /// <param name="movement">The amount moved in global coordinates relative to the rigidbody2D's position.</param>
     public void AddMovement(Vector2 movement)
     {
-        vectorQueue.Enqueue(movement);
 		m_NextMovement += movement;
     }
 
@@ -213,6 +207,7 @@ public class PhysicsComponent : MonoBehaviour
             }
             else
             {
+                bool isPrevGrounded = IsGrounded;
                 IsGrounded = m_Rigidbody2D.velocity.y <= 0f;
 
                 if (m_BoxColider2D != null)
@@ -222,8 +217,16 @@ public class PhysicsComponent : MonoBehaviour
                         float capsuleBottomHeight = m_Rigidbody2D.position.y + m_BoxColider2D.offset.y - m_BoxColider2D.size.y * 0.5f;
                         float middleHitHeight = m_FoundHits[1].point.y;
                         IsGrounded &= middleHitHeight < capsuleBottomHeight + groundedRaycastDistance;
+
+                        if (isPrevGrounded == false && IsGrounded)
+                        {
+                            m_NextMovement = Vector2.zero;
+                            m_Rigidbody2D.MovePosition(Vector2.zero);
+                        }
                     }
                 }
+
+              
             }
         }
 

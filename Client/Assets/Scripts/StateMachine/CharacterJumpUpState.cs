@@ -7,7 +7,6 @@ namespace StateMachine
 {
 	public class CharacterJumpUpState : CharacterAnimatorState
     {
-		[SerializeField] private float jumpPower = 20.0f;
         private Vector2 jumpVector = new Vector2 (0, 0);
 		
 		public override void OnSLStateEnter(CharacterComponent owner, FrameCommandMessage command)
@@ -15,8 +14,10 @@ namespace StateMachine
             if (owner == null)
                 return;
 
-			var inputMessage = command.ToInput();
-			jumpVector = new Vector2(inputMessage.moveInput.x, inputMessage.moveInput.y * jumpPower);
+            var inputMessage = command.ToInput();
+			var inputY = PhysicsManager.Instance.GetDistanceByGravity(inputMessage.moveInput.y);
+
+            jumpVector = new Vector2(inputMessage.moveInput.x, inputY * owner.JumpPower);
 
 			owner.AddMovement(jumpVector * Time.deltaTime);
         }
@@ -34,7 +35,7 @@ namespace StateMachine
 			var inputMessage = command.ToInput();
 			jumpVector.x = inputMessage.moveInput.x;
 
-			owner.AddMovement(jumpVector * Time.deltaTime);
+            owner.AddMovement(jumpVector * Time.deltaTime);
         }
 	}
 

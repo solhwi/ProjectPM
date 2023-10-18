@@ -64,6 +64,7 @@ public class BattleSceneModule : NetworkSceneModule
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
+        PhysicsManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
         EntityManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
 	}
 }
