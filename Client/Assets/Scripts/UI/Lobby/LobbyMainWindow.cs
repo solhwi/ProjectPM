@@ -6,7 +6,9 @@ public class LobbyMainWindow : UIMainWindow
 {
     public void OnClickBossMode()
     {
-		SceneManager.Instance.LoadScene(SceneType.Boss);
+        BossSceneModuleParam param = new BossSceneModuleParam(ENUM_MAP_TYPE.City, ENUM_ENTITY_TYPE.RedMan, ENUM_ENTITY_TYPE.PencilMan, ENUM_ENTITY_TYPE.PencilMan);
+
+        SceneManager.Instance.LoadScene(SceneType.Boss, param);
 	}
 
     public void OnClickMatch()

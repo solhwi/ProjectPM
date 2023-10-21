@@ -6,7 +6,7 @@ public interface ICommand
 
 public static class CommandHelper
 {
-	public static FrameCommandMessage ToFrameCommand(this ICommand command)
+	public static FrameCommandMessage ToFrameMessage(this ICommand command)
 	{
 		return (FrameCommandMessage)command;
 	}

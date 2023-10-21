@@ -71,23 +71,23 @@ public class CharacterComponent : EntityComponent
 		stateMachineComponent.Initialize(this);
 	}
 
-	public void SetEntityLayer(ENUM_LAYER_TYPE layerType)
+	public override void SetEntityLayer(ENUM_LAYER_TYPE layerType)
 	{
 		renderingComponent.Initialize(layerType, Guid);
     }
 
     public override int GetSimulatedNextState(ICommand command)
     {
-		var frameCommand = command.ToFrameCommand();
-		var entity = frameCommand.ToEntity();
-        return (int)stateMachineComponent.GetSimulatedNextState(frameCommand, (ENUM_CHARACTER_STATE)entity.entityState);
+		var frameMessage = command.ToFrameMessage();
+		var entity = frameMessage.ToEntity();
+        return (int)stateMachineComponent.GetSimulatedNextState(frameMessage, (ENUM_CHARACTER_STATE)entity.entityState);
     }
 
 	public override bool TryChangeState(ICommand command)
     {
-		var frameCommand = command.ToFrameCommand();
-		var nextState = GetSimulatedNextState(frameCommand);
-		return stateMachineComponent.ChangeState((ENUM_CHARACTER_STATE)nextState, frameCommand);
+		var frameMessage = command.ToFrameMessage();
+		var nextState = GetSimulatedNextState(frameMessage);
+		return stateMachineComponent.ChangeState((ENUM_CHARACTER_STATE)nextState, frameMessage);
 	}
 
 	public void AddMovement(Vector2 moveVec)

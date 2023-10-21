@@ -108,7 +108,12 @@ public abstract class EntityComponent : MonoBehaviour
         Guid = EntityManager.Instance.Register(this);
 	}
 
-	public void Clear()
+    public virtual void SetEntityLayer(ENUM_LAYER_TYPE layerType)
+    {
+        
+    }
+
+    public void Clear()
 	{
 		IsPlayer = false;
         OwnerGuid = 0;

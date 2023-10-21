@@ -57,11 +57,10 @@ public class PhysicsComponent : MonoBehaviour
 
 	public void OnFixedUpdate(int deltaFrameCount, float deltaTime)
     {
-		CheckCapsuleEndCollisions(true);
-        CheckCapsuleEndCollisions(false);
+        CheckCapsuleEndCollisions(true); // 충돌을 체크한다.
 
-        AddGravity(deltaTime);
-        FlushMovement();
+        AddGravity(deltaTime); // 중력을 넣는다.
+        FlushMovement(); // 모두 수행
 	}
 
     public void OnUpdate(int deltaFrameCount, float deltaTime)
@@ -76,12 +75,13 @@ public class PhysicsComponent : MonoBehaviour
 
 		if (IsGrounded == false)
 		{
-			AddMovement(Vector2.down * PhysicsManager.Instance.GetDistanceByGravity(airborneDeltaTime));
+			AddMovement(PhysicsManager.Instance.GetMovementByGravity(airborneDeltaTime));
 			airborneDeltaTime += deltaTime;
 		}
 		else
 		{
-			airborneDeltaTime = 0.0f;
+            TeleportToGround(m_FoundHits[1].point);
+            airborneDeltaTime = 0.0f;
 		}
 	}
 
@@ -113,6 +113,11 @@ public class PhysicsComponent : MonoBehaviour
         m_PreviousPosition += delta;
         m_CurrentPosition = position;
         m_Rigidbody2D.MovePosition(position);
+    }
+
+    private void TeleportToGround(Vector2 groundPos)
+    {
+        Teleport(new Vector2(groundPos.x, groundPos.y + m_BoxColider2D.size.y * 0.5f + groundedRaycastDistance));
     }
 
     /// <summary>
@@ -173,6 +178,7 @@ public class PhysicsComponent : MonoBehaviour
 
         for (int i = 0; i < m_RaycastPositions.Length; i++)
         {
+            // Debug.DrawRay(m_RaycastPositions[i], raycastDirection, Color.red);
             int count = Physics2D.Raycast(m_RaycastPositions[i], raycastDirection, m_ContactFilter, m_HitBuffer, raycastDistance);
 
             if (bottom)
@@ -217,12 +223,6 @@ public class PhysicsComponent : MonoBehaviour
                         float capsuleBottomHeight = m_Rigidbody2D.position.y + m_BoxColider2D.offset.y - m_BoxColider2D.size.y * 0.5f;
                         float middleHitHeight = m_FoundHits[1].point.y;
                         IsGrounded &= middleHitHeight < capsuleBottomHeight + groundedRaycastDistance;
-
-                        if (isPrevGrounded == false && IsGrounded)
-                        {
-                            m_NextMovement = Vector2.zero;
-                            m_Rigidbody2D.MovePosition(Vector2.zero);
-                        }
                     }
                 }
 

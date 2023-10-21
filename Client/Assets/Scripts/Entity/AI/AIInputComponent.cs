@@ -11,10 +11,26 @@ public class AIInputComponent : InputComponent
 	// Storage container object to hold game object subsystems
 	Context context;
 
-	public void Initialize()
+	public void Initialize(ENUM_ENTITY_TYPE entityType)
 	{
-        tree = ResourceManager.Instance.Load<BehaviourTree>("Assets/Bundle/AI/PencilMan.asset");
+		tree = LoadTree(entityType);
+    }
+
+	private BehaviourTree LoadTree(ENUM_ENTITY_TYPE entityType)
+	{
+		return ResourceManager.Instance.Load<BehaviourTree>(LoadPath(entityType));
 	}
+
+	private string LoadPath(ENUM_ENTITY_TYPE entityType)
+	{
+        switch (entityType)
+        {
+			case ENUM_ENTITY_TYPE.PencilMan:
+				return "Assets/Bundle/AI/PencilMan.asset";
+        }
+
+		return string.Empty;
+    }
 
 	public override void Run()
 	{

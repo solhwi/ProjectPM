@@ -287,6 +287,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 181f3718c97c5ef489914acea48535db
+    m_Address: Assets/Bundle/Physics/FullFriction.physicsMaterial2D
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0193c7b6cb70c7840adf6059fce09866
+    m_Address: Assets/Bundle/Physics/NoFriction.physicsMaterial2D
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 2fbff68df76c9b84baff54fbac5ef644, type: 2}
   m_SchemaSet:

@@ -72,10 +72,16 @@ public class PhysicsManager : Singleton<PhysicsManager>
         }
     }
 
-	public float GetDistanceByGravity(float deltaTime)
+	public float GetMovementYByGravity(float deltaTime)
 	{
 		// a * t * t = distance
 		return gravityPower * gravityScale * deltaTime * deltaTime;
+    }
+
+	public Vector2 GetMovementByGravity(float deltaTime)
+	{
+		return Vector2.down * GetMovementYByGravity(deltaTime);
+
     }
 
 }

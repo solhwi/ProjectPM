@@ -36,7 +36,7 @@ public class MessageHelper
 
 		newSnapShot.entityMessages = entities.Select(MakeEntityMessage).ToArray();
 
-		var playerEntity = EntityManager.Instance.PlayerEntity;
+		var playerEntity = EntityManager.Instance.PlayerCharacter;
 		if (playerEntity == null)
 			return default;
 
@@ -111,7 +111,7 @@ public class MessageHelper
 		var message = new FrameCommandMessage();
 		message.playerInputMessage = MakeInputMessage();
 
-		var playerEntity = EntityManager.Instance.PlayerEntity;
+		var playerEntity = EntityManager.Instance.PlayerCharacter;
 		if (playerEntity == null)
 			return default;
 

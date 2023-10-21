@@ -9,16 +9,24 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class EntityManager : Singleton<EntityManager>
 {
-    public CharacterComponent PlayerEntity
+    public CharacterComponent PlayerCharacter
+    {
+        get;
+        private set;
+    }
+
+    public CharacterComponent BossCharacter
     {
         get;
         private set;
     }
     
-    public CharacterComponent MonsterEntity
+    public IEnumerable<CharacterComponent> Monsters
     {
-        get;
-        private set;
+        get
+        {
+            return entityDictionary.Values.Where(e => e.IsPlayer == false).OfType<CharacterComponent>();
+        }
     }
 
     private Dictionary<int, EntityComponent> entityDictionary = new Dictionary<int, EntityComponent>();
@@ -47,33 +55,26 @@ public class EntityManager : Singleton<EntityManager>
         }
 	}
 
-    public IEnumerator LoadAsyncMonster(ENUM_ENTITY_TYPE characterType)
+
+    public IEnumerator LoadAsyncMonsters(IEnumerable<ENUM_ENTITY_TYPE> entityTypes)
     {
-        var handle = ResourceManager.Instance.LoadAsync<CharacterComponent>();
-        while (!handle.IsDone || handle.Status != AsyncOperationStatus.Succeeded)
+        foreach(var entityType in entityTypes)
         {
-            yield return null;
+            yield return LoadAsyncEntity(entityType, false, false);
         }
-
-        var prefab = handle.Result as GameObject;
-        if (prefab == null)
-            yield break;
-
-        var obj = UnityEngine.Object.Instantiate(prefab);
-        if (obj == null)
-            yield break;
-
-        MonsterEntity = obj.GetComponent<CharacterComponent>();
-        if (MonsterEntity == null)
-            yield break;
-
-        MonsterEntity.Initialize(GameConfig.MonsterGuid, characterType, false);
-        MonsterEntity.SetEntityLayer(ENUM_LAYER_TYPE.Enemy);
-
-        mono.SetSingletonChild(this, MonsterEntity);
     }
 
-    public IEnumerator LoadAsyncPlayer(ENUM_ENTITY_TYPE characterType)
+    public IEnumerator LoadAsyncPlayer(ENUM_ENTITY_TYPE entityType)
+    {
+        yield return LoadAsyncEntity(entityType, true, false);
+    }
+
+    public IEnumerator LoadAsyncBoss(ENUM_ENTITY_TYPE entityType)
+    {
+        yield return LoadAsyncEntity(entityType, false, true);
+    }
+
+    private IEnumerator LoadAsyncEntity(ENUM_ENTITY_TYPE characterType, bool isPlayer, bool isBoss)
     {
         var handle = ResourceManager.Instance.LoadAsync<CharacterComponent>();
         while (!handle.IsDone || handle.Status != AsyncOperationStatus.Succeeded)
@@ -89,14 +90,30 @@ public class EntityManager : Singleton<EntityManager>
         if (obj == null)
             yield break;
 
-		PlayerEntity = obj.GetComponent<CharacterComponent>();
-        if (PlayerEntity == null)
+		var entity = obj.GetComponent<CharacterComponent>();
+        if (entity == null)
             yield break;
 
-		PlayerEntity.Initialize(GameConfig.PlayerGuid, characterType, true);
-		PlayerEntity.SetEntityLayer(ENUM_LAYER_TYPE.Friendly);
+        int ownerGuid = GameConfig.MonsterGuid;
+        ENUM_LAYER_TYPE layerType = ENUM_LAYER_TYPE.Enemy;
 
-		mono.SetSingletonChild(this, PlayerEntity);
+        if (isPlayer)
+        {
+            ownerGuid = GameConfig.PlayerGuid;
+            layerType = ENUM_LAYER_TYPE.Friendly;
+
+            PlayerCharacter = entity;
+        }
+        else if(isBoss)
+        {
+            layerType = ENUM_LAYER_TYPE.Boss;
+
+            BossCharacter = entity;
+        }
+
+        entity.Initialize(ownerGuid, characterType, isPlayer);
+        entity.SetEntityLayer(layerType);
+        mono.SetSingletonChild(this, entity);
     }
 
     public EntityComponent GetEntityComponent(int guid)
@@ -178,7 +195,7 @@ public class EntityManager : Singleton<EntityManager>
 
     public float GetXDistanceFromPlayer(EntityComponent fromEntity)
     {
-        return GetXDistance(fromEntity, PlayerEntity);
+        return GetXDistance(fromEntity, PlayerCharacter);
     }
 
 }
