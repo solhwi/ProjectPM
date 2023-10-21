@@ -63,7 +63,7 @@ public class MapManager : Singleton<MapManager>
             return;
         }
 
-        currentMapComponent.MoveToSafeArea(mono);
+        currentMapComponent.MoveToSafeArea(obj);
     }
 
     public void MoveToMapArea(ENUM_TEAM_TYPE spawnType, MonoBehaviour obj)

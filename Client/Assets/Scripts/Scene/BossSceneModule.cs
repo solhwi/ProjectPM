@@ -9,7 +9,6 @@ using UnityEngine;
 public struct EnemySpawnData
 {
 	public float spawnTime;
-	public int enemyGuid;
     public ENUM_ENTITY_TYPE entityType;
 }
 
@@ -27,28 +26,18 @@ public class BossSceneModuleParam : SceneModuleParam
 
 public class BossSceneModule : SceneModule
 {
-    private EnemySpawnData bossSpawnData;
-    private Queue<EnemySpawnData> enemySpawnDataQueue = new Queue<EnemySpawnData>();
-
     public override void OnEnter(SceneModuleParam param)
 	{
-		bossSpawnData = StageManager.Instance.GetCurrentStageBoss();
-
-        foreach (var spawnData in StageManager.Instance.GetCurrentStageEnemies())
+		foreach (var monster in EntityManager.Instance.Enemies)
 		{
-            enemySpawnDataQueue.Enqueue(spawnData);
-        }
+			MapManager.Instance.MoveToSafeArea(monster);
+		}
 
-        foreach (var monster in EntityManager.Instance.Monsters)
-		{
-            MapManager.Instance.MoveToSafeArea(monster);
-        }
-
-        MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntityManager.Instance.PlayerCharacter);
+		MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntityManager.Instance.PlayerCharacter);
         CharacterController.Instance.RegisterControl(EntityManager.Instance.PlayerCharacter);
-    }
+	}
 
-    public override void OnExit()
+	public override void OnExit()
 	{
 		CharacterController.Instance.UnRegisterControl();
 	}
@@ -63,7 +52,7 @@ public class BossSceneModule : SceneModule
 		}
 
         yield return MapManager.Instance.LoadAsyncMap(_param.mapType); // 甘 积己
-        yield return EntityManager.Instance.LoadAsyncBoss(bossSpawnData); // 阁胶磐 积己
+        yield return EntityManager.Instance.LoadAsyncBoss(StageManager.Instance.GetCurrentStageBoss()); // 阁胶磐 积己
         yield return EntityManager.Instance.LoadAsyncEnemies(StageManager.Instance.GetCurrentStageEnemies()); // 利 积己
         yield return EntityManager.Instance.LoadAsyncPlayer(_param.playerType); // 敲饭捞绢 积己
     }
@@ -80,6 +69,8 @@ public class BossSceneModule : SceneModule
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
+		base.OnUpdate(deltaFrameCount, deltaTime);
+
         PhysicsManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
         EntityManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
 
@@ -93,13 +84,14 @@ public class BossSceneModule : SceneModule
 
 	private void OnUpdateMonsters()
 	{
-		if (bossSpawnData.entityType != ENUM_ENTITY_TYPE.None && bossSpawnData.spawnTime < sceneOpenDeltaTime)
-		{
-			MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, EntityManager.Instance.BossCharacter);
-            CharacterController.Instance.RegisterAI(EntityManager.Instance.BossCharacter);
+		var enemySpawnDataQueue = new Queue<EnemySpawnData>();
 
-            bossSpawnData = default;
-        }
+		foreach (var spawnData in StageManager.Instance.GetCurrentStageEnemies())
+		{
+			enemySpawnDataQueue.Enqueue(spawnData);
+		}
+
+		enemySpawnDataQueue.Enqueue(StageManager.Instance.GetCurrentStageBoss());
 
 		while(true)
 		{
@@ -109,15 +101,12 @@ public class BossSceneModule : SceneModule
 			if (spawnData.spawnTime > sceneOpenDeltaTime)
 				break;
 
-            var character = EntityManager.Instance.GetCharacterComponent(spawnData.enemyGuid);
-            if (character == null)
+            var enemy = EntityManager.Instance.GetEnemy(spawnData.entityType);
+            if (enemy != null)
 			{
-                enemySpawnDataQueue.Dequeue();
-				continue;
-            }
-
-            MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, character);
-            CharacterController.Instance.RegisterAI(character);
+				MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, enemy);
+				CharacterController.Instance.RegisterAI(enemy);
+			}
 
             enemySpawnDataQueue.Dequeue();
         }

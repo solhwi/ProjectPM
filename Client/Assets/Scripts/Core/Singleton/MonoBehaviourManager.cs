@@ -69,9 +69,10 @@ public class MonoBehaviourManager : MonoBehaviour
 
         var g = new GameObject(typeName);
         var tr = g.transform;
-        tr.SetPositionAndRotation(default, default);
 
-        tr.SetParent(transform);
+		transform.SetPositionAndRotation(default, default);
+
+		tr.SetParent(transform);
         tr.SetPositionAndRotation(default, default);
         tr.SetAsLastSibling();
 
@@ -137,7 +138,7 @@ public class MonoBehaviourManager : MonoBehaviour
     {
         foreach(var singleton in singletonDictionary.Values)
         {
-            singleton.Release();
+            singleton?.Release();
         }
     }
 }

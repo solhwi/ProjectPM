@@ -25,7 +25,9 @@ public class Singleton : IUpdater
 
 	public void Release()
 	{
-        OnReleaseInstance();
+		mono.UnRegisterSinglton(this);
+
+		OnReleaseInstance();
         isReleased = true;
     }
 

@@ -21,7 +21,7 @@ public class EntityManager : Singleton<EntityManager>
         private set;
     }
     
-    public IEnumerable<CharacterComponent> Monsters
+    public IEnumerable<CharacterComponent> Enemies
     {
         get
         {
@@ -55,14 +55,23 @@ public class EntityManager : Singleton<EntityManager>
         }
 	}
 
+    public CharacterComponent GetEnemy(ENUM_ENTITY_TYPE entityType)
+    {
+		return Enemies.FirstOrDefault(e => e.IsBoss == false && e.EntityType == entityType);  
+	}
 
     public IEnumerator LoadAsyncEnemies(IEnumerable<EnemySpawnData> spawnDatas)
     {
         foreach(var data in spawnDatas)
         {
-            yield return LoadAsyncEntity(data.entityType, false, false);
-        }
+            yield return LoadAsyncEnemy(data.entityType);
+		}
     }
+
+    public IEnumerator LoadAsyncEnemy(ENUM_ENTITY_TYPE entityType)
+    {
+		yield return LoadAsyncEntity(entityType, false, false);
+	}
 
     public IEnumerator LoadAsyncPlayer(ENUM_ENTITY_TYPE entityType)
     {
@@ -90,7 +99,10 @@ public class EntityManager : Singleton<EntityManager>
         if (obj == null)
             yield break;
 
-		var entity = obj.GetComponent<CharacterComponent>();
+#if UNITY_EDITOR
+        obj.name = characterType.ToString();
+#endif
+        var entity = obj.GetComponent<CharacterComponent>();
         if (entity == null)
             yield break;
 
@@ -107,7 +119,6 @@ public class EntityManager : Singleton<EntityManager>
         else if(isBoss)
         {
             layerType = ENUM_LAYER_TYPE.Boss;
-
             BossCharacter = entity;
         }
 
@@ -202,5 +213,10 @@ public class EntityManager : Singleton<EntityManager>
     {
         return GetXDistance(fromEntity, PlayerCharacter);
     }
+
+	public float GetXDistanceFromBoss(EntityComponent fromEntity)
+	{
+		return GetXDistance(fromEntity, BossCharacter);
+	}
 
 }

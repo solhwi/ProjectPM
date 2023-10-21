@@ -23,9 +23,13 @@ public abstract class MapComponent : MonoBehaviour
 
         foreach(var component in GetComponentsInChildren<SpawnComponent>())
         {
-            if(component.TeamType == ENUM_TEAM_TYPE.Friendly)
+            if (component.TeamType == ENUM_TEAM_TYPE.Friendly)
             {
                 friendlySpawnArea = component;
+            }
+            else if (component.TeamType == ENUM_TEAM_TYPE.None)
+            {
+                safeInvisbleArea = component;
             }
             else
             {

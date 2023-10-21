@@ -114,7 +114,7 @@ public class PhysicsComponent : MonoBehaviour
         m_CurrentPosition = position;
         m_Rigidbody2D.MovePosition(position);
     }
-
+     
     private void TeleportToGround(Vector2 groundPos)
     {
         Teleport(new Vector2(groundPos.x, groundPos.y + m_BoxColider2D.size.y * 0.5f + groundedRaycastDistance));

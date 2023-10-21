@@ -73,6 +73,7 @@ public class CharacterComponent : EntityComponent
 
 	public override void SetEntityLayer(ENUM_LAYER_TYPE layerType)
 	{
+		base.SetEntityLayer(layerType);
 		renderingComponent.Initialize(layerType, Guid);
     }
 
