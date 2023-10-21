@@ -32,6 +32,7 @@ public partial class CharacterSkillTable : ScriptParser
 		public float searchOffsetX;
 		public float searchOffsetY;
 		public int useMana;
+		public ENUM_ATTACK_KEY attackKeyType;
 	}
 
 	public List<SkillInfo> skillInfoList = new List<SkillInfo>();

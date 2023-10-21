@@ -14,6 +14,7 @@ public interface IUpdater
 public abstract class SceneModule : MonoBehaviour, IUpdater
 {
 	[SerializeField] protected SceneType mySceneType = SceneType.Title;
+	protected float sceneOpenDeltaTime = 0.0f;
 
 #if UNITY_EDITOR
 	protected virtual void Reset()
@@ -47,8 +48,8 @@ public abstract class SceneModule : MonoBehaviour, IUpdater
 
 	public virtual void OnEnter(SceneModuleParam param)
 	{
-
-	}
+		sceneOpenDeltaTime = 0.0f;
+    }
 
 	public virtual IEnumerator OnPrepareEnterRoutine(SceneModuleParam param)
 	{
@@ -72,8 +73,8 @@ public abstract class SceneModule : MonoBehaviour, IUpdater
 
     public virtual void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
-		
-	}
+		sceneOpenDeltaTime += deltaTime;
+    }
 
 	public virtual void OnPostUpdate(int deltaFrameCount, float deltaTime)
 	{

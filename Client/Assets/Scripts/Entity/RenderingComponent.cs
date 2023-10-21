@@ -21,8 +21,13 @@ public class RenderingComponent : MonoBehaviour
 		spriteRenderer.sortingOrder = LayerHelper.GetSortingLayer(layerType, orderIndex);
 	}
 
-	public void Look(bool isLeft)
+	public void Look(float xVelocity)
 	{
+		if (Mathf.Approximately(xVelocity, 0.0f))
+			return;
+
+		bool isLeft = xVelocity < Mathf.Epsilon;
+
         spriteRenderer.flipX = isLeft;
 		IsLeftDirection = isLeft;
     }

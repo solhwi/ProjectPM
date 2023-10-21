@@ -92,12 +92,12 @@ public class CharacterComponent : EntityComponent
 
 	public void AddMovement(Vector2 moveVec)
 	{
-		// SetDirection(moveVec); // 입력 타이밍일 지 Flush 타이밍일 지 고민 
         physicsComponent.AddMovement(moveVec);
+		SetDirection(physicsComponent.Velocity); // 누적된 이동량으로 체크합니다.
 	}
 	
 	public void SetDirection(Vector2 moveVec)
 	{
-        renderingComponent.Look(moveVec.x < Mathf.Epsilon);
+        renderingComponent.Look(moveVec.x);
 	}
 }

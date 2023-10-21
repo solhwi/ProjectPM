@@ -1,8 +1,10 @@
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using static NPOI.SS.Formula.PTG.AttrPtg;
 
 public class MapManager : Singleton<MapManager>
 {
@@ -53,14 +55,25 @@ public class MapManager : Singleton<MapManager>
         yield return null;
     }
 
-    public void MoveToMapArea<T>(ENUM_TEAM_TYPE spawnType, T obj) where T : MonoBehaviour
+    public void MoveToSafeArea(MonoBehaviour obj)
     {
-        if(currentMapComponent == null)
+        if (currentMapComponent == null || obj == null)
         {
-            Debug.LogError($"{spawnType} 타입의 {obj.name} 맵 배치 시도에 실패했습니다.");
+            Debug.LogError($"{(obj != null ? obj.name : "NULL")} 맵 배치 시도에 실패했습니다.");
             return;
         }
 
-        currentMapComponent.MoveToMapArea<T>(spawnType, obj);
+        currentMapComponent.MoveToSafeArea(mono);
+    }
+
+    public void MoveToMapArea(ENUM_TEAM_TYPE spawnType, MonoBehaviour obj)
+    {
+        if(currentMapComponent == null || obj == null)
+        {
+            Debug.LogError($"{spawnType} 타입의 {(obj != null ? obj.name : "NULL")} 맵 배치 시도에 실패했습니다.");
+            return;
+        }
+
+        currentMapComponent.MoveToMapArea(spawnType, obj);
     }
 }

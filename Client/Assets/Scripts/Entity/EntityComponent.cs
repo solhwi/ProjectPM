@@ -19,9 +19,9 @@ public enum ENUM_LAYER_TYPE
 
 public enum ENUM_TEAM_TYPE
 {
-	None = -1,
-	Friendly = 0,
-	Enemy = 1,
+	None = 0,
+	Friendly = 1,
+	Enemy = 2,
 }
 
 public enum ENUM_ENTITY_TYPE

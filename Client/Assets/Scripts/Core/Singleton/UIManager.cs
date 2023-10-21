@@ -17,14 +17,26 @@ public class UIManager : Singleton<UIManager>
 	{
 		FindMainWindow(SceneManager.Instance.CurrentSceneType);
 		SceneManager.Instance.onSceneChanged += FindMainWindow;
-		SceneManager.Instance.onSceneChanged += ReleasePopups;
+		// SceneManager.Instance.onSceneChanged += ReleasePopups;
 	}
 
 	protected override void OnReleaseInstance()
 	{
 		SceneManager.Instance.onSceneChanged -= FindMainWindow;
-		SceneManager.Instance.onSceneChanged -= ReleasePopups;
+		// SceneManager.Instance.onSceneChanged -= ReleasePopups;
 	}
+
+	public void BlockAllUI()
+	{
+		if(eventSystem)
+            eventSystem.gameObject.SetActive(false);
+    }
+
+	public void UnBlockAllUI()
+	{
+		//if(eventSystem)
+		//	eventSystem.gameObject.SetActive(true);
+    }
 
 	private void FindMainWindow(SceneType type)
 	{
@@ -162,4 +174,21 @@ public class UIManager : Singleton<UIManager>
 			popupStack.Push(tempStack.Pop());
 		}
 	}
+
+	public T GetPopup<T>(bool includeDeactive = false) where T : UIPopup
+	{
+        if (popupDictionary.TryGetValue(typeof(T), out var popup))
+        {
+            var _popup = popup as T;
+            if (_popup != null)
+			{
+				if (_popup.IsActive || includeDeactive)
+				{
+					return _popup;
+                }
+			}
+        }
+
+		return null;
+    }
 }

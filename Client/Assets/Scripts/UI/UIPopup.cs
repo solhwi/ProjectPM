@@ -9,50 +9,56 @@ public class UIParam
 
 }
 
+
+/// <summary>
+/// 코드를 통해 유기적으로 열고 닫을 수 있는 UI는 Popup을 상속받는다.
+/// </summary>
+
 public class UIPopup : UIWindow
 {
-	public bool IsActive
-	{
-		get;
-		private set;
-	}
+    public bool IsActive
+    {
+        get;
+        private set;
+    }
 
-	public bool TryOpen(UIParam param = null)
-	{
-		if (IsActive)
-			return false;
+    public bool TryOpen(UIParam param = null)
+    {
+        if (IsActive)
+            return false;
 
-		gameObject.SetActive(true);
-		IsActive = true;
+        gameObject.SetActive(true);
+        IsActive = true;
 
-		OnOpen(param);
-		return true;
-	}
+        OnOpen(param);
+        return true;
+    }
 
-	public bool TryClose()
-	{
-		if (!IsActive)
-			return false;
+    public bool TryClose()
+    {
+        if (!IsActive)
+            return false;
 
-		gameObject.SetActive(false);
-		IsActive = false;
+        gameObject.SetActive(false);
+        IsActive = false;
 
-		OnClose();
-		return true;
-	}
+        OnClose();
+        return true;
+    }
 
-	public void OnClickClose()
-	{
-		UIManager.Instance.ClosePopup(GetType());
-	}
+    protected virtual void OnOpen(UIParam param = null)
+    {
 
-	protected virtual void OnOpen(UIParam param = null)
-	{
+    }
 
-	}
+    protected virtual void OnClose()
+    {
 
-	protected virtual void OnClose()
-	{
+    }
 
-	}
+    public void OnClickClose()
+    {
+        UIManager.Instance.ClosePopup(GetType());
+    }
 }
+

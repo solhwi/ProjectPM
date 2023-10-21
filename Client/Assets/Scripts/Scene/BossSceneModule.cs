@@ -1,44 +1,54 @@
+using Mirror;
 using Mirror.Examples.CCU;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+
+public struct EnemySpawnData
+{
+	public float spawnTime;
+	public int enemyGuid;
+    public ENUM_ENTITY_TYPE entityType;
+}
 
 public class BossSceneModuleParam : SceneModuleParam
 {
 	public readonly ENUM_MAP_TYPE mapType;
 	public readonly ENUM_ENTITY_TYPE playerType;
-	public readonly ENUM_ENTITY_TYPE bossType;
-	public readonly IEnumerable<ENUM_ENTITY_TYPE> enemyTypes;
 
-	public BossSceneModuleParam(ENUM_MAP_TYPE mapType, ENUM_ENTITY_TYPE playerType, ENUM_ENTITY_TYPE bossType, params ENUM_ENTITY_TYPE[] enemyTypes)
+	public BossSceneModuleParam(ENUM_MAP_TYPE mapType, ENUM_ENTITY_TYPE playerType)
 	{
 		this.mapType = mapType;
 		this.playerType = playerType;
-		this.bossType = bossType;
-		this.enemyTypes = enemyTypes;
 	}
 }
 
 public class BossSceneModule : SceneModule
 {
+    private EnemySpawnData bossSpawnData;
+    private Queue<EnemySpawnData> enemySpawnDataQueue = new Queue<EnemySpawnData>();
+
     public override void OnEnter(SceneModuleParam param)
 	{
-        MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntityManager.Instance.PlayerCharacter);
-        CharacterController.Instance.RegisterControl(EntityManager.Instance.PlayerCharacter);
+		bossSpawnData = StageManager.Instance.GetCurrentStageBoss();
 
-        MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, EntityManager.Instance.BossCharacter);
-        CharacterController.Instance.RegisterAI(EntityManager.Instance.BossCharacter);
+        foreach (var spawnData in StageManager.Instance.GetCurrentStageEnemies())
+		{
+            enemySpawnDataQueue.Enqueue(spawnData);
+        }
 
         foreach (var monster in EntityManager.Instance.Monsters)
 		{
-            MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, monster);
-            CharacterController.Instance.RegisterAI(monster);
+            MapManager.Instance.MoveToSafeArea(monster);
         }
 
+        MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntityManager.Instance.PlayerCharacter);
+        CharacterController.Instance.RegisterControl(EntityManager.Instance.PlayerCharacter);
     }
 
-	public override void OnExit()
+    public override void OnExit()
 	{
 		CharacterController.Instance.UnRegisterControl();
 	}
@@ -53,10 +63,9 @@ public class BossSceneModule : SceneModule
 		}
 
         yield return MapManager.Instance.LoadAsyncMap(_param.mapType); // 甘 积己
-        yield return EntityManager.Instance.LoadAsyncBoss(_param.bossType); // 阁胶磐 积己
-        yield return EntityManager.Instance.LoadAsyncMonsters(_param.enemyTypes); // 阁胶磐 积己
+        yield return EntityManager.Instance.LoadAsyncBoss(bossSpawnData); // 阁胶磐 积己
+        yield return EntityManager.Instance.LoadAsyncEnemies(StageManager.Instance.GetCurrentStageEnemies()); // 利 积己
         yield return EntityManager.Instance.LoadAsyncPlayer(_param.playerType); // 敲饭捞绢 积己
-
     }
 
     public override void OnFixedUpdate(int tickCount, float latencyTime)
@@ -73,10 +82,44 @@ public class BossSceneModule : SceneModule
 	{
         PhysicsManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
         EntityManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
-	}
+
+        OnUpdateMonsters();
+    }
 
     protected override void OnDrawGizmos()
     {
 		PhysicsManager.Instance.OnDrawGizmos();
     }
+
+	private void OnUpdateMonsters()
+	{
+		if (bossSpawnData.entityType != ENUM_ENTITY_TYPE.None && bossSpawnData.spawnTime < sceneOpenDeltaTime)
+		{
+			MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, EntityManager.Instance.BossCharacter);
+            CharacterController.Instance.RegisterAI(EntityManager.Instance.BossCharacter);
+
+            bossSpawnData = default;
+        }
+
+		while(true)
+		{
+			if (enemySpawnDataQueue.TryPeek(out var spawnData) == false)
+				break;
+
+			if (spawnData.spawnTime > sceneOpenDeltaTime)
+				break;
+
+            var character = EntityManager.Instance.GetCharacterComponent(spawnData.enemyGuid);
+            if (character == null)
+			{
+                enemySpawnDataQueue.Dequeue();
+				continue;
+            }
+
+            MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, character);
+            CharacterController.Instance.RegisterAI(character);
+
+            enemySpawnDataQueue.Dequeue();
+        }
+	}
 }

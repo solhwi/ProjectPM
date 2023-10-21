@@ -15,6 +15,7 @@ public abstract class MapComponent : MonoBehaviour
 
     [SerializeField] private SpawnComponent friendlySpawnArea = null;
     [SerializeField] private List<SpawnComponent> enemySpawnAreas = new List<SpawnComponent>();
+    [SerializeField] private SpawnComponent safeInvisbleArea = null;
 
     protected virtual void Reset()
     {
@@ -47,7 +48,12 @@ public abstract class MapComponent : MonoBehaviour
         return order;
     }
 
-    public void MoveToMapArea<T>(ENUM_TEAM_TYPE spawnType, T obj) where T : MonoBehaviour
+    public void MoveToSafeArea(MonoBehaviour obj)
+    {
+        obj.transform.position = safeInvisbleArea.transform.position;
+    }
+
+    public void MoveToMapArea(ENUM_TEAM_TYPE spawnType, MonoBehaviour obj)
     {
         if(spawnType == ENUM_TEAM_TYPE.Friendly)
         {

@@ -69,6 +69,7 @@ public class MonoBehaviourManager : MonoBehaviour
 
         var g = new GameObject(typeName);
         var tr = g.transform;
+        tr.SetPositionAndRotation(default, default);
 
         tr.SetParent(transform);
         tr.SetPositionAndRotation(default, default);

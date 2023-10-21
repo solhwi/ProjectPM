@@ -56,11 +56,11 @@ public class EntityManager : Singleton<EntityManager>
 	}
 
 
-    public IEnumerator LoadAsyncMonsters(IEnumerable<ENUM_ENTITY_TYPE> entityTypes)
+    public IEnumerator LoadAsyncEnemies(IEnumerable<EnemySpawnData> spawnDatas)
     {
-        foreach(var entityType in entityTypes)
+        foreach(var data in spawnDatas)
         {
-            yield return LoadAsyncEntity(entityType, false, false);
+            yield return LoadAsyncEntity(data.entityType, false, false);
         }
     }
 
@@ -69,9 +69,9 @@ public class EntityManager : Singleton<EntityManager>
         yield return LoadAsyncEntity(entityType, true, false);
     }
 
-    public IEnumerator LoadAsyncBoss(ENUM_ENTITY_TYPE entityType)
+    public IEnumerator LoadAsyncBoss(EnemySpawnData spawnData)
     {
-        yield return LoadAsyncEntity(entityType, false, true);
+        yield return LoadAsyncEntity(spawnData.entityType, false, true);
     }
 
     private IEnumerator LoadAsyncEntity(ENUM_ENTITY_TYPE characterType, bool isPlayer, bool isBoss)
@@ -122,6 +122,11 @@ public class EntityManager : Singleton<EntityManager>
             return null;
 
         return entityDictionary[guid];
+    }
+
+    public CharacterComponent GetCharacterComponent(int guid)
+    {
+        return GetEntityComponent(guid) as CharacterComponent;
     }
 
     public IEnumerable<EntityComponent> GetAllEntities()

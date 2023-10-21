@@ -111,18 +111,31 @@ public class SceneManager : Singleton<SceneManager>
 		currentSceneModule?.OnExit();
 
 		isLoadComplete = false;
+        UIManager.Instance.OpenPopup<LoadingPopup>();
 
         var asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneType.ToString(), LoadSceneMode.Single);
-
 		asyncOperation.allowSceneActivation = false;
 
-		while (asyncOperation.progress < 0.9f)
+        LoadingPopup loadingPopup = UIManager.Instance.GetPopup<LoadingPopup>();
+        while (loadingPopup == null)
+		{
+            loadingPopup = UIManager.Instance.GetPopup<LoadingPopup>();
+			yield return null;
+        }
+
+        loadingPopup.SetProgress(0.0f);
+
+        while (asyncOperation.progress < 0.9f)
 		{
 			yield return null;
 
-			OnSceneLoading?.Invoke(asyncOperation.progress);
+			float progress = asyncOperation.progress;
+
+            loadingPopup.SetProgress(progress);
+            OnSceneLoading?.Invoke(progress);
 		}
 
+        loadingPopup.SetProgress(1.0f);
         asyncOperation.allowSceneActivation = true;
 	}
 
@@ -139,5 +152,6 @@ public class SceneManager : Singleton<SceneManager>
 
         yield return null;
 		isLoadComplete = true;
+		UIManager.Instance.ClosePopup<LoadingPopup>();
     }
 }
