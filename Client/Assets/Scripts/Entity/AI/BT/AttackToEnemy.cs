@@ -29,7 +29,7 @@ public class AttackToEnemy : ActionNode
             return State.Failure;
 
         var command = MessageHelper.MakeCommand(ENUM_COMMAND_TYPE.Attack, context.entityComponent);
-        context.entityComponent.TryChangeState(command);
+        context.entityComponent.SendCommand(command);
 
         return State.Success;
     }

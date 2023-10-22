@@ -77,18 +77,20 @@ public class CharacterComponent : EntityComponent
 		renderingComponent.Initialize(layerType, EntityGuid);
     }
 
-    public override int GetSimulatedNextState(ICommand command)
+    protected override int GetSimulatedNextState(ICommand command)
     {
 		var frameMessage = command.ToFrameMessage();
 		var entity = frameMessage.ToEntity();
         return (int)stateMachineComponent.GetSimulatedNextState(frameMessage, (ENUM_CHARACTER_STATE)entity.entityState);
     }
 
-	public override bool TryChangeState(ICommand command)
+	public override bool SendCommand(ICommand command)
     {
 		var frameMessage = command.ToFrameMessage();
-		var nextState = GetSimulatedNextState(frameMessage);
-		return stateMachineComponent.ChangeState((ENUM_CHARACTER_STATE)nextState, frameMessage);
+        stateMachineComponent.SendCommandToStateMachine(frameMessage);
+
+        var nextState = GetSimulatedNextState(frameMessage);
+        return stateMachineComponent.ChangeState((ENUM_CHARACTER_STATE)nextState);
 	}
 
 	public void AddMovement(Vector2 moveVec)

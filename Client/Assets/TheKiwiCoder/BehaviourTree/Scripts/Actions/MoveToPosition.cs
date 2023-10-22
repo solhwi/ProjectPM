@@ -21,7 +21,7 @@ public class MoveToPosition : ActionNode
         var commandType = distance > Mathf.Epsilon ? ENUM_COMMAND_TYPE.RightMove : ENUM_COMMAND_TYPE.LeftMove;
 
         var command = MessageHelper.MakeCommand(commandType, context.entityComponent);
-        context.entityComponent.TryChangeState(command);
+        context.entityComponent.SendCommand(command);
 
         return State.Success;
     }

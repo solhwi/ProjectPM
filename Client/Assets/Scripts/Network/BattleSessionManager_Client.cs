@@ -62,7 +62,7 @@ public partial class BattleSessionManager
 				entity.Teleport(entityMessage.pos);
 
 				// 스테이트도 당시 상황에 맞게 재조정
-				entity.TryChangeState(userSnapShot.commandMessage);
+				entity.SendCommand(userSnapShot.commandMessage);
 			}
 		}
 

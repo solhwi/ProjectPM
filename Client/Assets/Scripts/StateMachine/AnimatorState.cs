@@ -40,15 +40,10 @@ namespace StateMachine
             OnInitialize(owner);
         }
 
-        public void AddCommand(TCommand command)
+        public void SendCommand(TCommand command)
         {
             this.command = command;
 		}
-
-        private void FlushCommand()
-        {
-            command = default;
-        }
 
 		public sealed override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex, AnimatorControllerPlayable controller)
         {
@@ -57,7 +52,6 @@ namespace StateMachine
             frameDeltaTime = 0;
 
             OnSLStateEnter(owner, command);
-            FlushCommand();
 		}
 
         public sealed override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex, AnimatorControllerPlayable controller)
@@ -96,8 +90,6 @@ namespace StateMachine
             {
                 OnSLTransitionFromStateUpdate(owner, command);
             }
-
-			FlushCommand();
 		}
 
 		public sealed override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex, AnimatorControllerPlayable controller)
@@ -106,11 +98,9 @@ namespace StateMachine
             frameDeltaCount++;
 
 			OnSLStateExit(owner, command);
-			FlushCommand();
 
 			frameDeltaCount = 0;
             frameDeltaTime = 0;
-
         }
 
         /// <summary>

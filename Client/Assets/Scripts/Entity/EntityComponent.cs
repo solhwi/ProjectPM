@@ -137,12 +137,12 @@ public abstract class EntityComponent : MonoBehaviour
         transform.position = posVec;
     }
 
-    public virtual int GetSimulatedNextState(ICommand command)
+    protected virtual int GetSimulatedNextState(ICommand command)
     {
         return CurrentState;
 	}
 
-	public virtual bool TryChangeState(ICommand command)
+	public virtual bool SendCommand(ICommand command)
 	{
 		return false;
 	}

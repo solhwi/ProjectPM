@@ -64,13 +64,16 @@ public class CharacterStateMachineComponent : MonoBehaviour
 		return null;
 	}
 
-	public bool ChangeState(ENUM_CHARACTER_STATE nextState, FrameCommandMessage stateMessage)
-    {
-		foreach (var state in animatorStates)
-		{
-			state.AddCommand(stateMessage);
-		}
+	public void SendCommandToStateMachine(FrameCommandMessage message)
+	{
+        foreach (var state in animatorStates)
+        {
+            state.SendCommand(message);
+        }
+    }
 
+	public bool ChangeState(ENUM_CHARACTER_STATE nextState)
+    {
 		bool isChangedState = CurrentState != nextState;
 		if (isChangedState)
 		{

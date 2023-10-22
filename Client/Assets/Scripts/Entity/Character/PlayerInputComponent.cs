@@ -50,6 +50,6 @@ public class PlayerInputComponent : InputComponent
 			return;
 
 		var command = MessageHelper.MakeCommand();
-		characterComponent.TryChangeState(command);
+		characterComponent.SendCommand(command);
 	}
 }
