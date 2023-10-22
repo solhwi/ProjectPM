@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Cysharp.Threading.Tasks;
 
 public class ScriptParserManager : Singleton<ScriptParserManager>
 {
@@ -18,26 +19,23 @@ public class ScriptParserManager : Singleton<ScriptParserManager>
 		return table as T;
 	}
 
-	public IEnumerator LoadAsyncScriptParsers()
+	public async UniTask<IEnumerable<ScriptParser>> LoadAsyncScriptParsers()
 	{
 		var types = FMUtil.GetSubClassTypes<ScriptParser>();
+		dictionary.Clear();
 
-		foreach(var type in types)
+        foreach (var type in types)
 		{
-			var handle = ResourceManager.Instance.LoadAsync<ScriptParser>(type);
-			while (!handle.IsDone || handle.Status != AsyncOperationStatus.Succeeded)
-			{
-				yield return null;
-			}
-
-			var scriptParser = handle.Result as ScriptParser;
+			var scriptParser = await ResourceManager.Instance.LoadAsync<ScriptParser>(type);
 			if (scriptParser == null)
-				yield break;
+				continue;
 
 			scriptParser.RuntimeParser();
-
 			dictionary.Add(type, scriptParser);
 		}
-	}
+
+		return dictionary.Values;
+
+    }
 
 }

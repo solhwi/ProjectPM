@@ -1,8 +1,10 @@
+using Cysharp.Threading.Tasks;
 using NPOI.SS.Formula.Functions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using static UnityEngine.RuleTile.TilingRuleOutput;
@@ -68,43 +70,28 @@ public class EntityManager : Singleton<EntityManager>
 		}
     }
 
-    public IEnumerator LoadAsyncEnemy(ENUM_ENTITY_TYPE entityType)
+    public async UniTask<EntityComponent> LoadAsyncEnemy(ENUM_ENTITY_TYPE entityType)
     {
-		yield return LoadAsyncEntity(entityType, false, false);
+        return await CreateEntity(entityType, false, false);
 	}
 
-    public IEnumerator LoadAsyncPlayer(ENUM_ENTITY_TYPE entityType)
+    public async UniTask<EntityComponent> LoadAsyncPlayer(ENUM_ENTITY_TYPE entityType)
     {
-        yield return LoadAsyncEntity(entityType, true, false);
+        return await CreateEntity(entityType, true, false);
     }
 
-    public IEnumerator LoadAsyncBoss(EnemySpawnData spawnData)
+    public async UniTask<EntityComponent> LoadAsyncBoss(EnemySpawnData spawnData)
     {
-        yield return LoadAsyncEntity(spawnData.entityType, false, true);
+        return await CreateEntity(spawnData.entityType, false, true);
     }
 
-    private IEnumerator LoadAsyncEntity(ENUM_ENTITY_TYPE characterType, bool isPlayer, bool isBoss)
+    private async UniTask<EntityComponent> CreateEntity(ENUM_ENTITY_TYPE characterType, bool isPlayer, bool isBoss)
     {
-        var handle = ResourceManager.Instance.LoadAsync<CharacterComponent>();
-        while (!handle.IsDone || handle.Status != AsyncOperationStatus.Succeeded)
-        {
-            yield return null;
-        }
-
-        var prefab = handle.Result as GameObject;
-        if (prefab == null)
-            yield break;
-
-        var obj = UnityEngine.Object.Instantiate(prefab);
-        if (obj == null)
-            yield break;
+        var character = await ResourceManager.Instance.InstantiateAsync<CharacterComponent>();
 
 #if UNITY_EDITOR
-        obj.name = characterType.ToString();
+        character.name = characterType.ToString();
 #endif
-        var entity = obj.GetComponent<CharacterComponent>();
-        if (entity == null)
-            yield break;
 
         int ownerGuid = GameConfig.MonsterGuid;
         ENUM_LAYER_TYPE layerType = ENUM_LAYER_TYPE.Enemy;
@@ -114,17 +101,19 @@ public class EntityManager : Singleton<EntityManager>
             ownerGuid = GameConfig.PlayerGuid;
             layerType = ENUM_LAYER_TYPE.Friendly;
 
-            PlayerCharacter = entity;
+            PlayerCharacter = character;
         }
         else if(isBoss)
         {
             layerType = ENUM_LAYER_TYPE.Boss;
-            BossCharacter = entity;
+            BossCharacter = character;
         }
 
-        entity.Initialize(ownerGuid, characterType, isPlayer);
-        entity.SetEntityLayer(layerType);
-        mono.SetSingletonChild(this, entity);
+        character.Initialize(ownerGuid, characterType, isPlayer);
+        character.SetEntityLayer(layerType);
+        mono.SetSingletonChild(this, character);
+
+        return character;
     }
 
     public EntityComponent GetEntityComponent(int guid)
@@ -191,17 +180,17 @@ public class EntityManager : Singleton<EntityManager>
         Vector2 box = new(hasSkill.searchBoxX, hasSkill.searchBoxY);
         Vector2 offset = new(hasSkill.searchOffsetX, hasSkill.searchOffsetY);
 
-        return GetOverlapEntities(entity.Guid, entity.Position, box, offset, entity.Velocity, includeMine);
+        return GetOverlapEntities(entity.EntityGuid, entity.Position, box, offset, entity.Velocity, includeMine);
     }
 
     public IEnumerable<EntityComponent> GetOverlapEntities(EntityComponent entity, bool includeMine = false)
     {
-        return GetOverlapEntities(entity.Guid, entity.Position, entity.HitBox, entity.HitOffset, entity.Velocity, includeMine);
+        return GetOverlapEntities(entity.EntityGuid, entity.Position, entity.HitBox, entity.HitOffset, entity.Velocity, includeMine);
     }
 
     public IEnumerable<int> GetOverlapEntitiyGuids(FrameEntityMessage message, bool includeMine = false)
     {
-        return GetOverlapEntities(message, includeMine).Select(entity => entity.Guid);
+        return GetOverlapEntities(message, includeMine).Select(entity => entity.EntityGuid);
     }
 
     public float GetXDistance(EntityComponent fromEntity, EntityComponent toEntity)

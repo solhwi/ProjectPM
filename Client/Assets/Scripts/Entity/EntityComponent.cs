@@ -100,7 +100,7 @@ public abstract class EntityComponent : MonoBehaviour
 
 	public int OwnerGuid { get; private set; }
 
-    public int Guid { get; private set; }
+    public int EntityGuid { get; private set; }
 
 	private ENUM_LAYER_TYPE layerType = ENUM_LAYER_TYPE.Object;
 
@@ -110,7 +110,7 @@ public abstract class EntityComponent : MonoBehaviour
 		IsPlayer = isPlayer;
         OwnerGuid = ownerGuid;
 		EntityType = type;
-        Guid = EntityManager.Instance.Register(this);
+        EntityGuid = EntityManager.Instance.Register(this);
 	}
 
     public virtual void SetEntityLayer(ENUM_LAYER_TYPE layerType)
@@ -124,7 +124,7 @@ public abstract class EntityComponent : MonoBehaviour
         OwnerGuid = 0;
 		EntityType = ENUM_ENTITY_TYPE.None;
 		layerType = ENUM_LAYER_TYPE.Object;
-		Guid = EntityManager.Instance.UnRegister(Guid);
+		EntityGuid = EntityManager.Instance.UnRegister(EntityGuid);
 	}
 
 	public virtual void Teleport(Vector2 posVec)

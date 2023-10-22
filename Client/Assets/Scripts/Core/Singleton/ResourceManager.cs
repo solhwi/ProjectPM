@@ -1,7 +1,11 @@
+using Cysharp.Threading.Tasks;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -47,81 +51,100 @@ public class ResourceManager : Singleton<ResourceManager>
 		return UnityEngine.Object.Instantiate<T>(prefab);
 	}
 
-	public AsyncOperationHandle LoadAsync<TParentClass>(Type subclassType) where TParentClass : Object
+	public async UniTask<TParentClass> LoadAsync<TParentClass>(Type subclassType) where TParentClass : Object
 	{
 		string path = FMUtil.GetResourcePath(subclassType);
 		if (string.IsNullOrEmpty(path))
 			return default;
 
 		var resourceType = FMUtil.GetResourceType(subclassType);
+        return await LoadAsync<TParentClass>(resourceType, path);
+    }
 
-		switch (resourceType)
-		{
-			case ResourceType.UnityAsset:
-				return LoadUnityAsset<TParentClass>(path);
+	private async UniTask<T> LoadAsync<T>(ResourceType resourceType, string path) where T : Object
+    {
+        switch (resourceType)
+        {
+            case ResourceType.UnityAsset:
+                return await LoadUnityAsset<T>(path);
 
-			case ResourceType.Prefab:
-				return LoadPrefab<TParentClass>(path);
-		}
+            case ResourceType.Prefab:
+                var prefab = await LoadPrefab<T>(path);
+                return prefab.GetComponent<T>();
+        }
 
 		return default;
-	}
+    }
 
-	public AsyncOperationHandle LoadAsync<T>() where T : Object
+	public async UniTask<T> InstantiateAsync<T>(Transform parent = null) where T : Object
+	{
+        string path = FMUtil.GetResourcePath<T>();
+        if (string.IsNullOrEmpty(path))
+            return default;
+
+        var obj = await InstantiateAsync<T>(path, parent);
+		return obj.GetComponent<T>();
+    }
+
+	public async UniTask<T> LoadAsync<T>() where T : Object
 	{
 		string path = FMUtil.GetResourcePath<T>();
 		if (string.IsNullOrEmpty(path))
 			return default;
 
 		var resourceType = FMUtil.GetResourceType<T>();
+		return await LoadAsync<T>(resourceType, path);
+    }
+	
+	public async UniTask<GameObject> InstantiateAsync<T>(string path, Transform parent = null) where T : Object
+	{
+        var handle = Addressables.InstantiateAsync(path, parent);
 
-		switch(resourceType)
-		{
-			case ResourceType.UnityAsset:
-				return LoadUnityAsset<T>(path);
+        handle.Completed += (op) =>
+        {
+            AddResource(op, path);
+        };
 
-			case ResourceType.Prefab:
-				return LoadPrefab<T>(path);
-		}
-
-		return default;
+        await handle.Task;
+        return handle.Result;
     }
 
-	public AsyncOperationHandle<T> LoadUnityAsset<T>(string path) where T : Object
+
+	public async UniTask<T> LoadUnityAsset<T>(string path) where T : Object
 	{
 		var handle = Addressables.LoadAssetAsync<T>(path);
 
 		handle.Completed += (op) =>
 		{
-			if (op.IsDone && op.Status == AsyncOperationStatus.Succeeded)
-			{
-                if (resourceDictionary.ContainsKey(typeof(T)) == false)
-					resourceDictionary.Add(typeof(T), new List<ObjectPathData>());
+            AddResource(op, path);
+        };
 
-                var data = new ObjectPathData(path, op.Result);
-                resourceDictionary[typeof(T)].Add(data);
-			}
-		};
-
-		return handle;
+		await handle.Task;
+        return handle.Result;
 	}
 
-	private AsyncOperationHandle LoadPrefab<T>(string path) where T : Object
+	private void AddResource<T>(AsyncOperationHandle<T> op, string path) where T : Object
+	{
+        if (op.IsDone && op.Status == AsyncOperationStatus.Succeeded)
+        {
+            if (resourceDictionary.ContainsKey(typeof(T)) == false)
+                resourceDictionary.Add(typeof(T), new List<ObjectPathData>());
+
+            var data = new ObjectPathData(path, op.Result);
+            resourceDictionary[typeof(T)].Add(data);
+        }
+    }
+
+	private async UniTask<GameObject> LoadPrefab<T>(string path) where T : Object
 	{
 		var handle = Addressables.LoadAssetAsync<GameObject>(path);
 
 		handle.Completed += (op) =>
 		{
-			if (op.IsDone && op.Status == AsyncOperationStatus.Succeeded)
-			{
-                if (resourceDictionary.ContainsKey(typeof(T)) == false)
-                    resourceDictionary.Add(typeof(T), new List<ObjectPathData>());
+			AddResource(op, path);
+        };
 
-                var data = new ObjectPathData(path, op.Result);
-                resourceDictionary[typeof(T)].Add(data);
-            }
-		};
-
-		return handle;
+		await handle.Task;
+        return handle.Result;
 	}
 }

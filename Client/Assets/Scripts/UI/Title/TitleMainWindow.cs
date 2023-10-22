@@ -12,6 +12,6 @@ public class TitleMainWindow : UIMainWindow
 
 	public void OnClickSetting()
 	{
-		UIManager.Instance.OpenPopup<SettingPopup>();
+		UIManager.Instance.OpenPopupAsync<SettingPopup>();
 	}
 }

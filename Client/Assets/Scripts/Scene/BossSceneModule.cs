@@ -26,9 +26,18 @@ public class BossSceneModuleParam : SceneModuleParam
 
 public class BossSceneModule : SceneModule
 {
+    private Queue<EnemySpawnData> spawnQueue = new Queue<EnemySpawnData>();
+
     public override void OnEnter(SceneModuleParam param)
 	{
-		foreach (var monster in EntityManager.Instance.Enemies)
+        foreach (var spawnData in StageManager.Instance.GetCurrentStageEnemies())
+        {
+            spawnQueue.Enqueue(spawnData);
+        }
+
+        spawnQueue.Enqueue(StageManager.Instance.GetCurrentStageBoss());
+
+        foreach (var monster in EntityManager.Instance.Enemies)
 		{
 			MapManager.Instance.MoveToSafeArea(monster);
 		}
@@ -51,7 +60,7 @@ public class BossSceneModule : SceneModule
 			yield break;
 		}
 
-        yield return MapManager.Instance.LoadAsyncMap(_param.mapType); // 甘 积己
+        yield return MapManager.Instance.CreateMap(_param.mapType); // 甘 积己
         yield return EntityManager.Instance.LoadAsyncBoss(StageManager.Instance.GetCurrentStageBoss()); // 阁胶磐 积己
         yield return EntityManager.Instance.LoadAsyncEnemies(StageManager.Instance.GetCurrentStageEnemies()); // 利 积己
         yield return EntityManager.Instance.LoadAsyncPlayer(_param.playerType); // 敲饭捞绢 积己
@@ -74,7 +83,7 @@ public class BossSceneModule : SceneModule
         PhysicsManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
         EntityManager.Instance.OnUpdate(deltaFrameCount, deltaTime);
 
-        OnUpdateMonsters();
+        SpawnMonsters();
     }
 
     protected override void OnDrawGizmos()
@@ -82,20 +91,14 @@ public class BossSceneModule : SceneModule
 		PhysicsManager.Instance.OnDrawGizmos();
     }
 
-	private void OnUpdateMonsters()
+	private void SpawnMonsters()
 	{
-		var enemySpawnDataQueue = new Queue<EnemySpawnData>();
-
-		foreach (var spawnData in StageManager.Instance.GetCurrentStageEnemies())
-		{
-			enemySpawnDataQueue.Enqueue(spawnData);
-		}
-
-		enemySpawnDataQueue.Enqueue(StageManager.Instance.GetCurrentStageBoss());
+		if (spawnQueue.Count <= 0)
+			return;
 
 		while(true)
 		{
-			if (enemySpawnDataQueue.TryPeek(out var spawnData) == false)
+			if (spawnQueue.TryPeek(out var spawnData) == false)
 				break;
 
 			if (spawnData.spawnTime > sceneOpenDeltaTime)
@@ -108,7 +111,7 @@ public class BossSceneModule : SceneModule
 				CharacterController.Instance.RegisterAI(enemy);
 			}
 
-            enemySpawnDataQueue.Dequeue();
+            spawnQueue.Dequeue();
         }
 	}
 }

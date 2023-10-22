@@ -1,58 +1,42 @@
+using Cysharp.Threading.Tasks;
 using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using static NPOI.SS.Formula.PTG.AttrPtg;
 
 public class MapManager : Singleton<MapManager>
 {
-    private Dictionary<Type, MapComponent> mapDictionary = new Dictionary<Type, MapComponent>();
+    private Dictionary<ENUM_MAP_TYPE, MapComponent> mapDictionary = new Dictionary<ENUM_MAP_TYPE, MapComponent>();
     private MapComponent currentMapComponent = null;
 
     private int lastMapOrder = 0;
         
-    public IEnumerator LoadAsyncMap(ENUM_MAP_TYPE mapType)
+    public async UniTask<MapComponent> CreateMap(ENUM_MAP_TYPE mapType)
     {
-        switch(mapType)
+        MapComponent mapObject = null;
+
+        switch (mapType)
         {
             case ENUM_MAP_TYPE.City:
-                yield return LoadMapRoutine<CityMapComponent>();
+                mapObject = await CreateMap<CityMapComponent>();
                 break;
         }
+
+        mapDictionary[mapType] = mapObject;
+        return mapObject;
     }
 
-    private IEnumerator LoadMapRoutine<T>() where T : MapComponent
+    private async UniTask<T> CreateMap<T>() where T : MapComponent
     {
-        var handle = ResourceManager.Instance.LoadAsync<T>();
-        while (!handle.IsDone || handle.Status != AsyncOperationStatus.Succeeded)
-        {
-            yield return null;
-        }
+        var mapObject = await ResourceManager.Instance.InstantiateAsync<T>();
 
-        var prefab = handle.Result as GameObject;
-        if (prefab == null)
-            yield break;
+        mono.SetSingletonChild(this, mapObject);
 
-        var obj = UnityEngine.Object.Instantiate(prefab);
-        if (obj == null)
-            yield break;
+        currentMapComponent = mapObject;
+        lastMapOrder = mapObject.SetOrder(lastMapOrder);
 
-        T map = obj.GetComponent<T>();
-        if (map == null)
-            yield break;
-
-        mono.SetSingletonChild(this, map);
-
-        currentMapComponent = map;
-        mapDictionary[typeof(T)] = map;
-        lastMapOrder = map.SetOrder(lastMapOrder);
-    }
-
-    public IEnumerator UnloadAsyncMap()
-    {
-        yield return null;
+        return mapObject;
     }
 
     public void MoveToSafeArea(MonoBehaviour obj)

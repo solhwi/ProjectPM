@@ -132,7 +132,7 @@ public class MessageHelper
 		var playerEntityMessage = new FrameEntityMessage();
 
 		playerEntityMessage.pos = entity.Position;
-		playerEntityMessage.entityGuid = entity.Guid;
+		playerEntityMessage.entityGuid = entity.EntityGuid;
 		playerEntityMessage.velocity = entity.Velocity;
 		playerEntityMessage.hitbox = entity.HitBox;
 		playerEntityMessage.offset = entity.HitOffset;

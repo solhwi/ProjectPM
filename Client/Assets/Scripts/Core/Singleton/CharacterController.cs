@@ -48,7 +48,7 @@ public class CharacterController : Singleton<CharacterController>
         runner.Initialize(character.EntityType);
         runner.Run();
 
-        aiInputComponentDictionary[character.Guid] = runner;
+        aiInputComponentDictionary[character.EntityGuid] = runner;
 	}
 
     public void UnRegisterAI(CharacterComponent character)
@@ -56,9 +56,9 @@ public class CharacterController : Singleton<CharacterController>
 		if (character == null)
 			return;
 
-		if (aiInputComponentDictionary.ContainsKey(character.Guid) == false)
+		if (aiInputComponentDictionary.ContainsKey(character.EntityGuid) == false)
             return;
 
-		aiInputComponentDictionary.Remove(character.Guid);
+		aiInputComponentDictionary.Remove(character.EntityGuid);
 	}
 }

@@ -1,6 +1,8 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -63,7 +65,7 @@ public class UIManager : Singleton<UIManager>
 		popupDictionary.Clear();
 	}
 
-	public void OpenPopup<T>(UIParam param = null) where T : UIPopup
+	public async void OpenPopupAsync<T>(UIParam param = null) where T : UIPopup
 	{
 		if (popupDictionary.TryGetValue(typeof(T), out var popup))
 		{
@@ -74,8 +76,8 @@ public class UIManager : Singleton<UIManager>
 		var popupPrefab = ResourceManager.Instance.Load<T>();
 		if (popupPrefab == null)
 		{
-			mono.StartCoroutine(LoadUIRoutine<T>(param));
-		}
+			await CreatePopup<T>(param);
+        }
 		else
 		{
 			var popupObj = UnityEngine.Object.Instantiate(popupPrefab);
@@ -83,27 +85,12 @@ public class UIManager : Singleton<UIManager>
 		}
 	}
 
-	private IEnumerator LoadUIRoutine<T>(UIParam param) where T : UIPopup
+	private async UniTask<T> CreatePopup<T>(UIParam param) where T : UIPopup
 	{
-		var handle = ResourceManager.Instance.LoadAsync<T>();
-		while(!handle.IsDone || handle.Status != AsyncOperationStatus.Succeeded)
-		{
-			yield return null;
-		}
-
-		var popupPrefab = handle.Result as GameObject;
-		if (popupPrefab == null)
-			yield break;
-
-		var popupObj = UnityEngine.Object.Instantiate(popupPrefab);
-		if (popupObj == null)
-			yield break;
-
-		T popup  = popupObj.GetComponent<T>();
-		if (popup == null)
-			yield break;
-
+		var popup = await ResourceManager.Instance.InstantiateAsync<T>();
 		OpenPopup<T>(popup, param);
+
+		return popup;
 	}
 
 	private void OpenPopup<T>(UIPopup popup, UIParam param)

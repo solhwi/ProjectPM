@@ -111,7 +111,7 @@ public class SceneManager : Singleton<SceneManager>
 		currentSceneModule?.OnExit();
 
 		isLoadComplete = false;
-        UIManager.Instance.OpenPopup<LoadingPopup>();
+        UIManager.Instance.OpenPopupAsync<LoadingPopup>();
 
         var asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneType.ToString(), LoadSceneMode.Single);
 		asyncOperation.allowSceneActivation = false;
