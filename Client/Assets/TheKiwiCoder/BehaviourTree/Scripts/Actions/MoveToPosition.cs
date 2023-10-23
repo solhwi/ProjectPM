@@ -17,7 +17,7 @@ public class MoveToPosition : ActionNode
 
     protected override State OnUpdate() 
     {
-        float distance = EntitySystem.Instance.GetXDistanceFromPlayer(context.entityComponent);
+        float distance = PhysicsSystem.Collision.GetXDistanceFromPlayer(context.entityComponent);
         var commandType = distance > Mathf.Epsilon ? ENUM_COMMAND_TYPE.RightMove : ENUM_COMMAND_TYPE.LeftMove;
 
         var command = MessageHelper.MakeCommand(commandType, context.entityComponent);

@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public interface IUpdater
+public interface ISystem
 {
+	void OnFixedUpdate(int deltaFrameCount, float deltaTime);
 	void OnPrevUpdate(int deltaFrameCount, float deltaTime);
 	void OnUpdate(int deltaFrameCount, float deltaTime);
 	void OnPostUpdate(int deltaFrameCount, float deltaTime);
 	void OnLateUpdate(int deltaFrameCount, float deltaTime);
 }
 
-public abstract class SceneModule : MonoBehaviour, IUpdater
+public abstract class SceneModule : MonoBehaviour, ISystem
 {
 	[SerializeField] protected SceneType mySceneType = SceneType.Title;
 	protected float sceneOpenDeltaTime = 0.0f;

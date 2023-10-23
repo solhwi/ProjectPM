@@ -46,7 +46,7 @@ public class SceneModuleSystem : Singleton<SceneModuleSystem>
         mono.onUpdate += Update;
         mono.onLateUpdate += LateUpdate;
 
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     protected override void OnReleaseInstance()
@@ -58,10 +58,8 @@ public class SceneModuleSystem : Singleton<SceneModuleSystem>
         mono.onLateUpdate -= LateUpdate;
 
         if (cancellationSource != null)
-        {
-            cancellationSource.Cancel();
-        }
-    }
+			cancellationSource.Cancel();
+	}
 
     private void FixedUpdate()
     {
@@ -128,8 +126,18 @@ public class SceneModuleSystem : Singleton<SceneModuleSystem>
     {
         var operation = SceneManager.LoadSceneAsync(sceneType.ToString(), LoadSceneMode.Single);
         operation.allowSceneActivation = false;
-        await operation.ToUniTask(Progress.Create(OnSceneLoading));
-        operation.allowSceneActivation = true;
+        await operation.ToUniTask(Progress.Create((float progress) =>
+        {
+            if (progress >= 0.9f && operation.allowSceneActivation == false)
+            {
+				operation.allowSceneActivation = true;
+				OnSceneLoading?.Invoke(1.0f);
+			}
+			else
+            {
+				OnSceneLoading?.Invoke(progress);
+			}
+		}));
     }
 
     private async UniTask FinishLoadSceneAsync()

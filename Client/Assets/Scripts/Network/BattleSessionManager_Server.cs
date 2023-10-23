@@ -81,7 +81,7 @@ public partial class BattleSessionManager
 				if (entity == null)
 					continue;
 
-                inputMessage.entityMessages[i].overlappedEntities = EntitySystem.Instance.GetOverlapEntitiyGuids(inputMessage.entityMessages[i]).ToArray();
+                inputMessage.entityMessages[i].overlappedEntities = PhysicsSystem.Collision.GetOverlapEntitiyGuids(inputMessage.entityMessages[i]).ToArray();
 			}
 
             yield return inputMessage;

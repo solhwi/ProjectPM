@@ -8,8 +8,8 @@ public class LobbySceneModule : SceneModule
 {
 	public async override UniTask OnPrepareEnterRoutine(SceneModuleParam param)
 	{
-		await ScriptParserManager.Instance.LoadAsyncScriptParsers();
-        await AddressabeResourceSystem.Instance.LoadUnityAsset<RuntimeAnimatorController>("Assets/Bundle/Animation/RedMan/RedMan.overrideController");
-		await AddressabeResourceSystem.Instance.LoadUnityAsset<BehaviourTree>("Assets/Bundle/AI/PencilMan.asset");
+		await ScriptParsingSystem.Instance.LoadAsyncScriptParsers();
+        await AddressableResourceSystem.Instance.LoadUnityAsset<RuntimeAnimatorController>("Assets/Bundle/Animation/RedMan/RedMan.overrideController");
+		await AddressableResourceSystem.Instance.LoadUnityAsset<BehaviourTree>("Assets/Bundle/AI/PencilMan.asset");
     }
 }

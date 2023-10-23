@@ -24,7 +24,7 @@ namespace TheKiwiCoder {
             context.transform = gameObject.transform;
             context.animator = gameObject.GetComponent<Animator>();
             context.entityComponent = gameObject.GetComponent<EntityComponent>();
-            context.characterSkillTable = ScriptParserManager.Instance.GetTable<CharacterSkillTable>();
+            context.characterSkillTable = ScriptParsingSystem.Instance.GetTable<CharacterSkillTable>();
             // Add whatever else you need here...
 
             return context;

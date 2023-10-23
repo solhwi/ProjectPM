@@ -33,16 +33,8 @@ public enum ENUM_ENTITY_TYPE
     PencilMan = 3,
 }
 
-// component는 entity를 기반으로 view를 반영한다.
-
-// 이게 정석같기는 한데...
-// 1. 그럼 충돌에 대한 부분을 직접 구현해야 한다.
-// 2. 애니메이션도 직접 구현해서 데이터 레벨로 내려야 한다.
-
-// 분리는 안하기로 결정...
-// Entity 데이터를 분리하는 게 아니라 EntityComponent를 상속받는 형식으로 간다.
-// Entity엔 사용할 데이터 형식을 정의한다.
-
+// Entity를 데이터로 분리하지 않고,
+// 베이스 클래스로 두어 상속받는다.
 
 public abstract class EntityComponent : MonoBehaviour
 {
@@ -105,17 +97,18 @@ public abstract class EntityComponent : MonoBehaviour
 	private ENUM_LAYER_TYPE layerType = ENUM_LAYER_TYPE.Object;
 
 
-	public virtual void Initialize(int ownerGuid, ENUM_ENTITY_TYPE type, bool isPlayer)
+	public virtual void Initialize(int ownerGuid, int entityGuid, ENUM_ENTITY_TYPE type, bool isPlayer)
 	{
 		IsPlayer = isPlayer;
         OwnerGuid = ownerGuid;
 		EntityType = type;
-        EntityGuid = EntitySystem.Instance.Register(this);
+		EntityGuid = entityGuid;
 	}
 
     public virtual void SetEntityLayer(ENUM_LAYER_TYPE layerType)
     {
 		this.layerType = layerType;
+		gameObject.layer = (int)layerType;
 	}
 
     public void Clear()
@@ -124,7 +117,7 @@ public abstract class EntityComponent : MonoBehaviour
         OwnerGuid = 0;
 		EntityType = ENUM_ENTITY_TYPE.None;
 		layerType = ENUM_LAYER_TYPE.Object;
-		EntityGuid = EntitySystem.Instance.UnRegister(EntityGuid);
+		EntityGuid = 0;
 	}
 
 	public virtual void Teleport(Vector2 posVec)

@@ -26,7 +26,7 @@ public class FindEnemy : ActionNode
 
         foreach(var skillType in hasSkillTypes)
         {
-            var enemies = EntitySystem.Instance.GetSearchedEntities(context.entityComponent, skillType);
+            var enemies = PhysicsSystem.Collision.GetSearchedEntities(context.entityComponent, skillType);
             if (enemies == null || enemies.Any() == false)
                 continue;
 

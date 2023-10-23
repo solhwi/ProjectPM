@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapManager : Singleton<MapManager>
+public class MapSpawnSystem : Singleton<MapSpawnSystem>
 {
     private Dictionary<ENUM_MAP_TYPE, MapComponent> mapDictionary = new Dictionary<ENUM_MAP_TYPE, MapComponent>();
     private MapComponent currentMapComponent = null;
@@ -29,7 +29,7 @@ public class MapManager : Singleton<MapManager>
 
     private async UniTask<T> CreateMap<T>() where T : MapComponent
     {
-        var mapObject = await AddressabeResourceSystem.Instance.InstantiateAsync<T>();
+        var mapObject = await AddressableResourceSystem.Instance.InstantiateAsync<T>();
 
         mono.SetSingletonChild(this, mapObject);
 

@@ -56,7 +56,7 @@ public class CharacterComponent : EntityComponent
 
 	public override Vector2 HitBox => physicsComponent.HitBox;
 
-	public override bool IsGrounded => physicsComponent.IsGrounded;
+	public override bool IsGrounded => physicsComponent.CheckGrounded();
 
 	public override Vector2 HitOffset => physicsComponent.HitOffset;
 
@@ -65,9 +65,9 @@ public class CharacterComponent : EntityComponent
 	public override float CurrentNormalizedTime => stateMachineComponent.CurrentNormalizedTime;
 
 
-    public override void Initialize(int ownerGuid, ENUM_ENTITY_TYPE type, bool isPlayer)
+    public override void Initialize(int ownerGuid, int entityGuid, ENUM_ENTITY_TYPE type, bool isPlayer)
 	{
-		base.Initialize(ownerGuid, type, isPlayer);
+		base.Initialize(ownerGuid, entityGuid, type, isPlayer);
 		stateMachineComponent.Initialize(this);
 	}
 

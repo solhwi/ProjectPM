@@ -5,7 +5,7 @@ using System;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Cysharp.Threading.Tasks;
 
-public class ScriptParserManager : Singleton<ScriptParserManager>
+public class ScriptParsingSystem : Singleton<ScriptParsingSystem>
 {
 	private Dictionary<Type, ScriptParser> dictionary = new Dictionary<Type, ScriptParser>();
 
@@ -26,7 +26,7 @@ public class ScriptParserManager : Singleton<ScriptParserManager>
 
         foreach (var type in types)
 		{
-			var scriptParser = await AddressabeResourceSystem.Instance.LoadAsync<ScriptParser>(type);
+			var scriptParser = await AddressableResourceSystem.Instance.LoadAsync<ScriptParser>(type);
 			if (scriptParser == null)
 				continue;
 

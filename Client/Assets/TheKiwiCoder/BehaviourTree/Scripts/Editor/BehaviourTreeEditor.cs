@@ -139,7 +139,7 @@ namespace TheKiwiCoder {
                 BehaviourTree tree = Selection.activeObject as BehaviourTree;
                 if (!tree) {
                     if (Selection.activeGameObject) {
-                        AIInputComponent runner = Selection.activeGameObject.GetComponent<AIInputComponent>();
+                        BehaviourTreeRunner runner = Selection.activeGameObject.GetComponent<BehaviourTreeRunner>();
                         if (runner) {
                             tree = runner.tree;
                         }

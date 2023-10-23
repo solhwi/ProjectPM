@@ -7,6 +7,6 @@ public class TitleSceneModule : SceneModule
 {
 	public async override UniTask OnPrepareEnterRoutine(SceneModuleParam param)
 	{
-		await AddressabeResourceSystem.Instance.LoadAsync<SettingPopup>();
+		await AddressableResourceSystem.Instance.LoadAsync<SettingPopup>();
     }
 }

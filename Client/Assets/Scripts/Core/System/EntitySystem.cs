@@ -30,23 +30,7 @@ public class EntitySystem : Singleton<EntitySystem>
     }
 
     private Dictionary<int, EntityComponent> entityDictionary = new Dictionary<int, EntityComponent>();
-	
-	public int Register(EntityComponent objectComponent)
-	{
-		int Guid = objectComponent.GetInstanceID();
-		entityDictionary[Guid] = objectComponent;
-		return Guid;
-	}
 
-	public int UnRegister(int Guid)
-	{
-		if (entityDictionary.ContainsKey(Guid))
-			entityDictionary.Remove(Guid);
-
-        return 0;
-	}
-
-    // 투사체들의 업데이트가 수행된다.
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
         foreach(var entity in entityDictionary.Values)
@@ -89,7 +73,7 @@ public class EntitySystem : Singleton<EntitySystem>
 
     private async UniTask<EntityComponent> CreateEntity(ENUM_ENTITY_TYPE characterType, bool isPlayer, bool isBoss)
     {
-        var character = await AddressabeResourceSystem.Instance.InstantiateAsync<CharacterComponent>();
+        var character = await AddressableResourceSystem.Instance.InstantiateAsync<CharacterComponent>();
 
 #if UNITY_EDITOR
         character.name = characterType.ToString();
@@ -111,11 +95,14 @@ public class EntitySystem : Singleton<EntitySystem>
             BossCharacter = character;
         }
 
-        character.Initialize(ownerGuid, characterType, isPlayer);
+		int entityGuid = character.GetInstanceID();
+
+		character.Initialize(ownerGuid, entityGuid, characterType, isPlayer);
         character.SetEntityLayer(layerType);
         mono.SetSingletonChild(this, character);
 
-        return character;
+		entityDictionary[entityGuid] = character;
+		return character;
     }
 
     public EntityComponent GetEntityComponent(int guid)
@@ -140,74 +127,4 @@ public class EntitySystem : Singleton<EntitySystem>
     {
         return GetAllEntities().Where(e => e.OwnerGuid == ownerGuid);
     }
-
-    private IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity, bool includeMine = false)
-    {
-        Collider2D[] colliders = PhysicsGravitySystem.Instance.OverlapBoxAll(pos + offset + velocity, size);
-        if (colliders == null || colliders.Length == 0)
-            yield break;
-
-        var myEntity = GetEntityComponent(entityGuid);
-        if (myEntity == null)
-            yield break;
-        
-        foreach (var collider in colliders)
-        {
-            var entity = collider.GetComponent<EntityComponent>();
-            if (entity == null)
-				continue;
-
-            if (includeMine == false && entity.OwnerGuid == myEntity.OwnerGuid)
-                continue;
-                
-			yield return entity;
-		}
-    }
-
-    private IEnumerable<EntityComponent> GetOverlapEntities(FrameEntityMessage message, bool includeMine)
-    {
-        return GetOverlapEntities(message.entityGuid, message.pos, message.hitbox, message.offset, message.velocity, includeMine);
-    }
-
-    public IEnumerable<EntityComponent> GetSearchedEntities(EntityComponent entity, ENUM_SKILL_TYPE skillType, bool includeMine = false)
-    {
-        var skillTable = ScriptParserManager.Instance.GetTable<CharacterSkillTable>();
-        if (skillTable == null)
-            return null;
-
-        var hasSkill = skillTable.GetSkillInfo(skillType);
-        if (hasSkill == null)
-            return null;
-
-        Vector2 box = new(hasSkill.searchBoxX, hasSkill.searchBoxY);
-        Vector2 offset = new(hasSkill.searchOffsetX, hasSkill.searchOffsetY);
-
-        return GetOverlapEntities(entity.EntityGuid, entity.Position, box, offset, entity.Velocity, includeMine);
-    }
-
-    public IEnumerable<EntityComponent> GetOverlapEntities(EntityComponent entity, bool includeMine = false)
-    {
-        return GetOverlapEntities(entity.EntityGuid, entity.Position, entity.HitBox, entity.HitOffset, entity.Velocity, includeMine);
-    }
-
-    public IEnumerable<int> GetOverlapEntitiyGuids(FrameEntityMessage message, bool includeMine = false)
-    {
-        return GetOverlapEntities(message, includeMine).Select(entity => entity.EntityGuid);
-    }
-
-    public float GetXDistance(EntityComponent fromEntity, EntityComponent toEntity)
-    {
-       return toEntity.Position.x - fromEntity.Position.x;
-    }
-
-    public float GetXDistanceFromPlayer(EntityComponent fromEntity)
-    {
-        return GetXDistance(fromEntity, PlayerCharacter);
-    }
-
-	public float GetXDistanceFromBoss(EntityComponent fromEntity)
-	{
-		return GetXDistance(fromEntity, BossCharacter);
-	}
-
 }

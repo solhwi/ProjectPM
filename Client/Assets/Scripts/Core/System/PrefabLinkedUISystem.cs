@@ -64,7 +64,7 @@ public class PrefabLinkedUISystem : Singleton<PrefabLinkedUISystem>
 
 	private async UniTask<T> CreatePopup<T>() where T : UIPopup
 	{
-		return await AddressabeResourceSystem.Instance.InstantiateAsync<T>();
+		return await AddressableResourceSystem.Instance.InstantiateAsync<T>();
 	}
 
 	private T OpenPopup<T>(UIPopup popup, UIParam param) where T : UIPopup

@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 1662643115}
   - component: {fileID: 1662643114}
   m_Layer: 0
-  m_Name: MonoBehaviourManager
+  m_Name: SingletonSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

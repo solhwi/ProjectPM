@@ -40,16 +40,16 @@ public class BossSceneModule : SceneModule
 
         foreach (var monster in EntitySystem.Instance.Enemies)
 		{
-			MapManager.Instance.MoveToSafeArea(monster);
+			MapSpawnSystem.Instance.MoveToSafeArea(monster);
 		}
 
-		MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntitySystem.Instance.PlayerCharacter);
-        EntityControlSystem.Instance.RegisterControl(EntitySystem.Instance.PlayerCharacter);
+		MapSpawnSystem.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntitySystem.Instance.PlayerCharacter);
+        EntityControlSystem.Instance.ToPlayerControl(EntitySystem.Instance.PlayerCharacter);
 	}
 
 	public override void OnExit()
 	{
-		EntityControlSystem.Instance.UnRegisterControl();
+		
 	}
 
 	public async override UniTask OnPrepareEnterRoutine(SceneModuleParam param)
@@ -61,7 +61,7 @@ public class BossSceneModule : SceneModule
 			return;	
 		}
 
-        await MapManager.Instance.CreateMap(_param.mapType); // 甘 积己
+        await MapSpawnSystem.Instance.CreateMap(_param.mapType); // 甘 积己
         await EntitySystem.Instance.LoadAsyncBoss(StageSystem.Instance.GetCurrentStageBoss()); // 阁胶磐 积己
         await EntitySystem.Instance.LoadAsyncEnemies(StageSystem.Instance.GetCurrentStageEnemies()); // 利 积己
         await EntitySystem.Instance.LoadAsyncPlayer(_param.playerType); // 敲饭捞绢 积己
@@ -69,7 +69,7 @@ public class BossSceneModule : SceneModule
 
     public override void OnFixedUpdate(int tickCount, float latencyTime)
 	{
-		PhysicsGravitySystem.Instance.OnFixedUpdate(tickCount, latencyTime);
+		PhysicsSystem.Instance.OnFixedUpdate(tickCount, latencyTime);
 	}
 
 	public override void OnPrevUpdate(int deltaFrameCount, float deltaTime)
@@ -81,7 +81,6 @@ public class BossSceneModule : SceneModule
 	{
 		base.OnUpdate(deltaFrameCount, deltaTime);
 
-        PhysicsGravitySystem.Instance.OnUpdate(deltaFrameCount, deltaTime);
         EntitySystem.Instance.OnUpdate(deltaFrameCount, deltaTime);
 
         SpawnMonsters();
@@ -89,7 +88,7 @@ public class BossSceneModule : SceneModule
 
     protected override void OnDrawGizmos()
     {
-		PhysicsGravitySystem.Instance.OnDrawGizmos();
+		PhysicsSystem.Instance.OnDrawGizmos();
     }
 
 	private void SpawnMonsters()
@@ -108,8 +107,8 @@ public class BossSceneModule : SceneModule
             var enemy = EntitySystem.Instance.GetEnemy(spawnData.entityType);
             if (enemy != null)
 			{
-				MapManager.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, enemy);
-				EntityControlSystem.Instance.RegisterAI(enemy);
+				MapSpawnSystem.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, enemy);
+				EntityControlSystem.Instance.ToAIControl(enemy);
 			}
 
             spawnQueue.Dequeue();

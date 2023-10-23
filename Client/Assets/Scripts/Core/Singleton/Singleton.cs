@@ -5,7 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Singleton : IUpdater
+public class Singleton : ISystem
 {
 	protected SingletonSystem mono = null;
     protected static bool isReleased = false;

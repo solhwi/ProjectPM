@@ -11,7 +11,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Object = UnityEngine.Object;
 
-public class AddressabeResourceSystem : Singleton<AddressabeResourceSystem>
+public class AddressableResourceSystem : Singleton<AddressableResourceSystem>
 {
 	private class ObjectPathData
 	{
@@ -119,8 +119,7 @@ public class AddressabeResourceSystem : Singleton<AddressabeResourceSystem>
             AddResource(op, path);
         };
 
-		await handle.Task;
-        return handle.Result;
+		return await handle;
 	}
 
 	private void AddResource<T>(AsyncOperationHandle<T> op, string path) where T : Object
@@ -144,7 +143,6 @@ public class AddressabeResourceSystem : Singleton<AddressabeResourceSystem>
 			AddResource(op, path);
         };
 
-		await handle.Task;
-        return handle.Result;
+		return await handle;
 	}
 }
