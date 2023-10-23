@@ -30,13 +30,13 @@ public class MessageHelper
 	{
 		var newSnapShot = new FrameSnapShotMessage();
 
-		var entities = EntityManager.Instance.GetEntities(ownerGuid);
+		var entities = EntitySystem.Instance.GetEntities(ownerGuid);
 		if (entities == null || entities.Any() == false)
 			return default;
 
 		newSnapShot.entityMessages = entities.Select(MakeEntityMessage).ToArray();
 
-		var playerEntity = EntityManager.Instance.PlayerCharacter;
+		var playerEntity = EntitySystem.Instance.PlayerCharacter;
 		if (playerEntity == null)
 			return default;
 
@@ -49,7 +49,7 @@ public class MessageHelper
 	
 	public static FrameInputMessage MakeInputMessage()
 	{
-		return InputManager.Instance.FlushInput(Time.frameCount);
+		return FrameInputSystem.Instance.FlushInput(Time.frameCount);
 	}
 
 	// 나중에 스위치 문을 클래스 별로 분리할 필요가 있을까?
@@ -111,7 +111,7 @@ public class MessageHelper
 		var message = new FrameCommandMessage();
 		message.playerInputMessage = MakeInputMessage();
 
-		var playerEntity = EntityManager.Instance.PlayerCharacter;
+		var playerEntity = EntitySystem.Instance.PlayerCharacter;
 		if (playerEntity == null)
 			return default;
 

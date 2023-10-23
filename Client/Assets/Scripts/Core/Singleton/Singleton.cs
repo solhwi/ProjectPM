@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class Singleton : IUpdater
 {
-	protected MonoBehaviourManager mono = null;
+	protected SingletonSystem mono = null;
     protected static bool isReleased = false;
 
     protected Singleton()
@@ -15,7 +15,7 @@ public class Singleton : IUpdater
         
     }
 
-    public void Initialize(MonoBehaviourManager mono)
+    public void Initialize(SingletonSystem mono)
 	{
         this.mono = mono;
         mono.RegisterSingleton(this);
@@ -84,7 +84,7 @@ public class Singleton<T> : Singleton where T : Singleton, new()
 			if (instance == null)
 			{
                 instance = new T();
-                instance.Initialize(MonoBehaviourManager.Instance);
+                instance.Initialize(SingletonSystem.Instance);
 			}
 
 			return instance;

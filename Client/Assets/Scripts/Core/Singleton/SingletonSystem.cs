@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class MonoBehaviourManager : MonoBehaviour
+public class SingletonSystem : MonoBehaviour
 {
-    public static MonoBehaviourManager Instance
+    public static SingletonSystem Instance
     {
         get
         {
             if (instance == null)
             {
-                instance = FindObjectOfType<MonoBehaviourManager>();
+                instance = FindObjectOfType<SingletonSystem>();
                 DontDestroyOnLoad(instance.gameObject);
             }
 
@@ -19,7 +19,7 @@ public class MonoBehaviourManager : MonoBehaviour
         }
     }
 
-    private static MonoBehaviourManager instance;
+    private static SingletonSystem instance;
 
     [System.Serializable] public class SingletonDictionary : SerializableDictionary<string, Singleton> { }
     [System.Serializable] public class SingletonObjectDictionary : SerializableDictionary<string, Transform> { }

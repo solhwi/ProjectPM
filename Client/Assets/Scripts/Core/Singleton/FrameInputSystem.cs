@@ -82,7 +82,7 @@ public interface IInputReceiver
 	void OnInput(FrameInputMessage resultInput);
 }
 
-public class InputManager : Singleton<InputManager>
+public class FrameInputSystem : Singleton<FrameInputSystem>
 {
 	public static float MoveThreshold { get; private set; } = 1;
 	public static JoystickType JoystickType { get; private set; } = JoystickType.Fixed;
@@ -97,7 +97,7 @@ public class InputManager : Singleton<InputManager>
 		
 	protected override void OnAwakeInstance()
 	{
-		SceneManager.Instance.onSceneChanged += SetJoystick;
+		SceneModuleSystem.Instance.onSceneChanged += SetJoystick;
 		SetJoystick();
 	}
 
@@ -112,7 +112,7 @@ public class InputManager : Singleton<InputManager>
 
 	protected override void OnReleaseInstance()
 	{
-		SceneManager.Instance.onSceneChanged -= SetJoystick;
+		SceneModuleSystem.Instance.onSceneChanged -= SetJoystick;
 	}
 
 	public void OnMoveInputChanged(Vector2 input, int frameCount)

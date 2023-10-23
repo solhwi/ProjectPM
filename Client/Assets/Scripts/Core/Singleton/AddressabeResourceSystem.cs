@@ -11,7 +11,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Object = UnityEngine.Object;
 
-public class ResourceManager : Singleton<ResourceManager>
+public class AddressabeResourceSystem : Singleton<AddressabeResourceSystem>
 {
 	private class ObjectPathData
 	{
@@ -27,7 +27,7 @@ public class ResourceManager : Singleton<ResourceManager>
 
 	private Dictionary<Type, List<ObjectPathData>> resourceDictionary = new Dictionary<Type, List<ObjectPathData>>();
 
-    public T Load<T>(string path = default) where T : Object
+    public T LoadCached<T>(string path = default) where T : Object
 	{
 		if (resourceDictionary.TryGetValue(typeof(T), out var list))
 		{
@@ -39,16 +39,6 @@ public class ResourceManager : Singleton<ResourceManager>
         }
 
 		return null;
-	}
-
-	public T LoadForce<T>(string path) where T : Object
-	{
-		return Resources.Load<T>(path);
-	}
-
-	public T InstantiateForce<T>(T prefab) where T : Object
-	{
-		return UnityEngine.Object.Instantiate<T>(prefab);
 	}
 
 	public async UniTask<TParentClass> LoadAsync<TParentClass>(Type subclassType) where TParentClass : Object
@@ -70,20 +60,30 @@ public class ResourceManager : Singleton<ResourceManager>
 
             case ResourceType.Prefab:
                 var prefab = await LoadPrefab<T>(path);
+
+				if (typeof(T).IsSubclassOf(typeof(Component)) == false)
+				{
+					Debug.LogError($"{typeof(T)} is not Unity Component");
+					return null;
+                }
+
                 return prefab.GetComponent<T>();
         }
 
 		return default;
     }
 
-	public async UniTask<T> InstantiateAsync<T>(Transform parent = null) where T : Object
+	public async UniTask<T> InstantiateAsync<T>(Transform parent = null) where T : MonoBehaviour
 	{
         string path = FMUtil.GetResourcePath<T>();
         if (string.IsNullOrEmpty(path))
             return default;
 
-        var obj = await InstantiateAsync<T>(path, parent);
-		return obj.GetComponent<T>();
+		if (resourceDictionary.TryGetValue(typeof(T), out var objectPathData))
+			return objectPathData.FirstOrDefault().Obj as T;
+
+        var go = await InstantiateAsync<T>(path, parent);
+		return go.GetComponent<T>();
     }
 
 	public async UniTask<T> LoadAsync<T>() where T : Object
@@ -96,7 +96,7 @@ public class ResourceManager : Singleton<ResourceManager>
 		return await LoadAsync<T>(resourceType, path);
     }
 	
-	public async UniTask<GameObject> InstantiateAsync<T>(string path, Transform parent = null) where T : Object
+	private async UniTask<GameObject> InstantiateAsync<T>(string path, Transform parent = null) where T : Object
 	{
         var handle = Addressables.InstantiateAsync(path, parent);
 

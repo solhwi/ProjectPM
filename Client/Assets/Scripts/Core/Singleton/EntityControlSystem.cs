@@ -4,7 +4,7 @@ using TheKiwiCoder;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CharacterController : Singleton<CharacterController>
+public class EntityControlSystem : Singleton<EntityControlSystem>
 {
     private PlayerInputComponent playerInputComponent = null;
     private Dictionary<int, AIInputComponent> aiInputComponentDictionary = new Dictionary<int, AIInputComponent>();

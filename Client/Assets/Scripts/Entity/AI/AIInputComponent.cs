@@ -18,7 +18,7 @@ public class AIInputComponent : InputComponent
 
 	private BehaviourTree LoadTree(ENUM_ENTITY_TYPE entityType)
 	{
-		return ResourceManager.Instance.Load<BehaviourTree>(LoadPath(entityType));
+		return AddressabeResourceSystem.Instance.LoadCached<BehaviourTree>(LoadPath(entityType));
 	}
 
 	private string LoadPath(ENUM_ENTITY_TYPE entityType)

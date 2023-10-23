@@ -6,10 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class EntityManager : Singleton<EntityManager>
+public class EntitySystem : Singleton<EntitySystem>
 {
     public CharacterComponent PlayerCharacter
     {
@@ -62,12 +60,16 @@ public class EntityManager : Singleton<EntityManager>
 		return Enemies.FirstOrDefault(e => e.IsBoss == false && e.EntityType == entityType);  
 	}
 
-    public IEnumerator LoadAsyncEnemies(IEnumerable<EnemySpawnData> spawnDatas)
+    public async UniTask<IEnumerable<EntityComponent>> LoadAsyncEnemies(IEnumerable<EnemySpawnData> spawnDatas)
     {
+        var entities = new List<EntityComponent>();
+
         foreach(var data in spawnDatas)
         {
-            yield return LoadAsyncEnemy(data.entityType);
+            entities.Add(await LoadAsyncEnemy(data.entityType));
 		}
+
+        return entities;
     }
 
     public async UniTask<EntityComponent> LoadAsyncEnemy(ENUM_ENTITY_TYPE entityType)
@@ -87,7 +89,7 @@ public class EntityManager : Singleton<EntityManager>
 
     private async UniTask<EntityComponent> CreateEntity(ENUM_ENTITY_TYPE characterType, bool isPlayer, bool isBoss)
     {
-        var character = await ResourceManager.Instance.InstantiateAsync<CharacterComponent>();
+        var character = await AddressabeResourceSystem.Instance.InstantiateAsync<CharacterComponent>();
 
 #if UNITY_EDITOR
         character.name = characterType.ToString();
@@ -141,7 +143,7 @@ public class EntityManager : Singleton<EntityManager>
 
     private IEnumerable<EntityComponent> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity, bool includeMine = false)
     {
-        Collider2D[] colliders = PhysicsManager.Instance.OverlapBoxAll(pos + offset + velocity, size);
+        Collider2D[] colliders = PhysicsGravitySystem.Instance.OverlapBoxAll(pos + offset + velocity, size);
         if (colliders == null || colliders.Length == 0)
             yield break;
 

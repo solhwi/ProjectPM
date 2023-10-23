@@ -17,7 +17,7 @@ public struct GizmoBox
 	}
 }
 
-public class PhysicsManager : Singleton<PhysicsManager>
+public class PhysicsGravitySystem : Singleton<PhysicsGravitySystem>
 {
     private float gravityPower = 9.8f;
 	private float gravityScale = 0.2f;

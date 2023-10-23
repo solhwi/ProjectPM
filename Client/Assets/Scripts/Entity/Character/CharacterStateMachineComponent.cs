@@ -58,7 +58,7 @@ public class CharacterStateMachineComponent : MonoBehaviour
 		{
 			case ENUM_ENTITY_TYPE.RedMan:
 			case ENUM_ENTITY_TYPE.PencilMan:
-				return ResourceManager.Instance.Load<RuntimeAnimatorController>("Assets/Bundle/Animation/RedMan/RedMan.overrideController");
+				return AddressabeResourceSystem.Instance.LoadCached<RuntimeAnimatorController>("Assets/Bundle/Animation/RedMan/RedMan.overrideController");
 		}
 
 		return null;

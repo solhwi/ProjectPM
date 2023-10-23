@@ -1,11 +1,12 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TitleSceneModule : SceneModule
 {
-	public override IEnumerator OnPrepareEnterRoutine(SceneModuleParam param)
+	public async override UniTask OnPrepareEnterRoutine(SceneModuleParam param)
 	{
-		yield return ResourceManager.Instance.LoadAsync<SettingPopup>();
+		await AddressabeResourceSystem.Instance.LoadAsync<SettingPopup>();
     }
 }

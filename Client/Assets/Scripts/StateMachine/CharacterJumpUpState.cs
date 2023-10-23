@@ -16,7 +16,7 @@ namespace StateMachine
                 return;
 
             var inputMessage = command.ToInput();
-			var inputY = PhysicsManager.Instance.GetMovementYByGravity(inputMessage.moveInput.y);
+			var inputY = PhysicsGravitySystem.Instance.GetMovementYByGravity(inputMessage.moveInput.y);
 
             jumpVector = new Vector2(inputMessage.moveInput.x, inputY * owner.JumpPower);
 			owner.AddMovement(jumpVector * Time.deltaTime);

@@ -26,7 +26,7 @@ public class ScriptParserManager : Singleton<ScriptParserManager>
 
         foreach (var type in types)
 		{
-			var scriptParser = await ResourceManager.Instance.LoadAsync<ScriptParser>(type);
+			var scriptParser = await AddressabeResourceSystem.Instance.LoadAsync<ScriptParser>(type);
 			if (scriptParser == null)
 				continue;
 

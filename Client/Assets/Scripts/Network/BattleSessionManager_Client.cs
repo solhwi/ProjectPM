@@ -54,7 +54,7 @@ public partial class BattleSessionManager
 
 				var entityGuid = entityMessage.entityGuid;
 
-				var entity = EntityManager.Instance.GetEntityComponent(entityGuid);
+				var entity = EntitySystem.Instance.GetEntityComponent(entityGuid);
 				if (entity == null)
 					continue;
 

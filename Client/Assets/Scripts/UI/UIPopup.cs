@@ -58,7 +58,7 @@ public class UIPopup : UIWindow
 
     public void OnClickClose()
     {
-        UIManager.Instance.ClosePopup(GetType());
+        PrefabLinkedUISystem.Instance.ClosePopup(GetType());
     }
 }
 

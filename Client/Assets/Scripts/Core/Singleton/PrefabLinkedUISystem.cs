@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class UIManager : Singleton<UIManager> 
+public class PrefabLinkedUISystem : Singleton<PrefabLinkedUISystem> 
 {
 	private EventSystem eventSystem;
 	private Dictionary<Type, UIPopup> popupDictionary = new Dictionary<Type, UIPopup>();
@@ -17,28 +17,14 @@ public class UIManager : Singleton<UIManager>
 
 	protected override void OnAwakeInstance()
 	{
-		FindMainWindow(SceneManager.Instance.CurrentSceneType);
-		SceneManager.Instance.onSceneChanged += FindMainWindow;
-		// SceneManager.Instance.onSceneChanged += ReleasePopups;
+		FindMainWindow(SceneModuleSystem.Instance.CurrentSceneType);
+		SceneModuleSystem.Instance.onSceneChanged += FindMainWindow;
 	}
 
 	protected override void OnReleaseInstance()
 	{
-		SceneManager.Instance.onSceneChanged -= FindMainWindow;
-		// SceneManager.Instance.onSceneChanged -= ReleasePopups;
+		SceneModuleSystem.Instance.onSceneChanged -= FindMainWindow;
 	}
-
-	public void BlockAllUI()
-	{
-		if(eventSystem)
-            eventSystem.gameObject.SetActive(false);
-    }
-
-	public void UnBlockAllUI()
-	{
-		//if(eventSystem)
-		//	eventSystem.gameObject.SetActive(true);
-    }
 
 	private void FindMainWindow(SceneType type)
 	{
@@ -65,35 +51,23 @@ public class UIManager : Singleton<UIManager>
 		popupDictionary.Clear();
 	}
 
-	public async void OpenPopupAsync<T>(UIParam param = null) where T : UIPopup
+	public async UniTask<T> OpenPopupAsync<T>(UIParam param = null) where T : UIPopup
 	{
 		if (popupDictionary.TryGetValue(typeof(T), out var popup))
 		{
-			OpenPopup<T>(popup, param);
-			return;
+			return OpenPopup<T>(popup, param);
 		}
 
-		var popupPrefab = ResourceManager.Instance.Load<T>();
-		if (popupPrefab == null)
-		{
-			await CreatePopup<T>(param);
-        }
-		else
-		{
-			var popupObj = UnityEngine.Object.Instantiate(popupPrefab);
-			OpenPopup<T>(popupObj, param);
-		}
-	}
+        popup = await CreatePopup<T>();
+		return OpenPopup<T>(popup, param);
+    }
 
-	private async UniTask<T> CreatePopup<T>(UIParam param) where T : UIPopup
+	private async UniTask<T> CreatePopup<T>() where T : UIPopup
 	{
-		var popup = await ResourceManager.Instance.InstantiateAsync<T>();
-		OpenPopup<T>(popup, param);
-
-		return popup;
+		return await AddressabeResourceSystem.Instance.InstantiateAsync<T>();
 	}
 
-	private void OpenPopup<T>(UIPopup popup, UIParam param)
+	private T OpenPopup<T>(UIPopup popup, UIParam param) where T : UIPopup
 	{
 		if (popup.TryOpen(param))
 		{
@@ -104,6 +78,7 @@ public class UIManager : Singleton<UIManager>
 		}
 
 		popupDictionary[typeof(T)] = popup;
+		return popup as T;
 	}
 
 	public void ClosePopup<T>() where T : UIPopup

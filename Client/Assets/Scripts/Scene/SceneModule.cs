@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,20 +52,20 @@ public abstract class SceneModule : MonoBehaviour, IUpdater
 		sceneOpenDeltaTime = 0.0f;
     }
 
-	public virtual IEnumerator OnPrepareEnterRoutine(SceneModuleParam param)
+    public async virtual UniTask OnPrepareEnterRoutine(SceneModuleParam param)
 	{
-		yield return null;
-	}
+		await UniTask.Yield();
+    }
 
 	public virtual void OnExit()
 	{
 
 	}
 
-	public virtual IEnumerator OnPrepareExitRoutine()
+	public async virtual UniTask OnPrepareExitRoutine()
 	{
-		yield return null;
-	}
+        await UniTask.Yield();
+    }
 
     public virtual void OnFixedUpdate(int deltaFrameCount, float deltaTime)
     {

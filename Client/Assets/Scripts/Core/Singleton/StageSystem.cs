@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StageManager : Singleton<StageManager>
+public class StageSystem : Singleton<StageSystem>
 {
     public IEnumerable<EnemySpawnData> GetCurrentStageEnemies()
     {

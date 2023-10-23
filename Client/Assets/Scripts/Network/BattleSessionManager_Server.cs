@@ -66,7 +66,7 @@ public partial class BattleSessionManager
             // 앤티티들을 우선 프레임 당시 상황으로 이동 시킨 후
             foreach(var entityMessage in inputMessage.entityMessages)
             {
-				var entity = EntityManager.Instance.GetEntityComponent(entityMessage.entityGuid);
+				var entity = EntitySystem.Instance.GetEntityComponent(entityMessage.entityGuid);
 				if (entity == null)
 					continue;
 
@@ -77,11 +77,11 @@ public partial class BattleSessionManager
             // 충돌 정보를 넣어 보낸다.
 			for (int i = 0; i < inputMessage.entityMessages.Length; i++)
 			{
-                var entity = EntityManager.Instance.GetEntityComponent(inputMessage.entityMessages[i].entityGuid);
+                var entity = EntitySystem.Instance.GetEntityComponent(inputMessage.entityMessages[i].entityGuid);
 				if (entity == null)
 					continue;
 
-                inputMessage.entityMessages[i].overlappedEntities = EntityManager.Instance.GetOverlapEntitiyGuids(inputMessage.entityMessages[i]).ToArray();
+                inputMessage.entityMessages[i].overlappedEntities = EntitySystem.Instance.GetOverlapEntitiyGuids(inputMessage.entityMessages[i]).ToArray();
 			}
 
             yield return inputMessage;

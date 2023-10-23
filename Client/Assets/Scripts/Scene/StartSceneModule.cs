@@ -6,6 +6,6 @@ public class StartSceneModule : SceneModule
 {
     private void Start()
     {
-        SceneManager.Instance.LoadScene(SceneType.Title);
+        SceneModuleSystem.Instance.LoadScene(SceneType.Title);
     }
 }

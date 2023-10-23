@@ -87,9 +87,9 @@ public class CharacterComponent : EntityComponent
 	public override bool SendCommand(ICommand command)
     {
 		var frameMessage = command.ToFrameMessage();
-        stateMachineComponent.SendCommandToStateMachine(frameMessage);
-
         var nextState = GetSimulatedNextState(frameMessage);
+
+        stateMachineComponent.SendCommandToStateMachine(frameMessage);
         return stateMachineComponent.ChangeState((ENUM_CHARACTER_STATE)nextState);
 	}
 

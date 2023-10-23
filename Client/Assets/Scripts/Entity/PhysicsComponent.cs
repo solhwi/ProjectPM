@@ -47,12 +47,12 @@ public class PhysicsComponent : MonoBehaviour
         m_ContactFilter.useTriggers = false;
 
 		Physics2D.queriesStartInColliders = false;
-        PhysicsManager.Instance.Register(this);
+        PhysicsGravitySystem.Instance.Register(this);
     }
 
 	private void OnDisable()
 	{
-		PhysicsManager.Instance.UnRegister(this);
+		PhysicsGravitySystem.Instance.UnRegister(this);
 	}
 
 	public void OnFixedUpdate(int deltaFrameCount, float deltaTime)
@@ -75,7 +75,7 @@ public class PhysicsComponent : MonoBehaviour
 
 		if (IsGrounded == false)
 		{
-			AddMovement(PhysicsManager.Instance.GetMovementByGravity(airborneDeltaTime));
+			AddMovement(PhysicsGravitySystem.Instance.GetMovementByGravity(airborneDeltaTime));
 			airborneDeltaTime += deltaTime;
 		}
 		else

@@ -12,12 +12,12 @@ public class AttackKeyComponent : InputKeyComponent
 	public override void OnDrag(PointerEventData eventData)
 	{
 		base.OnDrag(eventData);
-		InputManager.Instance.OnAttackInputChanged(keyType, isPressed, Time.frameCount);
+		FrameInputSystem.Instance.OnAttackInputChanged(keyType, isPressed, Time.frameCount);
 	}
 
 	public override void OnPointerUp(PointerEventData eventData)
 	{
 		base.OnPointerUp(eventData);
-		InputManager.Instance.OnAttackInputChanged(keyType, isPressed, Time.frameCount);
+		FrameInputSystem.Instance.OnAttackInputChanged(keyType, isPressed, Time.frameCount);
 	}
 }

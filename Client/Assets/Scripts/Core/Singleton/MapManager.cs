@@ -29,7 +29,7 @@ public class MapManager : Singleton<MapManager>
 
     private async UniTask<T> CreateMap<T>() where T : MapComponent
     {
-        var mapObject = await ResourceManager.Instance.InstantiateAsync<T>();
+        var mapObject = await AddressabeResourceSystem.Instance.InstantiateAsync<T>();
 
         mono.SetSingletonChild(this, mapObject);
 
