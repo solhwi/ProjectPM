@@ -3,17 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 씬에 하나씩 붙어있는 모듈이다.
+/// 시스템에 가까운 기능을 하지만, 씬 모듈 시스템에 의해 관리되는 컴포넌트라는 개념
+/// </summary>
 
-public interface ISystem
-{
-	void OnFixedUpdate(int deltaFrameCount, float deltaTime);
-	void OnPrevUpdate(int deltaFrameCount, float deltaTime);
-	void OnUpdate(int deltaFrameCount, float deltaTime);
-	void OnPostUpdate(int deltaFrameCount, float deltaTime);
-	void OnLateUpdate(int deltaFrameCount, float deltaTime);
-}
-
-public abstract class SceneModule : MonoBehaviour, ISystem
+public abstract class SceneModule : MonoComponent
 {
 	[SerializeField] protected SceneType mySceneType = SceneType.Title;
 	protected float sceneOpenDeltaTime = 0.0f;

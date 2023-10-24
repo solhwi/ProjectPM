@@ -11,7 +11,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Object = UnityEngine.Object;
 
-public class AddressableResourceSystem : Singleton<AddressableResourceSystem>
+public class AddressableResourceSystem : MonoSystem<AddressableResourceSystem>
 {
 	private class ObjectPathData
 	{

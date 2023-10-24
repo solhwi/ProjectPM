@@ -77,12 +77,7 @@ public class GuardInputData : PressInputData
 	}
 }
 
-public interface IInputReceiver
-{
-	void OnInput(FrameInputMessage resultInput);
-}
-
-public class FrameInputSystem : Singleton<FrameInputSystem>
+public class FrameInputSystem : MonoSystem<FrameInputSystem>
 {
 	public static float MoveThreshold { get; private set; } = 1;
 	public static JoystickType JoystickType { get; private set; } = JoystickType.Fixed;
@@ -95,7 +90,7 @@ public class FrameInputSystem : Singleton<FrameInputSystem>
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
 	private FrameInputMessage currentInputMessage = new FrameInputMessage();
 		
-	protected override void OnAwakeInstance()
+	protected override void OnInitializeSystem()
 	{
 		SceneModuleSystem.Instance.onSceneChanged += SetJoystick;
 		SetJoystick();
@@ -110,7 +105,7 @@ public class FrameInputSystem : Singleton<FrameInputSystem>
 		}
 	}
 
-	protected override void OnReleaseInstance()
+	protected override void OnReleaseSystem()
 	{
 		SceneModuleSystem.Instance.onSceneChanged -= SetJoystick;
 	}

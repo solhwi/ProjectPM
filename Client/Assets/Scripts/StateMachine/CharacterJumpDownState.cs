@@ -9,7 +9,7 @@ namespace StateMachine
     {
         private Vector2 jumpVector = new Vector2(0, 0);
 
-        public override void OnSLStateEnter(CharacterComponent owner, FrameCommandMessage command)
+        public override void OnSLStateEnter(CharacterBehaviour owner, FrameCommandMessage command)
         {
             if (owner == null)
                 return;
@@ -20,7 +20,7 @@ namespace StateMachine
             owner.AddMovement(jumpVector * Time.deltaTime);
         }
 
-        public override void OnSLStateNoTransitionUpdate(CharacterComponent owner, FrameCommandMessage command)
+        public override void OnSLStateNoTransitionUpdate(CharacterBehaviour owner, FrameCommandMessage command)
         {
             var inputMessage = command.ToInput();
             jumpVector.x = inputMessage.moveInput.x;
@@ -28,7 +28,7 @@ namespace StateMachine
             owner.AddMovement(jumpVector * Time.deltaTime);
         }
 
-        public override void OnSLStateExit(CharacterComponent owner, FrameCommandMessage command)
+        public override void OnSLStateExit(CharacterBehaviour owner, FrameCommandMessage command)
         {
             var inputMessage = command.ToInput();
             jumpVector.x = inputMessage.moveInput.x;

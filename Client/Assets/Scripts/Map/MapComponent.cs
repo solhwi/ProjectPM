@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,65 +10,28 @@ public enum ENUM_MAP_TYPE
     City = 0,
 }
 
-public abstract class MapComponent : MonoBehaviour
+public abstract class MapComponent : MonoComponent
 {
-    [SerializeField] protected ENUM_MAP_TYPE mapType;
-    [SerializeField] protected SpriteRenderer[] spriteRenderers;
-
-    [SerializeField] private SpawnComponent friendlySpawnArea = null;
-    [SerializeField] private List<SpawnComponent> enemySpawnAreas = new List<SpawnComponent>();
-    [SerializeField] private SpawnComponent safeInvisbleArea = null;
-
-    protected virtual void Reset()
+    public abstract ENUM_MAP_TYPE MapType
     {
-        spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
-
-        foreach(var component in GetComponentsInChildren<SpawnComponent>())
-        {
-            if (component.TeamType == ENUM_TEAM_TYPE.Friendly)
-            {
-                friendlySpawnArea = component;
-            }
-            else if (component.TeamType == ENUM_TEAM_TYPE.None)
-            {
-                safeInvisbleArea = component;
-            }
-            else
-            {
-                enemySpawnAreas.Add(component);
-            }
-        }
-
-        gameObject.layer = (int)ENUM_LAYER_TYPE.Map;
+        get;
     }
 
-    protected abstract IEnumerator Start();
-
-    public int SetOrder(int order)
+    public void SetOrderLayer()
     {
-        foreach(var renderer in spriteRenderers)
+		gameObject.layer = (int)ENUM_LAYER_TYPE.Map;
+
+		int order = 0;
+        foreach(var renderer in GetComponentsInChildren<SpriteRenderer>())
         {
-            renderer.sortingOrder = LayerHelper.GetSortingLayer(ENUM_LAYER_TYPE.Map, order++);
+			renderer.gameObject.layer = (int)ENUM_LAYER_TYPE.Map;
+			renderer.sortingOrder = LayerHelper.GetSortingLayer(ENUM_LAYER_TYPE.Map, order++);
         }
 
-        return order;
-    }
+		foreach (var groundComponent in GetComponentsInChildren<GroundComponent>())
+		{
+			groundComponent.gameObject.layer = (int)ENUM_LAYER_TYPE.Ground;
+		}
 
-    public void MoveToSafeArea(MonoBehaviour obj)
-    {
-        obj.transform.position = safeInvisbleArea.transform.position;
-    }
-
-    public void MoveToMapArea(ENUM_TEAM_TYPE spawnType, MonoBehaviour obj)
-    {
-        if(spawnType == ENUM_TEAM_TYPE.Friendly)
-        {
-            obj.transform.position = friendlySpawnArea.transform.position;
-        }
-        else
-        {
-            int index = Random.Range(0, enemySpawnAreas.Count);
-            obj.transform.position = enemySpawnAreas[index].transform.position;
-        }
-    }
+	}
 }

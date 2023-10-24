@@ -14,9 +14,9 @@ public abstract class Skill
     private float coolTime;
     private float currentCoolTime;
 
-    protected CharacterComponent owner;
+    protected CharacterBehaviour owner;
 
-    public void SetOwner(CharacterComponent owner)
+    public void SetOwner(CharacterBehaviour owner)
     {
         this.owner = owner;
     }

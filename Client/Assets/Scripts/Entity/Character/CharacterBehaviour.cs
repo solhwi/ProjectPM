@@ -41,7 +41,7 @@ public enum ENUM_CHARACTER_STATE
 [RequireComponent(typeof(PhysicsComponent))]
 [RequireComponent(typeof(CharacterStateMachineComponent))]
 [EntityAttribute("Character.prefab")]
-public class CharacterComponent : EntityComponent
+public class CharacterBehaviour : EntityBehaviour
 {
 	[SerializeField] private RenderingComponent renderingComponent = null;
 	[SerializeField] private PhysicsComponent physicsComponent = null;
@@ -77,20 +77,20 @@ public class CharacterComponent : EntityComponent
 		renderingComponent.Initialize(layerType, EntityGuid);
     }
 
-    protected override int GetSimulatedNextState(ICommand command)
+    protected int GetSimulatedNextState(ICommand command)
     {
 		var frameMessage = command.ToFrameMessage();
 		var entity = frameMessage.ToEntity();
         return (int)stateMachineComponent.GetSimulatedNextState(frameMessage, (ENUM_CHARACTER_STATE)entity.entityState);
     }
 
-	public override bool SendCommand(ICommand command)
+	public override void PushCommand(ICommand command)
     {
 		var frameMessage = command.ToFrameMessage();
         var nextState = GetSimulatedNextState(frameMessage);
 
-        stateMachineComponent.SendCommandToStateMachine(frameMessage);
-        return stateMachineComponent.ChangeState((ENUM_CHARACTER_STATE)nextState);
+        stateMachineComponent.PushCommand(frameMessage);
+        stateMachineComponent.ChangeState((ENUM_CHARACTER_STATE)nextState);
 	}
 
 	public void AddMovement(Vector2 moveVec)

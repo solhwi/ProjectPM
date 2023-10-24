@@ -36,7 +36,7 @@ public class MessageHelper
 
 		newSnapShot.entityMessages = entities.Select(MakeEntityMessage).ToArray();
 
-		var playerEntity = EntitySystem.Instance.PlayerCharacter;
+		var playerEntity = EntitySystem.Instance.Player;
 		if (playerEntity == null)
 			return default;
 
@@ -111,7 +111,7 @@ public class MessageHelper
 		var message = new FrameCommandMessage();
 		message.playerInputMessage = MakeInputMessage();
 
-		var playerEntity = EntitySystem.Instance.PlayerCharacter;
+		var playerEntity = EntitySystem.Instance.Player;
 		if (playerEntity == null)
 			return default;
 
@@ -119,15 +119,15 @@ public class MessageHelper
 		return message;
 	}
 
-	public static FrameCommandMessage MakeCommand(ENUM_COMMAND_TYPE commandType, EntityComponent ownerEntity)
+	public static FrameCommandMessage MakeCommand(ENUM_COMMAND_TYPE commandType, IEntity entity)
 	{
         var message = new FrameCommandMessage();
         message.playerInputMessage = MakeFrameMessageByCommand(commandType);
-        message.playerEntityMessage = MakeEntityMessage(ownerEntity);
+        message.playerEntityMessage = MakeEntityMessage(entity);
         return message;
     }
 
-	public static FrameEntityMessage MakeEntityMessage(EntityComponent entity)
+	public static FrameEntityMessage MakeEntityMessage(IEntity entity)
 	{
 		var playerEntityMessage = new FrameEntityMessage();
 

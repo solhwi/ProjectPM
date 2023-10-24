@@ -13,7 +13,7 @@ namespace TheKiwiCoder {
         public GameObject gameObject;
         public Transform transform;
         public Animator animator;
-        public EntityComponent entityComponent;
+        public EntityBehaviour entityComponent;
         public CharacterSkillTable characterSkillTable;
         // Add other game specific systems here
 
@@ -23,7 +23,7 @@ namespace TheKiwiCoder {
             context.gameObject = gameObject;
             context.transform = gameObject.transform;
             context.animator = gameObject.GetComponent<Animator>();
-            context.entityComponent = gameObject.GetComponent<EntityComponent>();
+            context.entityComponent = gameObject.GetComponent<EntityBehaviour>();
             context.characterSkillTable = ScriptParsingSystem.Instance.GetTable<CharacterSkillTable>();
             // Add whatever else you need here...
 

@@ -27,24 +27,11 @@ public class BossSceneModuleParam : SceneModuleParam
 
 public class BossSceneModule : SceneModule
 {
-    private Queue<EnemySpawnData> spawnQueue = new Queue<EnemySpawnData>();
 
     public override void OnEnter(SceneModuleParam param)
 	{
-        foreach (var spawnData in StageSystem.Instance.GetCurrentStageEnemies())
-        {
-            spawnQueue.Enqueue(spawnData);
-        }
-
-        spawnQueue.Enqueue(StageSystem.Instance.GetCurrentStageBoss());
-
-        foreach (var monster in EntitySystem.Instance.Enemies)
-		{
-			MapSpawnSystem.Instance.MoveToSafeArea(monster);
-		}
-
-		MapSpawnSystem.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Friendly, EntitySystem.Instance.PlayerCharacter);
-        EntityControlSystem.Instance.ToPlayerControl(EntitySystem.Instance.PlayerCharacter);
+		MapSystem.Instance.Spawn(EntitySystem.Instance.Player);
+        EntitySystem.Instance.ToPlayerControl();
 	}
 
 	public override void OnExit()
@@ -61,57 +48,25 @@ public class BossSceneModule : SceneModule
 			return;	
 		}
 
-        await MapSpawnSystem.Instance.CreateMap(_param.mapType); // 甘 积己
-        await EntitySystem.Instance.LoadAsyncBoss(StageSystem.Instance.GetCurrentStageBoss()); // 阁胶磐 积己
-        await EntitySystem.Instance.LoadAsyncEnemies(StageSystem.Instance.GetCurrentStageEnemies()); // 利 积己
-        await EntitySystem.Instance.LoadAsyncPlayer(_param.playerType); // 敲饭捞绢 积己
+        await MapSystem.Instance.CreateMap(_param.mapType); // 甘 积己
+        await EntitySystem.Instance.CreatePlayer(_param.playerType); // 敲饭捞绢 积己
     }
 
-    public override void OnFixedUpdate(int tickCount, float latencyTime)
+	public override void OnFixedUpdate(int tickCount, float latencyTime)
 	{
 		PhysicsSystem.Instance.OnFixedUpdate(tickCount, latencyTime);
 	}
 
 	public override void OnPrevUpdate(int deltaFrameCount, float deltaTime)
 	{
-		EntityControlSystem.Instance.OnPrevUpdate(deltaFrameCount, deltaTime);
+		EntitySystem.Instance.OnPrevUpdate(deltaFrameCount, deltaTime);
 	}
 
-	public override void OnUpdate(int deltaFrameCount, float deltaTime)
-	{
-		base.OnUpdate(deltaFrameCount, deltaTime);
-
-        EntitySystem.Instance.OnUpdate(deltaFrameCount, deltaTime);
-
-        SpawnMonsters();
-    }
-
-    protected override void OnDrawGizmos()
+#if UNITY_EDITOR
+	protected override void OnDrawGizmos()
     {
-		PhysicsSystem.Instance.OnDrawGizmos();
+		EntitySystem.Instance.OnDrawGizmos();
     }
+#endif
 
-	private void SpawnMonsters()
-	{
-		if (spawnQueue.Count <= 0)
-			return;
-
-		while(true)
-		{
-			if (spawnQueue.TryPeek(out var spawnData) == false)
-				break;
-
-			if (spawnData.spawnTime > sceneOpenDeltaTime)
-				break;
-
-            var enemy = EntitySystem.Instance.GetEnemy(spawnData.entityType);
-            if (enemy != null)
-			{
-				MapSpawnSystem.Instance.MoveToMapArea(ENUM_TEAM_TYPE.Enemy, enemy);
-				EntityControlSystem.Instance.ToAIControl(enemy);
-			}
-
-            spawnQueue.Dequeue();
-        }
-	}
 }

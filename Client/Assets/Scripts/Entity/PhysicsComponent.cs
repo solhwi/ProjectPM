@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
-public class PhysicsComponent : MonoBehaviour
+public class PhysicsComponent : MonoComponent
 {
     [Tooltip("The Layers which represent gameobjects that the Character Controller can be grounded on.")]
     [SerializeField] private LayerMask groundedLayerMask;

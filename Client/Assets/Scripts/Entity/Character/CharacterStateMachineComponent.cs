@@ -7,9 +7,9 @@ using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class CharacterStateMachineComponent : MonoBehaviour
+public class CharacterStateMachineComponent : MonoComponent
 {
-	private CharacterComponent characterComponent;
+	private CharacterBehaviour characterComponent;
 
 	private Animator animator;
 	private CharacterAnimatorState[] animatorStates;
@@ -37,7 +37,7 @@ public class CharacterStateMachineComponent : MonoBehaviour
 		}
 	}
 
-	public void Initialize(CharacterComponent owner)
+	public void Initialize(CharacterBehaviour owner)
 	{
         characterComponent = owner;	
         CurrentState = ENUM_CHARACTER_STATE.Idle;
@@ -64,24 +64,22 @@ public class CharacterStateMachineComponent : MonoBehaviour
 		return null;
 	}
 
-	public void SendCommandToStateMachine(FrameCommandMessage message)
+	public void PushCommand(FrameCommandMessage message)
 	{
         foreach (var state in animatorStates)
         {
-            state.SendCommand(message);
+            state.PushCommand(message);
         }
     }
 
-	public bool ChangeState(ENUM_CHARACTER_STATE nextState)
+	public void ChangeState(ENUM_CHARACTER_STATE nextState)
     {
-		bool isChangedState = CurrentState != nextState;
-		if (isChangedState)
+		if (CurrentState != nextState)
 		{
 			Debug.Log($"{Time.frameCount}에 스테이트 변경 : {CurrentState} => {nextState}");
 			animator.Play(nextState.ToString());
 			CurrentState = nextState;
 		}
-		return isChangedState;
 	}
 
 	public ENUM_CHARACTER_STATE GetSimulatedNextState(FrameCommandMessage snapShotMessage, ENUM_CHARACTER_STATE currentState = ENUM_CHARACTER_STATE.None)

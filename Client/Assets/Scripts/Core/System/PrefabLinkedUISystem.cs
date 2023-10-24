@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class PrefabLinkedUISystem : Singleton<PrefabLinkedUISystem> 
+public class PrefabLinkedUISystem : MonoSystem<PrefabLinkedUISystem> 
 {
 	private EventSystem eventSystem;
 	private Dictionary<Type, UIPopup> popupDictionary = new Dictionary<Type, UIPopup>();
@@ -15,13 +15,13 @@ public class PrefabLinkedUISystem : Singleton<PrefabLinkedUISystem>
 
 	private UIMainWindow currentMainWindow = null;
 
-	protected override void OnAwakeInstance()
+	protected override void OnInitializeSystem()
 	{
 		FindMainWindow(SceneModuleSystem.Instance.CurrentSceneType);
 		SceneModuleSystem.Instance.onSceneChanged += FindMainWindow;
 	}
 
-	protected override void OnReleaseInstance()
+	protected override void OnReleaseSystem()
 	{
 		SceneModuleSystem.Instance.onSceneChanged -= FindMainWindow;
 	}
@@ -71,7 +71,7 @@ public class PrefabLinkedUISystem : Singleton<PrefabLinkedUISystem>
 	{
 		if (popup.TryOpen(param))
 		{
-            mono.SetSingletonChild(this, popup);
+            behaviour.SetSystemChild(this, popup);
 
             popup.SetOrder(popupStack.Count + 1);
 			popupStack.Push(popup);

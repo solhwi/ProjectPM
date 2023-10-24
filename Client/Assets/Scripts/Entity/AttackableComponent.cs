@@ -3,6 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
-public class AttackableComponent : MonoBehaviour
+public class AttackableComponent : MonoComponent
 {
 }

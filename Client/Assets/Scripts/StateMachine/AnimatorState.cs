@@ -16,13 +16,13 @@ public static class AnimatorExtension
 
 namespace StateMachine
 {
-    public class CharacterAnimatorState : EntityAnimatorState<CharacterComponent, FrameCommandMessage>
+    public class CharacterAnimatorState : EntityAnimatorState<CharacterBehaviour, FrameCommandMessage>
     {
 
     }
 
 	public class EntityAnimatorState<TOwner, TCommand> : SealedStateMachineBehaviour
-        where TOwner : EntityComponent
+        where TOwner : EntityBehaviour
         where TCommand : ICommand
 	{	
 		private TOwner owner;
@@ -40,7 +40,7 @@ namespace StateMachine
             OnInitialize(owner);
         }
 
-        public void SendCommand(TCommand command)
+        public void PushCommand(TCommand command)
         {
             this.command = command;
 		}

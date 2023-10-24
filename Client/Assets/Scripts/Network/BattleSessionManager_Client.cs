@@ -54,15 +54,15 @@ public partial class BattleSessionManager
 
 				var entityGuid = entityMessage.entityGuid;
 
-				var entity = EntitySystem.Instance.GetEntityComponent(entityGuid);
+				var entity = EntitySystem.Instance.GetEntity(entityGuid);
 				if (entity == null)
 					continue;
 
 				// 충돌이 발생하여 위치값 보정이 필요한 Entity만 위치를 재조정한다.
-				entity.Teleport(entityMessage.pos);
+				entity.SetPosition(entityMessage.pos);
 
 				// 스테이트도 당시 상황에 맞게 재조정
-				entity.SendCommand(userSnapShot.commandMessage);
+				entity.PushCommand(userSnapShot.commandMessage);
 			}
 		}
 

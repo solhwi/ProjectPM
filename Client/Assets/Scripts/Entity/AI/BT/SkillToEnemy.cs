@@ -33,7 +33,7 @@ public class SkillToEnemy : ActionNode
             return State.Failure;
 
         var command = MessageHelper.MakeCommand(ENUM_COMMAND_TYPE.Skill, context.entityComponent);
-        context.entityComponent.SendCommand(command);
+        context.entityComponent.PushCommand(command);
 
         return State.Success;
     }

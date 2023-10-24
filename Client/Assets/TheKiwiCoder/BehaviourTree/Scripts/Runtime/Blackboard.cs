@@ -7,7 +7,7 @@ using static CharacterSkillTable;
 namespace TheKiwiCoder {
 
     [System.Serializable]
-    public class SearchEnemyDictionary : SerializableDictionary<ENUM_SKILL_TYPE, IEnumerable<EntityComponent>> { }
+    public class SearchEnemyDictionary : SerializableDictionary<ENUM_SKILL_TYPE, IEnumerable<IEntity>> { }
 
     // This is the blackboard container shared between all nodes.
     // Use this to store temporary data that multiple nodes need read and write access to.

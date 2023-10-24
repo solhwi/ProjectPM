@@ -2,12 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhysicsSystem : Singleton<PhysicsSystem>
+public class PhysicsHelper
 {
-	public static PhysicsGravitySubSystem Gravity = new PhysicsGravitySubSystem();
-	public static CollisionSubSystem Collision = new CollisionSubSystem();
+	public static float GetMovementYByGravity(float deltaTime)
+	{
+		// a * t * t = distance
+		return PhysicsConfig.GravityPower * PhysicsConfig.GravityScale * deltaTime * deltaTime;
+	}
 
-	List<PhysicsComponent> physicsComponents = new List<PhysicsComponent>();
+	public static Vector2 GetMovementByGravity(float deltaTime)
+	{
+		return Vector2.down * GetMovementYByGravity(deltaTime);
+	}
+}
+
+public class PhysicsSystem : MonoSystem<PhysicsSystem>
+{
+	private PhysicsGravitySubSystem gravitySubSystem = new PhysicsGravitySubSystem();
+	private List<PhysicsComponent> physicsComponents = new List<PhysicsComponent>();
 
 	public void Register(PhysicsComponent physicsComponent)
 	{
@@ -15,9 +27,7 @@ public class PhysicsSystem : Singleton<PhysicsSystem>
 			return;
 
 		physicsComponents.Add(physicsComponent);
-
-		Collision.Register(physicsComponent);
-		Gravity.Register(physicsComponent);
+		gravitySubSystem.Register(physicsComponent);
 	}
 
 	public void UnRegister(PhysicsComponent physicsComponent)
@@ -26,24 +36,21 @@ public class PhysicsSystem : Singleton<PhysicsSystem>
 			return;
 
 		physicsComponents.Remove(physicsComponent);
-
-		Collision.UnRegister(physicsComponent);
-		Gravity.UnRegister(physicsComponent);
+		gravitySubSystem.UnRegister(physicsComponent);
 	}
 
 	public override void OnFixedUpdate(int deltaFrameCount, float deltaTime)
 	{
-		Collision.OnFixedUpdate(deltaFrameCount, deltaTime);
-		Gravity.OnFixedUpdate(deltaFrameCount, deltaTime);
+		foreach (var component in physicsComponents)
+		{
+			component.UpdateRaycastHit();
+		}
+
+		gravitySubSystem.OnFixedUpdate(deltaFrameCount, deltaTime);
 
 		foreach (var component in physicsComponents)
 		{
 			component.FlushMovement();
 		}
-	}
-
-	public void OnDrawGizmos()
-	{
-		Collision.OnDrawGizmos();
 	}
 }

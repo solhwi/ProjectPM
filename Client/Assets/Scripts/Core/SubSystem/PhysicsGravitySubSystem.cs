@@ -17,9 +17,6 @@ public struct GizmoBox
 
 public class PhysicsGravitySubSystem
 {
-    private float gravityPower = 9.8f;
-	private float gravityScale = 0.2f;
-
     private List<PhysicsComponent> physicsComponents = new List<PhysicsComponent>();
 	private Dictionary<PhysicsComponent, float> physicsAirborneTimeDictionary = new Dictionary<PhysicsComponent, float>();
 
@@ -38,7 +35,7 @@ public class PhysicsGravitySubSystem
 				}
 				else
 				{
-					var gravityMovement = GetMovementByGravity(airborneDeltaTime);
+					var gravityMovement = PhysicsHelper.GetMovementByGravity(airborneDeltaTime);
 					component.AddMovement(gravityMovement);
 
 					physicsAirborneTimeDictionary[component] += deltaTime;
@@ -64,15 +61,4 @@ public class PhysicsGravitySubSystem
 		physicsComponents.Remove(physicsComponent);
 		physicsAirborneTimeDictionary.Remove(physicsComponent);
 	}
-
-	public float GetMovementYByGravity(float deltaTime)
-	{
-		// a * t * t = distance
-		return gravityPower * gravityScale * deltaTime * deltaTime;
-    }
-
-	public Vector2 GetMovementByGravity(float deltaTime)
-	{
-		return Vector2.down * GetMovementYByGravity(deltaTime);
-    }
 }

@@ -5,7 +5,7 @@ using System;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Cysharp.Threading.Tasks;
 
-public class ScriptParsingSystem : Singleton<ScriptParsingSystem>
+public class ScriptParsingSystem : MonoSystem<ScriptParsingSystem>
 {
 	private Dictionary<Type, ScriptParser> dictionary = new Dictionary<Type, ScriptParser>();
 

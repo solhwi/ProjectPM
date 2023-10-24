@@ -61,27 +61,27 @@ public partial class BattleSessionManager
             if (inputMessage.tickCount != tickIndex)
                 continue;
 
-            var entityPrevPosList = new List<KeyValuePair<EntityComponent, Vector2>>();
+            var entityPrevPosList = new List<KeyValuePair<IEntity, Vector2>>();
             
             // 앤티티들을 우선 프레임 당시 상황으로 이동 시킨 후
             foreach(var entityMessage in inputMessage.entityMessages)
             {
-				var entity = EntitySystem.Instance.GetEntityComponent(entityMessage.entityGuid);
+				var entity = EntitySystem.Instance.GetEntity(entityMessage.entityGuid);
 				if (entity == null)
 					continue;
 
-                entityPrevPosList.Add(new KeyValuePair<EntityComponent, Vector2>(entity, entity.Position));
-                entity.Teleport(entityMessage.pos);
+                entityPrevPosList.Add(new KeyValuePair<IEntity, Vector2>(entity, entity.Position));
+                entity.SetPosition(entityMessage.pos);
 			}
 
             // 충돌 정보를 넣어 보낸다.
 			for (int i = 0; i < inputMessage.entityMessages.Length; i++)
 			{
-                var entity = EntitySystem.Instance.GetEntityComponent(inputMessage.entityMessages[i].entityGuid);
+                var entity = EntitySystem.Instance.GetEntity(inputMessage.entityMessages[i].entityGuid);
 				if (entity == null)
 					continue;
 
-                inputMessage.entityMessages[i].overlappedEntities = PhysicsSystem.Collision.GetOverlapEntitiyGuids(inputMessage.entityMessages[i]).ToArray();
+                inputMessage.entityMessages[i].overlappedEntities = EntitySystem.Instance.GetOverlapEntityGuids(inputMessage.entityMessages[i]).ToArray();
 			}
 
             yield return inputMessage;
@@ -92,7 +92,7 @@ public partial class BattleSessionManager
                 var entity = entityPair.Key;
                 var prevPos = entityPair.Value;
 
-                entity.Teleport(prevPos);
+                entity.SetPosition(prevPos);
             }
         }
     }

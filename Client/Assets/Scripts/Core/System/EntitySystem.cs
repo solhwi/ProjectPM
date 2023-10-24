@@ -7,76 +7,132 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class EntitySystem : Singleton<EntitySystem>
+public static class EntitySystemExtension
 {
-    public CharacterComponent PlayerCharacter
+	public static IEnumerable<int> GetOverlapEntityGuids(this EntitySystem system, FrameEntityMessage message, bool includeMine = false)
+	{
+		return system.GetOverlapEntities(message, includeMine).Select(entity => entity.EntityGuid);
+	}
+
+	public static IEnumerable<IEntity> GetOverlapEntities(this EntitySystem system, FrameEntityMessage message, bool includeMine)
+	{
+		return system.GetOverlapEntities(message.entityGuid, message.pos, message.hitbox, message.offset, message.velocity, includeMine);
+	}
+
+	public static IEnumerable<IEntity> GetSearchedEntities(this EntitySystem system, IEntity entity, ENUM_SKILL_TYPE skillType, bool includeMine = false)
+	{
+		var skillTable = ScriptParsingSystem.Instance.GetTable<CharacterSkillTable>();
+		if (skillTable == null)
+			return null;
+
+		var hasSkill = skillTable.GetSkillInfo(skillType);
+		if (hasSkill == null)
+			return null;
+
+		Vector2 box = new(hasSkill.searchBoxX, hasSkill.searchBoxY);
+		Vector2 offset = new(hasSkill.searchOffsetX, hasSkill.searchOffsetY);
+
+		return system.GetOverlapEntities(entity.EntityGuid, entity.Position, box, offset, entity.Velocity, includeMine);
+	}
+}
+
+public class EntitySystem : MonoSystem<EntitySystem>
+{
+    public IEntity Player
     {
         get;
         private set;
     }
 
-    public CharacterComponent BossCharacter
+    public IEntity Boss
     {
         get;
         private set;
     }
     
-    public IEnumerable<CharacterComponent> Enemies
+    public IEnumerable<IEntity> Enemies
     {
         get
         {
-            return entityDictionary.Values.Where(e => e.IsPlayer == false).OfType<CharacterComponent>();
+            return entityDictionary.Values.Where(e => e.IsPlayer == false);
         }
     }
 
-    private Dictionary<int, EntityComponent> entityDictionary = new Dictionary<int, EntityComponent>();
+    private Dictionary<int, IEntity> entityDictionary = new();
 
-	public override void OnUpdate(int deltaFrameCount, float deltaTime)
+    private EntityCollisionSubSystem collisionSubSystem = new EntityCollisionSubSystem();
+    private EntityControlSubSystem controlSubSystem = new EntityControlSubSystem();
+
+	protected override void OnInitializeSystem()
 	{
-        foreach(var entity in entityDictionary.Values)
+		base.OnInitializeSystem();
+
+        collisionSubSystem.Initialize(this);
+	}
+
+	public override void OnPrevUpdate(int deltaFrameCount, float deltaTime)
+	{
+		controlSubSystem.UpdateControl();
+	}
+
+	public IEnumerable<IEntity> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity, bool includeMine = false)
+	{
+        return collisionSubSystem.GetOverlapEntities(entityGuid, pos, size, offset, velocity, includeMine);
+	}
+
+	public void ToPlayerControl()
+	{
+		controlSubSystem.ToPlayerControl(Player);
+	}
+
+	public void ToAIControl()
+	{
+        foreach (var enemy in Enemies)
         {
-            entity.OnUpdate();
-        }
+			controlSubSystem.ToAIControl(enemy);
+		}
+
+        controlSubSystem.ToAIControl(Boss);
 	}
 
-    public CharacterComponent GetEnemy(ENUM_ENTITY_TYPE entityType)
-    {
-		return Enemies.FirstOrDefault(e => e.IsBoss == false && e.EntityType == entityType);  
+	public void OnDrawGizmos()
+	{
+		collisionSubSystem.OnDrawGizmos();
 	}
 
-    public async UniTask<IEnumerable<EntityComponent>> LoadAsyncEnemies(IEnumerable<EnemySpawnData> spawnDatas)
+	public async UniTask<IEnumerable<IEntity>> CreateEnemies(IEnumerable<EnemySpawnData> spawnDatas)
     {
-        var entities = new List<EntityComponent>();
+        var entities = new List<IEntity>();
 
         foreach(var data in spawnDatas)
         {
-            entities.Add(await LoadAsyncEnemy(data.entityType));
+            entities.Add(await CreateEnemy(data.entityType));
 		}
 
         return entities;
     }
 
-    public async UniTask<EntityComponent> LoadAsyncEnemy(ENUM_ENTITY_TYPE entityType)
+    public async UniTask<IEntity> CreateEnemy(ENUM_ENTITY_TYPE entityType)
     {
-        return await CreateEntity(entityType, false, false);
+        return await CreateEntity<CharacterBehaviour>(entityType, false, false);
 	}
 
-    public async UniTask<EntityComponent> LoadAsyncPlayer(ENUM_ENTITY_TYPE entityType)
+    public async UniTask<IEntity> CreatePlayer(ENUM_ENTITY_TYPE entityType)
     {
-        return await CreateEntity(entityType, true, false);
+        return await CreateEntity<CharacterBehaviour>(entityType, true, false);
     }
 
-    public async UniTask<EntityComponent> LoadAsyncBoss(EnemySpawnData spawnData)
+    public async UniTask<IEntity> CreateBoss(EnemySpawnData spawnData)
     {
-        return await CreateEntity(spawnData.entityType, false, true);
+        return await CreateEntity<CharacterBehaviour>(spawnData.entityType, false, true);
     }
 
-    private async UniTask<EntityComponent> CreateEntity(ENUM_ENTITY_TYPE characterType, bool isPlayer, bool isBoss)
+    private async UniTask<IEntity> CreateEntity<T>(ENUM_ENTITY_TYPE entityType, bool isPlayer, bool isBoss) where T : EntityBehaviour
     {
-        var character = await AddressableResourceSystem.Instance.InstantiateAsync<CharacterComponent>();
+        var entityBehaviour = await AddressableResourceSystem.Instance.InstantiateAsync<T>();
 
 #if UNITY_EDITOR
-        character.name = characterType.ToString();
+        entityBehaviour.name = entityType.ToString();
 #endif
 
         int ownerGuid = GameConfig.MonsterGuid;
@@ -87,25 +143,26 @@ public class EntitySystem : Singleton<EntitySystem>
             ownerGuid = GameConfig.PlayerGuid;
             layerType = ENUM_LAYER_TYPE.Friendly;
 
-            PlayerCharacter = character;
+            Player = entityBehaviour;
         }
         else if(isBoss)
         {
             layerType = ENUM_LAYER_TYPE.Boss;
-            BossCharacter = character;
+            Boss = entityBehaviour;
         }
 
-		int entityGuid = character.GetInstanceID();
+		int entityGuid = entityBehaviour.GetInstanceID();
 
-		character.Initialize(ownerGuid, entityGuid, characterType, isPlayer);
-        character.SetEntityLayer(layerType);
-        mono.SetSingletonChild(this, character);
+		entityBehaviour.Initialize(ownerGuid, entityGuid, entityType, isPlayer);
+        entityBehaviour.SetEntityLayer(layerType);
 
-		entityDictionary[entityGuid] = character;
-		return character;
+        behaviour.SetSystemChild(this, entityBehaviour);
+
+		entityDictionary[entityGuid] = entityBehaviour;
+		return entityBehaviour;
     }
 
-    public EntityComponent GetEntityComponent(int guid)
+    public IEntity GetEntity(int guid)
     {
         if (entityDictionary.ContainsKey(guid) == false)
             return null;
@@ -113,18 +170,33 @@ public class EntitySystem : Singleton<EntitySystem>
         return entityDictionary[guid];
     }
 
-    public CharacterComponent GetCharacterComponent(int guid)
-    {
-        return GetEntityComponent(guid) as CharacterComponent;
-    }
-
-    public IEnumerable<EntityComponent> GetAllEntities()
+    public IEnumerable<IEntity> GetAllEntities()
     {
         return entityDictionary.Values;
     }
 
-    public IEnumerable<EntityComponent> GetEntities(int ownerGuid)
+    public IEnumerable<IEntity> GetEntities(int ownerGuid)
     {
         return GetAllEntities().Where(e => e.OwnerGuid == ownerGuid);
+    }
+
+	public Vector2 GetDistance(IEntity fromEntity, IEntity toEntity)
+	{
+		return toEntity.Position - fromEntity.Position;
+	}
+
+    public float GetDistanceX(IEntity fromEntity, IEntity toEntity)
+    {
+        return GetDistance(fromEntity, toEntity).x;
+    }
+
+    public Vector2 GetDistanceWithPlayer(IEntity fromEntity)
+    {
+        return GetDistance(fromEntity, Player);
+    }
+
+    public float GetDistanceXWithPlayer(IEntity fromEntity)
+    {
+        return GetDistanceWithPlayer(fromEntity).x;
     }
 }

@@ -23,7 +23,7 @@ public class SceneModuleParam
 
 }
 
-public class SceneModuleSystem : Singleton<SceneModuleSystem>
+public class SceneModuleSystem : MonoSystem<SceneModuleSystem>
 {
     public event Action<SceneType> onSceneChanged = null;
 
@@ -36,26 +36,26 @@ public class SceneModuleSystem : Singleton<SceneModuleSystem>
     private CancellationTokenSource cancellationSource = new CancellationTokenSource();
     private bool isLoadComplete = false;
 
-    protected override void OnAwakeInstance()
+    protected override void OnInitializeSystem()
     {
         currentSceneModule = UnityEngine.Object.FindObjectOfType<SceneModule>();
         if (currentSceneModule != null)
             currentSceneModule.OnEnter(currentParam);
 
-        mono.onFixedUpdate += FixedUpdate;
-        mono.onUpdate += Update;
-        mono.onLateUpdate += LateUpdate;
+        behaviour.onFixedUpdate += FixedUpdate;
+        behaviour.onUpdate += Update;
+        behaviour.onLateUpdate += LateUpdate;
 
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    protected override void OnReleaseInstance()
+    protected override void OnReleaseSystem()
     {
         UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
 
-        mono.onFixedUpdate -= FixedUpdate;
-        mono.onUpdate -= Update;
-        mono.onLateUpdate -= LateUpdate;
+        behaviour.onFixedUpdate -= FixedUpdate;
+        behaviour.onUpdate -= Update;
+        behaviour.onLateUpdate -= LateUpdate;
 
         if (cancellationSource != null)
 			cancellationSource.Cancel();

@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 1662643115}
   - component: {fileID: 1662643114}
   m_Layer: 0
-  m_Name: SingletonSystem
+  m_Name: MonoSystems
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -334,9 +334,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de6a53493058796428cbeda210b15d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  singletonDictionary:
+  systemDictionary:
     m_keys: []
-  singletonObjectDictionary:
+  systemObjectDictionary:
     m_keys: []
     m_values: []
 --- !u!4 &1662643115

@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class SingletonSystem : MonoBehaviour
+// MonoSystem과 MonoBehaviour를 연결해주는 역할
+
+public class MonoSystemBehaviour : MonoBehaviour
 {
-    public static SingletonSystem Instance
+    public static MonoSystemBehaviour Instance
     {
         get
         {
             if (instance == null)
             {
-                instance = FindObjectOfType<SingletonSystem>();
+                instance = FindObjectOfType<MonoSystemBehaviour>();
                 DontDestroyOnLoad(instance.gameObject);
             }
 
@@ -19,13 +21,13 @@ public class SingletonSystem : MonoBehaviour
         }
     }
 
-    private static SingletonSystem instance;
+    private static MonoSystemBehaviour instance;
 
-    [System.Serializable] public class SingletonDictionary : SerializableDictionary<string, Singleton> { }
-    [System.Serializable] public class SingletonObjectDictionary : SerializableDictionary<string, Transform> { }
+    [System.Serializable] public class MonoSystemDictionary : SerializableDictionary<string, MonoSystem> { }
+    [System.Serializable] public class MonoSystemObjectDictionary : SerializableDictionary<string, Transform> { }
 
-    [SerializeField] private SingletonDictionary singletonDictionary = new SingletonDictionary();
-    [SerializeField] private SingletonObjectDictionary singletonObjectDictionary = new SingletonObjectDictionary();
+    [SerializeField] private MonoSystemDictionary systemDictionary = new MonoSystemDictionary();
+    [SerializeField] private MonoSystemObjectDictionary systemObjectDictionary = new MonoSystemObjectDictionary();
 
     public event Action onFixedUpdate;
     public event Action onUpdate;
@@ -45,24 +47,24 @@ public class SingletonSystem : MonoBehaviour
             StopCoroutine(lateUpdateCoroutine);
     }
 
-    public void RegisterSingleton(Singleton singleton)
+    public void RegisterSystem(MonoSystem singleton)
     {
         var type = singleton.GetType();
         var typeName = type.Name;
 
-        singletonDictionary[typeName] = singleton;
+        systemDictionary[typeName] = singleton;
     }
 
-    public void UnRegisterSinglton(Singleton singleton)
+    public void UnRegisterSystem(MonoSystem singleton)
     {
         var type = singleton.GetType();
         var typeName = type.Name;
 
-        if (singletonDictionary.ContainsKey(typeName))
-            singletonDictionary.Remove(typeName);
+        if (systemDictionary.ContainsKey(typeName))
+            systemDictionary.Remove(typeName);
     }
 
-    private Transform RequestSingletonGameObject(Singleton singleton)
+    private Transform RequestSystemGameObject(MonoSystem singleton)
     {
         var type = singleton.GetType();
         var typeName = type.Name;
@@ -76,18 +78,18 @@ public class SingletonSystem : MonoBehaviour
         tr.SetPositionAndRotation(default, default);
         tr.SetAsLastSibling();
 
-        singletonObjectDictionary.Add(typeName, tr);
+        systemObjectDictionary.Add(typeName, tr);
         return tr;
     }
 
-    public void SetSingletonChild(Singleton singleton, MonoBehaviour childObj)
+    public void SetSystemChild(MonoSystem singleton, MonoBehaviour childObj)
     {
         var type = singleton.GetType();
         var typeName = type.Name;
 
-        if (singletonObjectDictionary.TryGetValue(typeName, out var singletonTransform) == false)
+        if (systemObjectDictionary.TryGetValue(typeName, out var singletonTransform) == false)
         {
-            singletonTransform = RequestSingletonGameObject(singleton);
+            singletonTransform = RequestSystemGameObject(singleton);
         }
 
         childObj.transform.SetParent(singletonTransform);
@@ -115,6 +117,10 @@ public class SingletonSystem : MonoBehaviour
 		UnityEngine.Object.Destroy(go);
 	}
 
+    /// <summary>
+    /// 업데이트 메시지들은 재정의가 필요하여 모듈 시스템에 이관함
+    /// </summary>
+
 	private void FixedUpdate()
 	{
         onFixedUpdate?.Invoke();
@@ -136,7 +142,7 @@ public class SingletonSystem : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        foreach(var singleton in singletonDictionary.Values)
+        foreach(var singleton in systemDictionary.Values)
         {
             singleton?.Release();
         }

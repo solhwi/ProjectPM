@@ -16,47 +16,55 @@ public static class EntityHelper
 
 		return string.Empty;
 	}
+
+	public static T GetOrAddComponent<T>(this IEntity entity) where T : MonoBehaviour
+	{
+		if (entity is EntityBehaviour entityBehaviour)
+		{
+			return entityBehaviour.GetOrAddComponent<T>();
+		}
+
+		return null;
+	}
 }
 
-public class EntityControlSystem : Singleton<EntityControlSystem>
+public class EntityControlSubSystem
 {
-	private AddressableResourceSystem ResourceSystem => AddressableResourceSystem.Instance;
-
-    private CharacterComponent playerCharacter = null;
+    private IEntity playerEntity = null;
     private Dictionary<int, BehaviourTreeRunner> enemyBehaviourTrees = new Dictionary<int, BehaviourTreeRunner>();
 
 	public static bool IsPlayerControl = true;
 	public static bool IsAIControl = true;
 	
-    public void ToPlayerControl(CharacterComponent character)
+    public void ToPlayerControl(IEntity entity)
     {
-        playerCharacter = character;
+		playerEntity = entity;
 	}
 
-	public void ToAIControl(CharacterComponent character)
+	public void ToAIControl(IEntity entity)
 	{
-		if (character == null)
+		if (entity == null)
 			return;
 
-		var tree = LoadTree(character.EntityType);
+		var tree = LoadTree(entity.EntityType);
 		if (tree == null)
 			return;
 
-		var runner = character.GetOrAddComponent<BehaviourTreeRunner>();
+		var runner = entity.GetOrAddComponent<BehaviourTreeRunner>();
 		if (runner == null)
 			return;
 
 		runner.OnStart(tree);
-		enemyBehaviourTrees[character.EntityGuid] = runner;
+		enemyBehaviourTrees[entity.EntityGuid] = runner;
 	}
 
 	private void UpdatePlayerControl()
     {
-		if (playerCharacter == null)
+		if (playerEntity == null)
 			return;
 
 		var command = MessageHelper.MakeCommand();
-		playerCharacter.SendCommand(command);
+		playerEntity.PushCommand(command);
 	}
 
     private void UpdateAIControl()
@@ -67,7 +75,7 @@ public class EntityControlSystem : Singleton<EntityControlSystem>
 		}
 	}
 
-	public override void OnPrevUpdate(int deltaFrameCount, float deltaTime)
+	public void UpdateControl()
 	{
 		if(IsPlayerControl)
 		{
@@ -82,6 +90,6 @@ public class EntityControlSystem : Singleton<EntityControlSystem>
 	private BehaviourTree LoadTree(ENUM_ENTITY_TYPE entityType)
 	{
 		string btAssetPath = EntityHelper.ToBehaviourTreePath(entityType);
-		return ResourceSystem.LoadCached<BehaviourTree>(btAssetPath);
+		return AddressableResourceSystem.Instance.LoadCached<BehaviourTree>(btAssetPath);
 	}
 }

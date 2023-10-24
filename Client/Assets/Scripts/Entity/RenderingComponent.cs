@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RenderingComponent : MonoBehaviour
+public class RenderingComponent : MonoComponent
 {
 	public bool IsLeftDirection
 	{

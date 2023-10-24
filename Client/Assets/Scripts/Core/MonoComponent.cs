@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DamageableComponent : MonoComponent
+public abstract class MonoComponent : MonoBehaviour
 {
 
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(Canvas))]
 [RequireComponent(typeof(CanvasScaler))]
-public class UIWindow : MonoBehaviour
+public class UIWindow : MonoComponent
 {
 	[SerializeField] private Canvas canvas;
     [SerializeField] private CanvasScaler scaler;
