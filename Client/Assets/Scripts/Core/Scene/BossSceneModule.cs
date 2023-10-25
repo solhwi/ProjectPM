@@ -30,6 +30,8 @@ public class BossSceneModule : BattleSceneModule
 
     public override void OnEnter(SceneModuleParam param)
 	{
+		base.OnEnter(param);
+
 		mapSystem.Spawn(entitySystem.Player);
         entitySystem.ToPlayerControl();
 	}

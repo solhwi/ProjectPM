@@ -107,12 +107,6 @@ public class SingletonBehaviour : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        if (singletonDictionary == null || singletonDictionary.Count == 0)
-            return;
-
-        foreach (var singleton in singletonDictionary.Values)
-        {
-            singleton?.Release();
-        }
+       
     }
 }

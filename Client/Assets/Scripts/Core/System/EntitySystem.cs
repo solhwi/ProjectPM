@@ -43,12 +43,7 @@ public class EntitySystem : MonoSystem
     {
         get
         {
-            if (entityDictionary.ContainsKey(GameConfig.PlayerGuid))
-            {
-                return entityDictionary[GameConfig.PlayerGuid];
-            }
-
-            return null;
+            return entityDictionary.Values.FirstOrDefault(e => e.IsPlayer);
         }
     }
 
@@ -56,12 +51,7 @@ public class EntitySystem : MonoSystem
     {
         get
         {
-            if (entityDictionary.ContainsKey(GameConfig.MonsterGuid))
-            {
-                return entityDictionary[GameConfig.MonsterGuid];
-            }
-
-            return null;
+            return entityDictionary.Values.FirstOrDefault(e => e.IsBoss);
         }
     }
     
@@ -69,13 +59,13 @@ public class EntitySystem : MonoSystem
     {
         get
         {
-            return entityDictionary.Values.Where(e => e.IsPlayer == false);
+            return entityDictionary.Values.Where(e => e.IsPlayer == false && e.IsBoss == false);
         }
     }
 
     [System.Serializable]
     private class EntityDictionary : SerializableDictionary<int, IEntity> { }
-    [SerializeField] private EntityDictionary entityDictionary = new();
+    [SerializeField]  private EntityDictionary entityDictionary = new();
 
     [SerializeField] private AddressableResourceSystem resourceSystem;
     [SerializeField] private EntityCollisionSubSystem collisionSubSystem;

@@ -113,7 +113,7 @@ RectTransform:
   m_Children:
   - {fileID: 3469303725325225307}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -141,7 +141,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 13000
   m_TargetDisplay: 0
 --- !u!114 &3635201755677233468
 MonoBehaviour:
@@ -195,7 +195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 493e6584f4f1f494dbe1c7136bb2266e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiSystem: {fileID: 0}
+  uiSystem: {fileID: 11400000, guid: 9956a56ffa8f39447bb137e1bab35d37, type: 2}
   canvas: {fileID: 5742948402619217413}
   scaler: {fileID: 3635201755677233468}
 --- !u!1 &1804505451437972238
