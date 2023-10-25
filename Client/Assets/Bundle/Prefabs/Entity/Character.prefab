@@ -200,7 +200,7 @@ MonoBehaviour:
   system: {fileID: 11400000, guid: cb02330b6794c954ca2bfc135feb6ac2, type: 2}
   groundedLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   groundedRaycastDistance: 0.1
 --- !u!114 &2111098085485975088
 MonoBehaviour:
