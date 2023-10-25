@@ -20,18 +20,18 @@ public class FindEnemy : ActionNode
     {
         blackboard.searchedEnemieDictionary.Clear();
 
-        var hasSkillTypes = context.characterSkillTable.GetSkillTypes(context.entityComponent.EntityType);
-        if (hasSkillTypes == null)
-            return State.Success;
+        //var hasSkillTypes = context.characterSkillTable.GetSkillTypes(context.entityComponent.EntityType);
+        //if (hasSkillTypes == null)
+        //    return State.Success;
 
-        foreach(var skillType in hasSkillTypes)
-        {
-            var enemies = EntitySystem.Instance.GetSearchedEntities(context.entityComponent, skillType);
-            if (enemies == null || enemies.Any() == false)
-                continue;
+        //foreach(var skillType in hasSkillTypes)
+        //{
+        //    var enemies = EntitySystem.Instance.GetSearchedEntities(context.entityComponent, skillType);
+        //    if (enemies == null || enemies.Any() == false)
+        //        continue;
 
-            blackboard.searchedEnemieDictionary.Add(skillType, enemies);
-        }
+        //    blackboard.searchedEnemieDictionary.Add(skillType, enemies);
+        //}
 
         return State.Success;
     }

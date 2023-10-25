@@ -77,7 +77,7 @@ public class GuardInputData : PressInputData
 	}
 }
 
-public class FrameInputSystem : MonoSystem<FrameInputSystem>
+public class FrameInputSystem : MonoSystem
 {
 	public static float MoveThreshold { get; private set; } = 1;
 	public static JoystickType JoystickType { get; private set; } = JoystickType.Fixed;
@@ -90,9 +90,9 @@ public class FrameInputSystem : MonoSystem<FrameInputSystem>
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
 	private FrameInputMessage currentInputMessage = new FrameInputMessage();
 		
-	protected override void OnInitializeSystem()
+	public override void OnEnter()
 	{
-		SceneModuleSystem.Instance.onSceneChanged += SetJoystick;
+		SceneModuleSystemManager.Instance.onSceneChanged += SetJoystick;
 		SetJoystick();
 	}
 
@@ -105,9 +105,9 @@ public class FrameInputSystem : MonoSystem<FrameInputSystem>
 		}
 	}
 
-	protected override void OnReleaseSystem()
+	public override void OnExit()
 	{
-		SceneModuleSystem.Instance.onSceneChanged -= SetJoystick;
+		SceneModuleSystemManager.Instance.onSceneChanged -= SetJoystick;
 	}
 
 	public void OnMoveInputChanged(Vector2 input, int frameCount)

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd30059f185de0e49b580939d9513ba6, type: 3}
+  m_Name: EntitySystemAsset
+  m_EditorClassIdentifier: 
+  resourceSystem: {fileID: 11400000, guid: bca2213f93713d64fbdea0c92a750d2d, type: 2}
+  collisionSubSystem: {fileID: 11400000, guid: a1167e7e167870d42a9f47ae48678336, type: 2}
+  controlSubSystem: {fileID: 11400000, guid: d6554335db1a5ff4e919e6a8c5edb156, type: 2}

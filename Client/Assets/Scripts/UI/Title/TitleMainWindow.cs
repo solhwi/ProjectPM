@@ -8,11 +8,11 @@ public class TitleMainWindow : UIMainWindow
 {
 	public void OnClickStart()
 	{
-		SceneModuleSystem.Instance.LoadScene(SceneType.Lobby);
+		SceneModuleSystemManager.Instance.LoadScene(SceneType.Lobby);
 	}
 
 	public void OnClickSetting()
 	{
-		PrefabLinkedUISystem.Instance.OpenPopupAsync<SettingPopup>().Forget();
+		uiSystem.OpenPopupAsync<SettingPopup>().Forget();
 	}
 }

@@ -14,12 +14,14 @@ public class CharacterStateMachineComponent : MonoComponent
 	private Animator animator;
 	private CharacterAnimatorState[] animatorStates;
 
-	[SerializeField] private EntityTransitionTable transitionTable = null;
+	[SerializeField] private AddressableResourceSystem resourceSystem = null;
+    [SerializeField] private EntityTransitionTable transitionTable = null;
 	[SerializeField] private EntityConditionTable conditionTable = null;
 
 	private void Reset()
 	{
-		transitionTable = AssetDatabase.LoadAssetAtPath<EntityTransitionTable>("Assets/Bundle/Datas/Parser/EntityTransitionTable.asset");
+		resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
+        transitionTable = AssetDatabase.LoadAssetAtPath<EntityTransitionTable>("Assets/Bundle/Datas/Parser/EntityTransitionTable.asset");
 		conditionTable = AssetDatabase.LoadAssetAtPath<EntityConditionTable>("Assets/Bundle/Datas/Parser/EntityConditionTable.asset");
 	}
 
@@ -58,7 +60,7 @@ public class CharacterStateMachineComponent : MonoComponent
 		{
 			case ENUM_ENTITY_TYPE.RedMan:
 			case ENUM_ENTITY_TYPE.PencilMan:
-				return AddressableResourceSystem.Instance.LoadCached<RuntimeAnimatorController>("Assets/Bundle/Animation/RedMan/RedMan.overrideController");
+                return resourceSystem.LoadCached<RuntimeAnimatorController>("Assets/Bundle/Animation/RedMan/RedMan.overrideController");
 		}
 
 		return null;

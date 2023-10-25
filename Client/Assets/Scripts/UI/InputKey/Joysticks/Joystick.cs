@@ -42,7 +42,7 @@ public class Joystick : InputKeyComponent
         FormatInput();
         HandleInput(input.magnitude, input.normalized, radius, cam);
         
-        FrameInputSystem.Instance.OnMoveInputChanged(input, Time.frameCount);
+        inputSystem.OnMoveInputChanged(input, Time.frameCount);
 
 		handle.anchoredPosition = input * radius * FrameInputSystem.HandleRange;
     }
@@ -75,7 +75,7 @@ public class Joystick : InputKeyComponent
         input = Vector2.zero;
         handle.anchoredPosition = Vector2.zero;
 
-		FrameInputSystem.Instance.OnMoveInputChanged(input, Time.frameCount);
+		inputSystem.OnMoveInputChanged(input, Time.frameCount);
 	}
 
     protected Vector2 ScreenPointToAnchoredPosition(Vector2 screenPosition)

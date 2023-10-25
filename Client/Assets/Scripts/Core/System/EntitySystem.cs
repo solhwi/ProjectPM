@@ -21,33 +21,48 @@ public static class EntitySystemExtension
 
 	public static IEnumerable<IEntity> GetSearchedEntities(this EntitySystem system, IEntity entity, ENUM_SKILL_TYPE skillType, bool includeMine = false)
 	{
-		var skillTable = ScriptParsingSystem.Instance.GetTable<CharacterSkillTable>();
-		if (skillTable == null)
-			return null;
+        //var skillTable = ScriptParsingSystem.Instance.GetTable<CharacterSkillTable>();
+        //if (skillTable == null)
+        //	return null;
 
-		var hasSkill = skillTable.GetSkillInfo(skillType);
-		if (hasSkill == null)
-			return null;
+        //var hasSkill = skillTable.GetSkillInfo(skillType);
+        //if (hasSkill == null)
+        //	return null;
 
-		Vector2 box = new(hasSkill.searchBoxX, hasSkill.searchBoxY);
-		Vector2 offset = new(hasSkill.searchOffsetX, hasSkill.searchOffsetY);
+        //Vector2 box = new(hasSkill.searchBoxX, hasSkill.searchBoxY);
+        //Vector2 offset = new(hasSkill.searchOffsetX, hasSkill.searchOffsetY);
 
-		return system.GetOverlapEntities(entity.EntityGuid, entity.Position, box, offset, entity.Velocity, includeMine);
-	}
+        //return system.GetOverlapEntities(entity.EntityGuid, entity.Position, box, offset, entity.Velocity, includeMine);
+        return null;
+    }
 }
 
-public class EntitySystem : MonoSystem<EntitySystem>
+public class EntitySystem : MonoSystem
 {
     public IEntity Player
     {
-        get;
-        private set;
+        get
+        {
+            if (entityDictionary.ContainsKey(GameConfig.PlayerGuid))
+            {
+                return entityDictionary[GameConfig.PlayerGuid];
+            }
+
+            return null;
+        }
     }
 
     public IEntity Boss
     {
-        get;
-        private set;
+        get
+        {
+            if (entityDictionary.ContainsKey(GameConfig.MonsterGuid))
+            {
+                return entityDictionary[GameConfig.MonsterGuid];
+            }
+
+            return null;
+        }
     }
     
     public IEnumerable<IEntity> Enemies
@@ -58,19 +73,24 @@ public class EntitySystem : MonoSystem<EntitySystem>
         }
     }
 
-    private Dictionary<int, IEntity> entityDictionary = new();
+    [System.Serializable]
+    private class EntityDictionary : SerializableDictionary<int, IEntity> { }
+    [SerializeField] private EntityDictionary entityDictionary = new();
 
-    private EntityCollisionSubSystem collisionSubSystem = new EntityCollisionSubSystem();
-    private EntityControlSubSystem controlSubSystem = new EntityControlSubSystem();
+    [SerializeField] private AddressableResourceSystem resourceSystem;
+    [SerializeField] private EntityCollisionSubSystem collisionSubSystem;
+    [SerializeField] private EntityControlSubSystem controlSubSystem;
 
-	protected override void OnInitializeSystem()
-	{
-		base.OnInitializeSystem();
+    protected override void OnReset()
+    {
+        base.OnReset();
 
-        collisionSubSystem.Initialize(this);
-	}
+        resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
+        collisionSubSystem = SystemHelper.GetSystemAsset<EntityCollisionSubSystem>();
+        controlSubSystem = SystemHelper.GetSystemAsset<EntityControlSubSystem>();
+    }
 
-	public override void OnPrevUpdate(int deltaFrameCount, float deltaTime)
+    public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
 		controlSubSystem.UpdateControl();
 	}
@@ -129,7 +149,7 @@ public class EntitySystem : MonoSystem<EntitySystem>
 
     private async UniTask<IEntity> CreateEntity<T>(ENUM_ENTITY_TYPE entityType, bool isPlayer, bool isBoss) where T : EntityBehaviour
     {
-        var entityBehaviour = await AddressableResourceSystem.Instance.InstantiateAsync<T>();
+        var entityBehaviour = await resourceSystem.InstantiateAsync<T>();
 
 #if UNITY_EDITOR
         entityBehaviour.name = entityType.ToString();
@@ -142,13 +162,10 @@ public class EntitySystem : MonoSystem<EntitySystem>
         {
             ownerGuid = GameConfig.PlayerGuid;
             layerType = ENUM_LAYER_TYPE.Friendly;
-
-            Player = entityBehaviour;
         }
         else if(isBoss)
         {
             layerType = ENUM_LAYER_TYPE.Boss;
-            Boss = entityBehaviour;
         }
 
 		int entityGuid = entityBehaviour.GetInstanceID();
@@ -156,7 +173,7 @@ public class EntitySystem : MonoSystem<EntitySystem>
 		entityBehaviour.Initialize(ownerGuid, entityGuid, entityType, isPlayer);
         entityBehaviour.SetEntityLayer(layerType);
 
-        behaviour.SetSystemChild(this, entityBehaviour);
+        SceneModuleSystemManager.Instance.SetSystemChild(this, entityBehaviour);
 
 		entityDictionary[entityGuid] = entityBehaviour;
 		return entityBehaviour;

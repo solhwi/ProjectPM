@@ -386,6 +386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5c52d796cc960149be2ace0c7723217, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiSystem: {fileID: 11400000, guid: 9956a56ffa8f39447bb137e1bab35d37, type: 2}
   canvas: {fileID: 4120635764677518835}
   scaler: {fileID: 4529687865113254181}
 --- !u!1 &6500575087685981083

@@ -11,8 +11,9 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Object = UnityEngine.Object;
 
-public class AddressableResourceSystem : MonoSystem<AddressableResourceSystem>
+public class AddressableResourceSystem : MonoSystem
 {
+	[System.Serializable]
 	private class ObjectPathData
 	{
 		public readonly string Path;
@@ -25,11 +26,13 @@ public class AddressableResourceSystem : MonoSystem<AddressableResourceSystem>
 		}
 	}
 
-	private Dictionary<Type, List<ObjectPathData>> resourceDictionary = new Dictionary<Type, List<ObjectPathData>>();
+	[Serializable]
+	private class ResourceDictionary : SerializableDictionary<string, List<ObjectPathData>> { }
+    [SerializeField] private ResourceDictionary resourceDictionary = new ResourceDictionary();
 
     public T LoadCached<T>(string path = default) where T : Object
 	{
-		if (resourceDictionary.TryGetValue(typeof(T), out var list))
+		if (resourceDictionary.TryGetValue(typeof(T).Name, out var list))
 		{
             ObjectPathData data = path == default ? list.FirstOrDefault() : list.Find(res => res.Path == path);
             if (data == null)
@@ -79,7 +82,7 @@ public class AddressableResourceSystem : MonoSystem<AddressableResourceSystem>
         if (string.IsNullOrEmpty(path))
             return default;
 
-		if (resourceDictionary.TryGetValue(typeof(T), out var objectPathData))
+		if (resourceDictionary.TryGetValue(typeof(T).Name, out var objectPathData))
 			return objectPathData.FirstOrDefault().Obj as T;
 
         var go = await InstantiateAsync<T>(path, parent);
@@ -126,11 +129,12 @@ public class AddressableResourceSystem : MonoSystem<AddressableResourceSystem>
 	{
         if (op.IsDone && op.Status == AsyncOperationStatus.Succeeded)
         {
-            if (resourceDictionary.ContainsKey(typeof(T)) == false)
-                resourceDictionary.Add(typeof(T), new List<ObjectPathData>());
+			string typeName = typeof(T).Name;
+            if (resourceDictionary.ContainsKey(typeName) == false)
+                resourceDictionary.Add(typeName, new List<ObjectPathData>());
 
             var data = new ObjectPathData(path, op.Result);
-            resourceDictionary[typeof(T)].Add(data);
+            resourceDictionary[typeName].Add(data);
         }
     }
 

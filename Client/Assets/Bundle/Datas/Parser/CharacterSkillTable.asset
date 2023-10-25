@@ -19,12 +19,14 @@ MonoBehaviour:
     searchOffsetX: 0
     searchOffsetY: 0
     useMana: 0
+    attackKeyType: 1
   - key: 2
     searchBoxX: 10
     searchBoxY: 5
     searchOffsetX: 0
     searchOffsetY: 0
     useMana: 10
+    attackKeyType: 2
   skillInfoDictionary:
     m_keys: 0100000002000000
     m_values:
@@ -34,12 +36,14 @@ MonoBehaviour:
       searchOffsetX: 0
       searchOffsetY: 0
       useMana: 0
+      attackKeyType: 1
     - key: 2
       searchBoxX: 10
       searchBoxY: 5
       searchOffsetX: 0
       searchOffsetY: 0
       useMana: 10
+      attackKeyType: 2
   characterSkillMapInfoList:
   - key: 1
     entityType: 3

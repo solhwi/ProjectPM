@@ -4,11 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class InputKeyComponent : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class InputKeyComponent : MonoComponent, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-	protected bool isPressed = false; 
+	[SerializeField] protected FrameInputSystem inputSystem = null;
+	protected bool isPressed = false;
 
-	public virtual void OnDrag(PointerEventData eventData)
+    private void Reset()
+    {
+        inputSystem = SystemHelper.GetSystemAsset<FrameInputSystem>();
+    }
+
+    public virtual void OnDrag(PointerEventData eventData)
 	{
 		isPressed = true;
 	}

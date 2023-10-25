@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class PhysicsComponent : MonoComponent
 {
+	[SerializeField] private PhysicsSystem system;
+
     [Tooltip("The Layers which represent gameobjects that the Character Controller can be grounded on.")]
     [SerializeField] private LayerMask groundedLayerMask;
 
@@ -29,7 +31,12 @@ public class PhysicsComponent : MonoComponent
 
     public Vector2 Velocity => m_NextMovement;
 
-	private void OnEnable()
+    private void Reset()
+    {
+		system = SystemHelper.GetSystemAsset<PhysicsSystem>();
+    }
+
+    private void OnEnable()
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
         m_BoxColider2D = GetComponent<BoxCollider2D>();
@@ -43,13 +50,16 @@ public class PhysicsComponent : MonoComponent
 
 		Physics2D.queriesStartInColliders = false;
 
-		PhysicsSystem.Instance.Register(this);
+        system.Register(this);
     }
 
 	private void OnDisable()
 	{
-		PhysicsSystem.Instance.UnRegister(this);
-	}
+		if (system)
+        {
+            system.UnRegister(this);
+        }
+    }
 
 	public void FlushMovement()
 	{

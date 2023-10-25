@@ -197,11 +197,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e79b447f62667ce41a33f966e7bea8a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  system: {fileID: 11400000, guid: cb02330b6794c954ca2bfc135feb6ac2, type: 2}
   groundedLayerMask:
     serializedVersion: 2
-    m_Bits: 192
-  groundedRaycastDistance: 0.01
-  useGravity: 1
+    m_Bits: 0
+  groundedRaycastDistance: 0.1
 --- !u!114 &2111098085485975088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f74455b9b0ae28c4bb0701a8ea82e5e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resourceSystem: {fileID: 11400000, guid: bca2213f93713d64fbdea0c92a750d2d, type: 2}
   transitionTable: {fileID: 11400000, guid: 4cfad2ca468ca2f4f850d7973d02e136, type: 2}
   conditionTable: {fileID: 11400000, guid: e892a0e1d1562d543a040f270a218caa, type: 2}
 --- !u!114 &581437186035518913

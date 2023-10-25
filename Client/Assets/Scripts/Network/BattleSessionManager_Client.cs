@@ -7,10 +7,12 @@ using UnityEngine;
 
 public partial class BattleSessionManager
 {
-	/// <summary>
-	/// 틱 카운트 / 레이턴시
-	/// </summary>
-	public event Action<int, float> OnTick = null;
+	[SerializeField] private EntitySystem entitySystem = null;
+	[SerializeField] private CommandSystem commandSystem = null;
+    /// <summary>
+    /// 틱 카운트 / 레이턴시
+    /// </summary>
+    public event Action<int, float> OnTick = null;
 
     public override void OnStartClient()
 	{
@@ -54,7 +56,7 @@ public partial class BattleSessionManager
 
 				var entityGuid = entityMessage.entityGuid;
 
-				var entity = EntitySystem.Instance.GetEntity(entityGuid);
+				var entity = entitySystem.GetEntity(entityGuid);
 				if (entity == null)
 					continue;
 
@@ -66,7 +68,7 @@ public partial class BattleSessionManager
 			}
 		}
 
-		var sendMessage = MessageHelper.MakeSnapShot(GameConfig.PlayerGuid, ++currentTickCount);
+		var sendMessage = commandSystem.MakeSnapShot(GameConfig.PlayerGuid, ++currentTickCount);
 
 		NetworkClient.Send(sendMessage);
 		clientLatencyTime = 0.0f;

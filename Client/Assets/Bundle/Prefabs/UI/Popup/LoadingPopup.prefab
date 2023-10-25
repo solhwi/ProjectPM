@@ -269,6 +269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34588b47ccfdb614da6eb035c16bb28b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiSystem: {fileID: 11400000, guid: 9956a56ffa8f39447bb137e1bab35d37, type: 2}
   canvas: {fileID: 7916348193677379781}
   scaler: {fileID: 6327855494634286901}
   backgroundImage: {fileID: 5007227726564735974}

@@ -18,7 +18,8 @@ public class AttackToEnemy : ActionNode
 
     private bool IsAttack(ENUM_SKILL_TYPE skillType)
     {
-        return context.characterSkillTable.IsUseMana(skillType) == false;
+        return false;
+        // return context.characterSkillTable.IsUseMana(skillType) == false;
     }
 
     protected override State OnUpdate() 
@@ -28,7 +29,7 @@ public class AttackToEnemy : ActionNode
         if (currentSkill == ENUM_SKILL_TYPE.None)
             return State.Failure;
 
-        var command = MessageHelper.MakeCommand(ENUM_COMMAND_TYPE.Attack, context.entityComponent);
+        var command = context.commandSystem.MakeCommand(ENUM_COMMAND_TYPE.Attack, context.entityComponent);
         context.entityComponent.PushCommand(command);
 
         return State.Success;

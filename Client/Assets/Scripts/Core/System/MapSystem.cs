@@ -5,22 +5,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapSystem : MonoSystem<MapSystem>
+public class MapSystem : MonoSystem
 {
-    private MapSpawnSubSystem spawn = new MapSpawnSubSystem();
+    [SerializeField] private AddressableResourceSystem resourceSystem = null;
+    [SerializeField] private MapSpawnSubSystem mapSpawnSubSystem;
 
-	public async UniTask CreateMap(ENUM_MAP_TYPE mapType)
+    protected override void OnReset()
+    {
+        base.OnReset();
+
+        resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
+        mapSpawnSubSystem = SystemHelper.GetSystemAsset<MapSpawnSubSystem>();
+    }
+
+    public async UniTask CreateMap(ENUM_MAP_TYPE mapType)
 	{
 		var mapComponent = await InternalCreateMap(mapType);
         if (mapComponent == null)
             return;
 
-        spawn.Initialize(mapComponent);
+        mapSpawnSubSystem.Initialize(mapComponent);
 	}
 
     public void Spawn(IEntity entity)
     {
-        spawn?.Spawn(entity);
+        mapSpawnSubSystem?.Spawn(entity);
     }
 
 	private async UniTask<MapComponent> InternalCreateMap(ENUM_MAP_TYPE mapType)
@@ -36,10 +45,10 @@ public class MapSystem : MonoSystem<MapSystem>
 
     private async UniTask<T> CreateMap<T>() where T : MapComponent
     {
-        var mapObject = await AddressableResourceSystem.Instance.InstantiateAsync<T>();
+        var mapObject = await resourceSystem.InstantiateAsync<T>();
 
 		mapObject.SetOrderLayer();
-		behaviour.SetSystemChild(this, mapObject);
+        SceneModuleSystemManager.Instance.SetSystemChild(this, mapObject);
 
         return mapObject;
     }

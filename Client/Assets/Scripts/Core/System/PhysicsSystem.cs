@@ -16,12 +16,19 @@ public class PhysicsHelper
 	}
 }
 
-public class PhysicsSystem : MonoSystem<PhysicsSystem>
+public class PhysicsSystem : MonoSystem
 {
-	private PhysicsGravitySubSystem gravitySubSystem = new PhysicsGravitySubSystem();
+	[SerializeField] private PhysicsGravitySubSystem gravitySubSystem;
 	private List<PhysicsComponent> physicsComponents = new List<PhysicsComponent>();
 
-	public void Register(PhysicsComponent physicsComponent)
+    protected override void OnReset()
+    {
+        base.OnReset();
+
+        gravitySubSystem = SystemHelper.GetSystemAsset<PhysicsGravitySubSystem>();
+    }
+
+    public void Register(PhysicsComponent physicsComponent)
 	{
 		if (physicsComponents.Contains(physicsComponent))
 			return;
@@ -39,14 +46,14 @@ public class PhysicsSystem : MonoSystem<PhysicsSystem>
 		gravitySubSystem.UnRegister(physicsComponent);
 	}
 
-	public override void OnFixedUpdate(int deltaFrameCount, float deltaTime)
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
 		foreach (var component in physicsComponents)
 		{
 			component.UpdateRaycastHit();
 		}
 
-		gravitySubSystem.OnFixedUpdate(deltaFrameCount, deltaTime);
+		gravitySubSystem.OnUpdate(deltaFrameCount, deltaTime);
 
 		foreach (var component in physicsComponents)
 		{

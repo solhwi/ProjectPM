@@ -14,7 +14,9 @@ namespace TheKiwiCoder {
         public Transform transform;
         public Animator animator;
         public EntityBehaviour entityComponent;
-        public CharacterSkillTable characterSkillTable;
+        public ScriptParsingSystem scriptParsingSystem;
+        public EntitySystem entitySystem;
+        public CommandSystem commandSystem;
         // Add other game specific systems here
 
         public static Context CreateFromGameObject(GameObject gameObject) {
@@ -24,7 +26,6 @@ namespace TheKiwiCoder {
             context.transform = gameObject.transform;
             context.animator = gameObject.GetComponent<Animator>();
             context.entityComponent = gameObject.GetComponent<EntityBehaviour>();
-            context.characterSkillTable = ScriptParsingSystem.Instance.GetTable<CharacterSkillTable>();
             // Add whatever else you need here...
 
             return context;

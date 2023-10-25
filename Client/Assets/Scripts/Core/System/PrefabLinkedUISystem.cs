@@ -7,23 +7,32 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class PrefabLinkedUISystem : MonoSystem<PrefabLinkedUISystem> 
+public class PrefabLinkedUISystem : MonoSystem
 {
-	private EventSystem eventSystem;
+	[SerializeField] private AddressableResourceSystem resourceSystem = null;
+
+    private EventSystem eventSystem;
 	private Dictionary<Type, UIPopup> popupDictionary = new Dictionary<Type, UIPopup>();
 	private Stack<UIPopup> popupStack = new Stack<UIPopup>();
 
 	private UIMainWindow currentMainWindow = null;
 
-	protected override void OnInitializeSystem()
+    protected override void OnReset()
+    {
+        base.OnReset();
+
+        resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
+    }
+
+    public override void OnEnter()
 	{
-		FindMainWindow(SceneModuleSystem.Instance.CurrentSceneType);
-		SceneModuleSystem.Instance.onSceneChanged += FindMainWindow;
+		FindMainWindow(SceneModuleSystemManager.Instance.CurrentSceneType);
+		SceneModuleSystemManager.Instance.onSceneChanged += FindMainWindow;
 	}
 
-	protected override void OnReleaseSystem()
+    public override void OnExit()
 	{
-		SceneModuleSystem.Instance.onSceneChanged -= FindMainWindow;
+		SceneModuleSystemManager.Instance.onSceneChanged -= FindMainWindow;
 	}
 
 	private void FindMainWindow(SceneType type)
@@ -64,14 +73,14 @@ public class PrefabLinkedUISystem : MonoSystem<PrefabLinkedUISystem>
 
 	private async UniTask<T> CreatePopup<T>() where T : UIPopup
 	{
-		return await AddressableResourceSystem.Instance.InstantiateAsync<T>();
+		return await resourceSystem.InstantiateAsync<T>();
 	}
 
 	private T OpenPopup<T>(UIPopup popup, UIParam param) where T : UIPopup
 	{
 		if (popup.TryOpen(param))
 		{
-            behaviour.SetSystemChild(this, popup);
+            SceneModuleSystemManager.Instance.SetSystemChild(this, popup);
 
             popup.SetOrder(popupStack.Count + 1);
 			popupStack.Push(popup);

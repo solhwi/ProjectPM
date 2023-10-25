@@ -7,12 +7,14 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasScaler))]
 public class UIWindow : MonoComponent
 {
-	[SerializeField] private Canvas canvas;
+	[SerializeField] protected PrefabLinkedUISystem uiSystem = null;
+    [SerializeField] private Canvas canvas;
     [SerializeField] private CanvasScaler scaler;
 
     private void Reset()
 	{
-		canvas = GetComponent<Canvas>();
+        uiSystem = SystemHelper.GetSystemAsset<PrefabLinkedUISystem>();
+        canvas = GetComponent<Canvas>();
 		scaler = GetComponent<CanvasScaler>();
 
 		SetCanvas();
