@@ -15,7 +15,6 @@ public abstract class SceneModule : MonoComponent
 	[SerializeField] protected SceneType mySceneType = SceneType.Title;
 	protected float sceneOpenDeltaTime = 0.0f;
 
-#if UNITY_EDITOR
 	protected virtual void Reset()
 	{
         switch(this)
@@ -43,7 +42,6 @@ public abstract class SceneModule : MonoComponent
         resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
         scriptParsingSystem = SystemHelper.GetSystemAsset<ScriptParsingSystem>();
     }
-#endif
 
     public Transform RequestSystemGameObject(MonoSystem system)
     {

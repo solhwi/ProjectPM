@@ -104,9 +104,4 @@ public class SingletonBehaviour : MonoBehaviour
             onLateUpdate?.Invoke();
         }
     }
-
-    private void OnApplicationQuit()
-    {
-       
-    }
 }

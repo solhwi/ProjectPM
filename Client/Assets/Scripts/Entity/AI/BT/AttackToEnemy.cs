@@ -6,10 +6,13 @@ using System.Linq;
 
 public class AttackToEnemy : ActionNode
 {
-    protected override void OnStart() 
+	ENUM_SKILL_TYPE skillType = ENUM_SKILL_TYPE.None;
+
+	protected override void OnStart() 
     {
-        
-    }
+		var validSkillTypes = blackboard.searchedEnemieDictionary.Keys;
+		skillType = validSkillTypes.FirstOrDefault(IsAttack);
+	}
 
     protected override void OnStop() 
     {
@@ -18,15 +21,16 @@ public class AttackToEnemy : ActionNode
 
     private bool IsAttack(ENUM_SKILL_TYPE skillType)
     {
-        return false;
-        // return context.characterSkillTable.IsUseMana(skillType) == false;
+		var characterSkillTable = context.scriptParsingSystem.GetTable<CharacterSkillTable>();
+		if (characterSkillTable == null)
+			return false;
+
+		return characterSkillTable.IsUseMana(skillType) == false;
     }
 
     protected override State OnUpdate() 
     {
-        var validSkillTypes = blackboard.searchedEnemieDictionary.Keys;
-        var currentSkill = validSkillTypes.FirstOrDefault(IsAttack);
-        if (currentSkill == ENUM_SKILL_TYPE.None)
+        if (skillType == ENUM_SKILL_TYPE.None)
             return State.Failure;
 
         var command = context.commandSystem.MakeCommand(ENUM_COMMAND_TYPE.Attack, context.entityComponent);

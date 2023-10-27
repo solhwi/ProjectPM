@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using TheKiwiCoder;
@@ -21,7 +22,7 @@ public static class EntityHelper
 	{
 		if (entity is EntityBehaviour entityBehaviour)
 		{
-			return entityBehaviour.GetOrAddComponent<T>();
+			return entityBehaviour.gameObject.GetOrAddComponent<T>();
 		}
 
 		return null;
@@ -30,10 +31,12 @@ public static class EntityHelper
 
 public class EntityControlSubSystem : MonoSystem
 {
-	[SerializeField] protected AddressableResourceSystem resourceSystem = null;
-	[SerializeField] protected CommandSystem commandSystem = null;
+	[SerializeField] private AddressableResourceSystem resourceSystem = null;
+	[SerializeField] private CommandSystem commandSystem = null;
+	[SerializeField] private EntitySystem entitySystem = null;
+	[SerializeField] private ScriptParsingSystem scriptParsingSystem = null;
 
-    private IEntity playerEntity = null;
+	private IEntity playerEntity = null;
     private Dictionary<int, BehaviourTreeRunner> enemyBehaviourTrees = new Dictionary<int, BehaviourTreeRunner>();
 
 	public static bool IsPlayerControl = true;
@@ -45,7 +48,10 @@ public class EntityControlSubSystem : MonoSystem
 
         resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
 		commandSystem = SystemHelper.GetSystemAsset<CommandSystem>();
-    }
+		entitySystem = SystemHelper.GetSystemAsset<EntitySystem>();
+		scriptParsingSystem = SystemHelper.GetSystemAsset<ScriptParsingSystem>();
+
+	}
 
     public void ToPlayerControl(IEntity entity)
     {
@@ -57,15 +63,11 @@ public class EntityControlSubSystem : MonoSystem
 		if (entity == null)
 			return;
 
-		var tree = LoadTree(entity.EntityType);
-		if (tree == null)
-			return;
-
 		var runner = entity.GetOrAddComponent<BehaviourTreeRunner>();
 		if (runner == null)
 			return;
 
-		runner.OnStart(tree);
+		runner.OnStart(entity, resourceSystem, commandSystem, entitySystem, scriptParsingSystem);
 		enemyBehaviourTrees[entity.EntityGuid] = runner;
 	}
 
@@ -96,11 +98,5 @@ public class EntityControlSubSystem : MonoSystem
 		{
 			UpdateAIControl();
 		}
-	}
-
-	private BehaviourTree LoadTree(ENUM_ENTITY_TYPE entityType)
-	{
-		string btAssetPath = EntityHelper.ToBehaviourTreePath(entityType);
-		return resourceSystem.LoadCached<BehaviourTree>(btAssetPath);
 	}
 }

@@ -16,8 +16,8 @@ public class AddressableResourceSystem : MonoSystem
 	[System.Serializable]
 	private class ObjectPathData
 	{
-		public readonly string Path;
-		public readonly Object Obj;
+		public string Path;
+		public Object Obj;
 
 		public ObjectPathData(string path, Object obj)
 		{

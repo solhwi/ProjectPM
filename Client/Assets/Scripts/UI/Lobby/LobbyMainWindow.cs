@@ -6,18 +6,17 @@ public class LobbyMainWindow : UIMainWindow
 {
     public void OnClickBossMode()
     {
-        BossSceneModuleParam param = new BossSceneModuleParam(ENUM_MAP_TYPE.City, ENUM_ENTITY_TYPE.RedMan);
-
-        SceneModuleSystemManager.Instance.LoadScene(SceneType.Boss, param);
+        var param = new BossSceneModule.Param(ENUM_MAP_TYPE.City, ENUM_ENTITY_TYPE.RedMan);
+        SceneModuleSystemManager.Instance.TryEnterSceneModule(SceneType.Boss, param);
 	}
 
     public void OnClickMatch()
     {
-		SceneModuleSystemManager.Instance.LoadScene(SceneType.Match);
+		SceneModuleSystemManager.Instance.TryEnterSceneModule(SceneType.Match);
 	}
 
     public void OnClickTrainingMode()
     {
-		SceneModuleSystemManager.Instance.LoadScene(SceneType.Training);
+		SceneModuleSystemManager.Instance.TryEnterSceneModule(SceneType.Training);
 	}
 }

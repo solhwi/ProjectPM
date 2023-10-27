@@ -12,13 +12,13 @@ public class MapSpawnSubSystem : MonoSystem
     {
 		foreach (var component in mapComponent.GetComponentsInChildren<TeamPositionComponent>())
 		{
-			if (teamPositionDictionary.TryGetValue(component.TeamType, out var positionList))
+			if (teamPositionDictionary.TryGetValue(component.TeamType, out var positionList) == false)
 			{
-				if (positionList == null)
-					positionList = new List<TeamPositionComponent>();
-
-				positionList.Add(component);
+				positionList = new List<TeamPositionComponent>();
 			}
+
+			positionList.Add(component);
+			teamPositionDictionary[component.TeamType] = positionList;
 		}
 	}
 

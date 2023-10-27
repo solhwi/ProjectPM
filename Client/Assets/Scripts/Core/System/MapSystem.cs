@@ -48,8 +48,8 @@ public class MapSystem : MonoSystem
         var mapObject = await resourceSystem.InstantiateAsync<T>();
 
 		mapObject.SetOrderLayer();
-        SceneModuleSystemManager.Instance.SetSystemChild(this, mapObject);
+		this.SetChildObject(mapObject);
 
-        return mapObject;
+		return mapObject;
     }
 }

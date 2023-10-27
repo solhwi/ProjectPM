@@ -110,18 +110,6 @@ public class EntitySystem : MonoSystem
 		collisionSubSystem.OnDrawGizmos();
 	}
 
-	public async UniTask<IEnumerable<IEntity>> CreateEnemies(IEnumerable<EnemySpawnData> spawnDatas)
-    {
-        var entities = new List<IEntity>();
-
-        foreach(var data in spawnDatas)
-        {
-            entities.Add(await CreateEnemy(data.entityType));
-		}
-
-        return entities;
-    }
-
     public async UniTask<IEntity> CreateEnemy(ENUM_ENTITY_TYPE entityType)
     {
         return await CreateEntity<CharacterBehaviour>(entityType, false, false);
@@ -132,9 +120,9 @@ public class EntitySystem : MonoSystem
         return await CreateEntity<CharacterBehaviour>(entityType, true, false);
     }
 
-    public async UniTask<IEntity> CreateBoss(EnemySpawnData spawnData)
+    public async UniTask<IEntity> CreateBoss(ENUM_ENTITY_TYPE entityType)
     {
-        return await CreateEntity<CharacterBehaviour>(spawnData.entityType, false, true);
+        return await CreateEntity<CharacterBehaviour>(entityType, false, true);
     }
 
     private async UniTask<IEntity> CreateEntity<T>(ENUM_ENTITY_TYPE entityType, bool isPlayer, bool isBoss) where T : EntityBehaviour
@@ -163,7 +151,7 @@ public class EntitySystem : MonoSystem
 		entityBehaviour.Initialize(ownerGuid, entityGuid, entityType, isPlayer);
         entityBehaviour.SetEntityLayer(layerType);
 
-        SceneModuleSystemManager.Instance.SetSystemChild(this, entityBehaviour);
+        this.SetChildObject(entityBehaviour);
 
 		entityDictionary[entityGuid] = entityBehaviour;
 		return entityBehaviour;

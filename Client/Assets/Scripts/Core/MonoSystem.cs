@@ -22,6 +22,11 @@ public static class SystemHelper
     {
         return AssetDatabase.LoadAssetAtPath<TSystem>(GetSystemAssetPath<TSystem>());
     }
+
+    public static void SetChildObject(this MonoSystem system, MonoBehaviour childObj)
+    {
+		SceneModuleSystemManager.Instance.SetSystemChild(system, childObj);
+	}
 }
 
 public abstract class MonoSystem : ScriptableObject

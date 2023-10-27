@@ -5,20 +5,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleSceneModuleParam : SceneModuleParam
-{
-    public readonly bool isOwner = false;
-
-    public BattleSceneModuleParam(bool isOwner)
-    {
-        this.isOwner = isOwner;
-    }
-}
-
 public class MatchSceneModule : NetworkSceneModule
 {
+	public class Param : SceneModuleParam
+	{
+		public readonly bool isOwner = false;
+
+		public Param(bool isOwner)
+		{
+			this.isOwner = isOwner;
+		}
+	}
+
 #if UNITY_EDITOR
-    protected override NetworkManager CreateNetworkManager()
+	protected override NetworkManager CreateNetworkManager()
 	{
         var networkManager = FindObjectOfType<MatchSessionManager>();
         if (networkManager == null)

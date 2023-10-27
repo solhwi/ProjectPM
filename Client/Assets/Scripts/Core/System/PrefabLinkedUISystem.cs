@@ -80,9 +80,9 @@ public class PrefabLinkedUISystem : MonoSystem
 	{
 		if (popup.TryOpen(param))
 		{
-            SceneModuleSystemManager.Instance.SetSystemChild(this, popup);
+			this.SetChildObject(popup);
 
-            popup.SetOrder(popupStack.Count + 1);
+			popup.SetOrder(popupStack.Count + 1);
 			popupStack.Push(popup);
 		}
 

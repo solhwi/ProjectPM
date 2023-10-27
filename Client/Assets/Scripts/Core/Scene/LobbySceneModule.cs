@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class LobbySceneModule : SceneModule
 {
+
 	public async override UniTask OnPrepareEnterRoutine(SceneModuleParam param)
 	{
 		await scriptParsingSystem.LoadAsyncScriptParsers();

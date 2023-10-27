@@ -6,12 +6,18 @@ using System.Linq;
 
 public class FindEnemy : ActionNode
 {
+    List<ENUM_SKILL_TYPE> hasSkillTypes = new List<ENUM_SKILL_TYPE>();
+
     protected override void OnStart() 
     {
-        
-    }
+		var characterSkillTable = context.scriptParsingSystem.GetTable<CharacterSkillTable>();
+        if (characterSkillTable == null)
+            return;
 
-    protected override void OnStop() 
+		hasSkillTypes = characterSkillTable.GetSkillTypes(context.entityComponent.EntityType).ToList();
+	}
+
+	protected override void OnStop() 
     {
 
     }
@@ -20,18 +26,14 @@ public class FindEnemy : ActionNode
     {
         blackboard.searchedEnemieDictionary.Clear();
 
-        //var hasSkillTypes = context.characterSkillTable.GetSkillTypes(context.entityComponent.EntityType);
-        //if (hasSkillTypes == null)
-        //    return State.Success;
+        foreach (var skillType in hasSkillTypes)
+        {
+            var enemies = context.entitySystem.GetSearchedEntities(context.entityComponent, skillType);
+            if (enemies == null || enemies.Any() == false)
+                continue;
 
-        //foreach(var skillType in hasSkillTypes)
-        //{
-        //    var enemies = EntitySystem.Instance.GetSearchedEntities(context.entityComponent, skillType);
-        //    if (enemies == null || enemies.Any() == false)
-        //        continue;
-
-        //    blackboard.searchedEnemieDictionary.Add(skillType, enemies);
-        //}
+            blackboard.searchedEnemieDictionary.Add(skillType, enemies);
+        }
 
         return State.Success;
     }

@@ -110,7 +110,7 @@ public class SceneModuleSystemManager : Singleton<SceneModuleSystemManager>
             currentSceneModule.OnLateUpdate(Time.frameCount, Time.deltaTime);
     }
 
-    public void LoadScene(SceneType sceneType, SceneModuleParam param = null)
+    public void TryEnterSceneModule(SceneType sceneType, SceneModuleParam param = null)
     {
         currentParam = param;
         StartLoadSceneAsync(sceneType).ToCancellationToken(cancellationSource.Token);

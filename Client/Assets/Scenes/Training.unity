@@ -244,6 +244,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22182d3c3fcee744ab44c290ecb6b0fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resourceSystem: {fileID: 11400000, guid: bca2213f93713d64fbdea0c92a750d2d, type: 2}
+  scriptParsingSystem: {fileID: 11400000, guid: dba4f0b71c56f5c42bbe02bfdd306272, type: 2}
   mySceneType: 5
 --- !u!4 &1875597542
 Transform:

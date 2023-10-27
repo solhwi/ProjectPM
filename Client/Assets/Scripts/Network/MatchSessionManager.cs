@@ -246,7 +246,7 @@ public class MatchSessionManager : NetworkManager<MatchSessionManager>, ISession
 
     private void OnStartGame()
     {
-        SceneModuleSystemManager.Instance.LoadScene(SceneType.Battle, new BattleSceneModuleParam(isOwner));
+        SceneModuleSystemManager.Instance.TryEnterSceneModule(SceneType.Battle, new MatchSceneModule.Param(isOwner));
     }
 
     public void Tick()

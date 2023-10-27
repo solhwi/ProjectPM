@@ -4,7 +4,7 @@ using UnityEngine;
 
 public partial class BattleSessionManager : NetworkManager<BattleSessionManager>, ISessionComponent
 {
-	private BattleSceneModuleParam battleParam = null;
+	private MatchSceneModule.Param battleParam = null;
 	private Coroutine sessionCoroutine = null;
 
 	private int currentTickCount = 0;
@@ -14,7 +14,7 @@ public partial class BattleSessionManager : NetworkManager<BattleSessionManager>
 
 	public void Connect(SceneModuleParam param)
 	{
-		if (param is BattleSceneModuleParam battleParam)
+		if (param is MatchSceneModule.Param battleParam)
 		{
 			this.battleParam = battleParam;
 

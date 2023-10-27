@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceSystem: {fileID: 11400000, guid: bca2213f93713d64fbdea0c92a750d2d, type: 2}
   commandSystem: {fileID: 11400000, guid: 0e3d20b7cd0d70f4986fd815428668a6, type: 2}
+  entitySystem: {fileID: 11400000, guid: 46e1695760ae42f40881ae95a30aaf5c, type: 2}
+  scriptParsingSystem: {fileID: 11400000, guid: dba4f0b71c56f5c42bbe02bfdd306272, type: 2}

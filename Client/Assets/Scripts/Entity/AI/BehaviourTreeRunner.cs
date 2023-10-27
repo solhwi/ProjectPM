@@ -6,12 +6,22 @@ using TheKiwiCoder;
 public class BehaviourTreeRunner : MonoBehaviour
 {
 	public BehaviourTree tree;
-	private Context context;
 
-	public void OnStart(BehaviourTree tree)
+	private Context context;
+	private AddressableResourceSystem resourceSystem;
+
+	public void OnStart(IEntity entity, 
+		AddressableResourceSystem resourceSystem, 
+		CommandSystem commandSystem, 
+		EntitySystem entitySystem,
+		ScriptParsingSystem scriptParsingSystem)
 	{
+		this.resourceSystem = resourceSystem;
+
 		context = CreateBehaviourTreeContext();
-		this.tree = tree.Clone();
+		context.AddSystem(resourceSystem, commandSystem, entitySystem, scriptParsingSystem);
+		
+		this.tree = LoadTree(entity.EntityType);
 		this.tree.Bind(context);
 	}
 
@@ -23,9 +33,15 @@ public class BehaviourTreeRunner : MonoBehaviour
 		}
 	}
 
-	Context CreateBehaviourTreeContext()
+	private Context CreateBehaviourTreeContext()
 	{
 		return Context.CreateFromGameObject(gameObject);
+	}
+
+	private BehaviourTree LoadTree(ENUM_ENTITY_TYPE entityType)
+	{
+		string btAssetPath = EntityHelper.ToBehaviourTreePath(entityType);
+		return resourceSystem.LoadCached<BehaviourTree>(btAssetPath);
 	}
 
 	private void OnDrawGizmosSelected()
@@ -41,4 +57,5 @@ public class BehaviourTreeRunner : MonoBehaviour
 			}
 		});
 	}
+
 }
