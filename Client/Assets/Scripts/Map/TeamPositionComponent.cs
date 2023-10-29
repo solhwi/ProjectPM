@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TeamPositionComponent : MonoComponent
+public class TeamPositionComponent : MonoBehaviour
 {
     public ENUM_TEAM_TYPE TeamType => type;
 

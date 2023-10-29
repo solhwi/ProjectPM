@@ -69,19 +69,15 @@ public partial class BattleSessionManager
 				var entity = entitySystem.GetEntity(entityMessage.entityGuid);
 				if (entity == null)
 					continue;
-
+                 
                 entityPrevPosList.Add(new KeyValuePair<IEntity, Vector2>(entity, entity.Position));
                 entity.SetPosition(entityMessage.pos);
 			}
 
             // 충돌 정보를 넣어 보낸다.
-			for (int i = 0; i < inputMessage.entityMessages.Length; i++)
+			foreach(var entityMessage in inputMessage.entityMessages)
 			{
-                var entity = entitySystem.GetEntity(inputMessage.entityMessages[i].entityGuid);
-				if (entity == null)
-					continue;
-
-                inputMessage.entityMessages[i].overlappedEntities = entitySystem.GetOverlapEntityGuids(inputMessage.entityMessages[i]).ToArray();
+		        entityMessage.AddAttackerEntities(entitySystem);
 			}
 
             yield return inputMessage;

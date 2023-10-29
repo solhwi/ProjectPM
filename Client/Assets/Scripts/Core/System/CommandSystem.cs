@@ -37,7 +37,7 @@ public class CommandSystem : MonoSystem
         return newSnapShot;
     }
 
-    public FrameInputMessage MakeInputMessage()
+    private FrameInputMessage MakeInputMessage()
     {
         return inputSystem.FlushInput(Time.frameCount);
     }
@@ -104,7 +104,7 @@ public class CommandSystem : MonoSystem
         if (playerEntity == null)
             return default;
 
-        message.playerEntityMessage = MakeEntityMessage(playerEntity);
+        message.playerEntityMessage = MakeEntityMessage(playerEntity).AddAttackerEntities(entitySystem);
         return message;
     }
 
@@ -112,11 +112,11 @@ public class CommandSystem : MonoSystem
     {
         var message = new FrameCommandMessage();
         message.playerInputMessage = MakeFrameMessageByCommand(commandType);
-        message.playerEntityMessage = MakeEntityMessage(entity);
+        message.playerEntityMessage = MakeEntityMessage(entity).AddAttackerEntities(entitySystem);
         return message;
     }
 
-    public FrameEntityMessage MakeEntityMessage(IEntity entity)
+	private FrameEntityMessage MakeEntityMessage(IEntity entity)
     {
         var playerEntityMessage = new FrameEntityMessage();
 
@@ -126,7 +126,7 @@ public class CommandSystem : MonoSystem
         playerEntityMessage.hitbox = entity.HitBox;
         playerEntityMessage.offset = entity.HitOffset;
         playerEntityMessage.entityState = entity.CurrentState;
-        playerEntityMessage.normalizedTime = entity.CurrentNormalizedTime;
+        playerEntityMessage.normalizedTime = entity.CurrentStateNormalizedTime;
         playerEntityMessage.isGrounded = entity.IsGrounded;
 
         return playerEntityMessage;

@@ -4,21 +4,28 @@ using UnityEngine;
 
 public interface IMonoComponent
 {
-    void SetOwner(IEntity entity);
+    IEntity Entity
+    {
+        get;
+    }
 }
 
+/// <summary>
+/// 앤티티의 기능을 정의하는 컴포넌트
+/// </summary>
 public abstract class MonoComponent : MonoBehaviour, IMonoComponent
 {
-    [SerializeField] protected IEntity owner;
-
-    protected virtual void Reset()
+    private IEntity entity;
+	public IEntity Entity
     {
-        var myEntity = GetComponent<IEntity>();
-        SetOwner(owner);
-    }
+        get
+        {
+            if (entity == null) 
+            {
+                entity = GetComponent<EntityBehaviour>();
+            }
 
-    public void SetOwner(IEntity entity)
-    {
-        this.entity = entity;
+            return entity;
+        }
     }
 }

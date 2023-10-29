@@ -16,6 +16,11 @@ public interface IEntity
 		get;
 	}
 
+	bool IsAttackable
+	{
+		get;
+	}
+
 	Vector2 Velocity
 	{
 		get;
@@ -46,7 +51,7 @@ public interface IEntity
 		get;
 	}
 
-	float CurrentNormalizedTime
+	float CurrentStateNormalizedTime
 	{
 		get;
 	}
@@ -85,6 +90,8 @@ public interface IEntity
 	//{
 	//	get;
 	//}
+
+	bool IsDamageable(IEntity entity);
 
 	void SetPosition(Vector2 position);
 	void PushCommand(ICommand command);

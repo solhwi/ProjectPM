@@ -48,10 +48,10 @@ public partial class BattleSessionManager
 		{
 			foreach(var entityMessage in userSnapShot.entityMessages)
 			{
-				if (entityMessage.overlappedEntities == null)
+				if (entityMessage.attackerEntities == null)
 					continue;
 
-				if (entityMessage.overlappedEntities.Length <= 0)
+				if (entityMessage.attackerEntities.Length <= 0)
 					continue;
 
 				var entityGuid = entityMessage.entityGuid;

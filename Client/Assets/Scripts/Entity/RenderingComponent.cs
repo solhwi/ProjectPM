@@ -10,25 +10,27 @@ public class RenderingComponent : MonoComponent
 		private set;
 	}
 
-	private SpriteRenderer spriteRenderer = null;
+	[SerializeField] private SpriteRenderer spriteRenderer = null;
 
-    public void Initialize(ENUM_LAYER_TYPE layerType, int orderIndex)
+	private void Reset()
 	{
-        spriteRenderer = GetComponent<SpriteRenderer>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
+	}
+
+	public void Initialize(ENUM_LAYER_TYPE layerType, int orderIndex)
+	{
 		if (spriteRenderer == null)
 			return;
 
 		spriteRenderer.sortingOrder = LayerHelper.GetSortingLayer(layerType, orderIndex);
 	}
 
-	public void Look(float xVelocity)
+	public void Look(bool isLeft)
 	{
-		if (Mathf.Approximately(xVelocity, 0.0f))
+		if (spriteRenderer == null)
 			return;
 
-		bool isLeft = xVelocity < Mathf.Epsilon;
-
-        spriteRenderer.flipX = isLeft;
+		spriteRenderer.flipX = isLeft;
 		IsLeftDirection = isLeft;
     }
 }

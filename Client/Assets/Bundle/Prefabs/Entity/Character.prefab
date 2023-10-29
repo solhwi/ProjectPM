@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 1550911840502356393}
   - component: {fileID: 2725238379644671886}
   - component: {fileID: 2111098085485975088}
-  - component: {fileID: 2207896231629970980}
   - component: {fileID: 581437186035518913}
+  - component: {fileID: 2207896231629970980}
   - component: {fileID: 3577131548055984871}
   m_Layer: 11
   m_Name: Character
@@ -214,6 +214,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28f8de7e0cb503945909d8fb99e78e21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 8229111070538132344}
+--- !u!114 &581437186035518913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3984707968245006999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ac417eaf776c0a48b44d76d14ba10fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Invincible: 0
 --- !u!114 &2207896231629970980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,18 +243,6 @@ MonoBehaviour:
   resourceSystem: {fileID: 11400000, guid: bca2213f93713d64fbdea0c92a750d2d, type: 2}
   transitionTable: {fileID: 11400000, guid: 4cfad2ca468ca2f4f850d7973d02e136, type: 2}
   conditionTable: {fileID: 11400000, guid: e892a0e1d1562d543a040f270a218caa, type: 2}
---- !u!114 &581437186035518913
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3984707968245006999}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ac417eaf776c0a48b44d76d14ba10fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3577131548055984871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,4 +258,5 @@ MonoBehaviour:
   renderingComponent: {fileID: 2111098085485975088}
   physicsComponent: {fileID: 2725238379644671886}
   stateMachineComponent: {fileID: 2207896231629970980}
+  damageableComponent: {fileID: 581437186035518913}
   statTable: {fileID: 11400000, guid: 265958cf6db97314d8fbc27c7612248c, type: 2}

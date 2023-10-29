@@ -9,8 +9,6 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class CharacterStateMachineComponent : MonoComponent
 {
-	private CharacterBehaviour characterComponent;
-
 	private Animator animator;
 	private CharacterAnimatorState[] animatorStates;
 
@@ -31,7 +29,7 @@ public class CharacterStateMachineComponent : MonoComponent
 		private set;
 	} = ENUM_CHARACTER_STATE.Idle;
 
-	public float CurrentNormalizedTime
+	public float CurrentStateNormalizedTime
 	{
 		get
 		{
@@ -41,7 +39,6 @@ public class CharacterStateMachineComponent : MonoComponent
 
 	public void Initialize(CharacterBehaviour owner)
 	{
-        characterComponent = owner;	
         CurrentState = ENUM_CHARACTER_STATE.Idle;
 
         animator = GetComponent<Animator>();

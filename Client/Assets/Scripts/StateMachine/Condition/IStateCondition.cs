@@ -122,10 +122,10 @@ public class DamageCondition : IntStateCondition
     public override bool IsSatisfied(FrameCommandMessage command)
     {
 		var entityStateInfo = command.ToEntity();
-		if (entityStateInfo.overlappedEntities == null)
+		if (entityStateInfo.attackerEntities == null)
 			return false;
 
-		return entityStateInfo.overlappedEntities.Count() > value;
+		return entityStateInfo.attackerEntities.Count() > value;
     }
 }
 

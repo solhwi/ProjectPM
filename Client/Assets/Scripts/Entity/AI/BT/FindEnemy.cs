@@ -26,9 +26,20 @@ public class FindEnemy : ActionNode
     {
         blackboard.searchedEnemieDictionary.Clear();
 
-        foreach (var skillType in hasSkillTypes)
+		var skillTable = context.scriptParsingSystem.GetTable<CharacterSkillTable>();
+		if (skillTable == null)
+			return State.Success;
+
+		foreach (var skillType in hasSkillTypes)
         {
-            var enemies = context.entitySystem.GetSearchedEntities(context.entityComponent, skillType);
+            var skillInfo = skillTable.GetSkillInfo(skillType);
+            if (skillInfo == null)
+                continue;
+
+			Vector2 searchBox = new(skillInfo.searchBoxX, skillInfo.searchBoxY);
+			Vector2 searchOffset = new(skillInfo.searchOffsetX, skillInfo.searchOffsetY);
+
+			var enemies = context.entitySystem.GetOverlapEnemies(context.entityComponent, searchBox, searchOffset);
             if (enemies == null || enemies.Any() == false)
                 continue;
 

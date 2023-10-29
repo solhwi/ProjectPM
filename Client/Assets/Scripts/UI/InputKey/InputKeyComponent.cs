@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class InputKeyComponent : MonoComponent, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class InputKeyComponent : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
 	[SerializeField] protected FrameInputSystem inputSystem = null;
 	protected bool isPressed = false;

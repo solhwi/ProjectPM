@@ -30,6 +30,8 @@ public abstract class EntityBehaviour : MonoBehaviour, IEntity
 {
 	public virtual int CurrentState => 0;
 
+	public virtual bool IsAttackable => false;
+
 	public virtual Vector2 Velocity => Vector2.zero;
 
 	public virtual Vector2 HitBox => Vector2.zero;
@@ -42,7 +44,7 @@ public abstract class EntityBehaviour : MonoBehaviour, IEntity
 
 	public virtual bool IsGrounded => true;
 
-	public virtual float CurrentNormalizedTime => 0.0f;
+	public virtual float CurrentStateNormalizedTime => 0.0f;
 
 	public ENUM_ENTITY_TYPE EntityType => entityType;
 
@@ -95,6 +97,11 @@ public abstract class EntityBehaviour : MonoBehaviour, IEntity
 		this.entityType = ENUM_ENTITY_TYPE.None;
 		this.layerType = ENUM_LAYER_TYPE.Object;
 		this.entityGuid = 0;
+	}
+
+	public virtual bool IsDamageable(IEntity attackerEntity)
+	{
+		return attackerEntity.IsAttackable;
 	}
 
 	public void SetPosition(Vector2 position)

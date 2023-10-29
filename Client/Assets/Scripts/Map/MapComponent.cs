@@ -10,7 +10,7 @@ public enum ENUM_MAP_TYPE
     City = 0,
 }
 
-public abstract class MapComponent : MonoComponent
+public abstract class MapComponent : MonoBehaviour
 {
     public abstract ENUM_MAP_TYPE MapType
     {

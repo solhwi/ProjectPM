@@ -4,21 +4,28 @@ using UnityEngine;
 
 public interface IDamager
 {
-    bool IsDamageable 
-    { 
-        get;
-    }
+    bool IsDamageable(IEntity attacker);
 
-    void TakeDamage(ENUM_SKILL_TYPE attackType, IAttacker attacker);
+    void TakeDamage(ENUM_SKILL_TYPE attackType, IEntity attacker);
 }
 
 [RequireComponent(typeof(Collider2D))]
 public class DamageableComponent : MonoComponent, IDamager
 {
-    public ENUM_LAYER_TYPE TeamType;
-    public bool IsInvinsible = false;
+	public bool Invincible = false;
 
-    public void TakeDamage(ENUM_SKILL_TYPE attackType, IAttacker attacker)
+	public bool IsDamageable(IEntity attacker)
+	{
+		if (attacker.IsAttackable == false)
+			return false;
+
+		if (attacker.OwnerGuid == Entity.OwnerGuid)
+			return false;
+
+		return Invincible == false;
+	}
+
+	public void TakeDamage(ENUM_SKILL_TYPE attackType, IEntity attacker)
     {
 
     }

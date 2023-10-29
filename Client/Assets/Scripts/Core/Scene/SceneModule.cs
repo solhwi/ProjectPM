@@ -8,7 +8,7 @@ using UnityEngine;
 /// 시스템에 가까운 기능을 하지만, 씬 모듈 시스템에 의해 관리되는 컴포넌트라는 개념
 /// </summary>
 
-public abstract class SceneModule : MonoComponent
+public abstract class SceneModule : MonoBehaviour
 {
     [SerializeField] protected AddressableResourceSystem resourceSystem = null;
     [SerializeField] protected ScriptParsingSystem scriptParsingSystem = null;

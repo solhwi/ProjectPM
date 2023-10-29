@@ -43,10 +43,16 @@ public struct FrameEntityMessage : NetworkMessage
 	public Vector2 offset;
 	public Vector2 velocity;
 
-	public int[] overlappedEntities;
+	public int[] attackerEntities;
 
 	public bool isGrounded;
 	public float normalizedTime;
+
+	public FrameEntityMessage AddAttackerEntities(EntitySystem entitySystem)
+	{
+		attackerEntities = entitySystem.GetAttackerEntityGuids(this).ToArray();
+		return this;
+	}
 }
 
 [System.Serializable]

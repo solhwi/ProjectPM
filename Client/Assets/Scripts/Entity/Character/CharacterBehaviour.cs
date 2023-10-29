@@ -46,13 +46,16 @@ public class CharacterBehaviour : EntityBehaviour
 	[SerializeField] private RenderingComponent renderingComponent = null;
 	[SerializeField] private PhysicsComponent physicsComponent = null;
 	[SerializeField] private CharacterStateMachineComponent stateMachineComponent = null;
+	[SerializeField] private DamageableComponent damageableComponent = null;	
 	[SerializeField] private CharacterStatTable statTable = null;
 
 	public float JumpPower => statTable.GetStat(EntityType)?.jumpPower ?? 0.0f;
 
+	public override bool IsAttackable => isAttackable;
+
 	public override bool IsLeftDirection => renderingComponent.IsLeftDirection;
 
-    public override Vector2 Velocity => physicsComponent.Velocity;
+	public override Vector2 Velocity => physicsComponent.Velocity;
 
 	public override Vector2 HitBox => physicsComponent.HitBox;
 
@@ -62,7 +65,9 @@ public class CharacterBehaviour : EntityBehaviour
 
 	public override int CurrentState => (int)stateMachineComponent.CurrentState;
 
-	public override float CurrentNormalizedTime => stateMachineComponent.CurrentNormalizedTime;
+	public override float CurrentStateNormalizedTime => stateMachineComponent.CurrentStateNormalizedTime;
+
+	private bool isAttackable = false;
 
 
     public override void Initialize(int ownerGuid, int entityGuid, ENUM_ENTITY_TYPE type, bool isPlayer)
@@ -93,6 +98,11 @@ public class CharacterBehaviour : EntityBehaviour
         stateMachineComponent.ChangeState((ENUM_CHARACTER_STATE)nextState);
 	}
 
+	public override bool IsDamageable(IEntity attackerEntity)
+	{
+		return damageableComponent.IsDamageable(attackerEntity);
+	}
+
 	public void AddMovement(Vector2 moveVec)
 	{
         physicsComponent.AddMovement(moveVec);
@@ -101,6 +111,20 @@ public class CharacterBehaviour : EntityBehaviour
 	
 	public void SetDirection(Vector2 moveVec)
 	{
-        renderingComponent.Look(moveVec.x);
+		if (Mathf.Approximately(moveVec.x, 0.0f))
+			return;
+
+		bool isLeft = moveVec.x < Mathf.Epsilon;
+		renderingComponent.Look(isLeft);
+	}
+
+	public void SetInvincible(bool able)
+	{
+		damageableComponent.Invincible = able;
+	}
+
+	public void SetAttackable(bool able)
+	{
+		isAttackable = able;
 	}
 }

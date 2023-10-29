@@ -82,10 +82,6 @@ public class SingletonBehaviour : MonoBehaviour
 		UnityEngine.Object.Destroy(go);
 	}
 
-    /// <summary>
-    /// 업데이트 메시지들은 재정의가 필요하여 모듈 시스템에 이관함
-    /// </summary>
-
 	private void FixedUpdate()
 	{
         onFixedUpdate?.Invoke();

@@ -156,8 +156,8 @@ public class FrameInputSystem : MonoSystem
 
 		while (inputDataQueue.TryDequeue(out var result))
 		{
-			if (result.frameCount < targetFrameCount)
-				continue;
+			//if (result.frameCount < targetFrameCount)
+			//	continue;
 
 			if (result is MoveInputData moveInputResult)
 			{

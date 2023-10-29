@@ -9,31 +9,29 @@ using UnityEngine;
 
 public static class EntitySystemExtension
 {
-	public static IEnumerable<int> GetOverlapEntityGuids(this EntitySystem system, FrameEntityMessage message, bool includeMine = false)
+	public static IEnumerable<int> GetAttackerEntityGuids(this EntitySystem system, FrameEntityMessage message)
 	{
-		return system.GetOverlapEntities(message, includeMine).Select(entity => entity.EntityGuid);
+		return system.GetAttackerEntities(message).Select(entity => entity.EntityGuid);
 	}
 
-	public static IEnumerable<IEntity> GetOverlapEntities(this EntitySystem system, FrameEntityMessage message, bool includeMine)
+	public static IEnumerable<IEntity> GetAttackerEntities(this EntitySystem system, FrameEntityMessage message)
 	{
-		return system.GetOverlapEntities(message.entityGuid, message.pos, message.hitbox, message.offset, message.velocity, includeMine);
+		return system.GetAttackerEntities(message.entityGuid, message.pos, message.hitbox, message.offset, message.velocity);
 	}
 
-	public static IEnumerable<IEntity> GetSearchedEntities(this EntitySystem system, IEntity entity, ENUM_SKILL_TYPE skillType, bool includeMine = false)
+	public static IEnumerable<int> GetDamagerEntityGuids(this EntitySystem system, FrameEntityMessage message)
 	{
-        //var skillTable = ScriptParsingSystem.Instance.GetTable<CharacterSkillTable>();
-        //if (skillTable == null)
-        //	return null;
+		return system.GetDamagerEntities(message).Select(entity => entity.EntityGuid);
+	}
 
-        //var hasSkill = skillTable.GetSkillInfo(skillType);
-        //if (hasSkill == null)
-        //	return null;
+	public static IEnumerable<IEntity> GetDamagerEntities(this EntitySystem system, FrameEntityMessage message)
+	{
+		return system.GetDamagerEntities(message.entityGuid, message.pos, message.hitbox, message.offset, message.velocity);
+	}
 
-        //Vector2 box = new(hasSkill.searchBoxX, hasSkill.searchBoxY);
-        //Vector2 offset = new(hasSkill.searchOffsetX, hasSkill.searchOffsetY);
-
-        //return system.GetOverlapEntities(entity.EntityGuid, entity.Position, box, offset, entity.Velocity, includeMine);
-        return null;
+	public static IEnumerable<IEntity> GetOverlapEnemies(this EntitySystem system, IEntity entity, Vector2 searchBox, Vector2 searchOffset)
+	{
+        return system.GetOverlapEnemies(entity.EntityGuid, entity.Position, searchBox, searchOffset, entity.Velocity);
     }
 }
 
@@ -85,9 +83,19 @@ public class EntitySystem : MonoSystem
 		controlSubSystem.UpdateControl();
 	}
 
-	public IEnumerable<IEntity> GetOverlapEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity, bool includeMine = false)
+	public IEnumerable<IEntity> GetDamagerEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity)
 	{
-        return collisionSubSystem.GetOverlapEntities(entityGuid, pos, size, offset, velocity, includeMine);
+		return collisionSubSystem.GetDamagerEntities(entityGuid, pos, size, offset, velocity);
+	}
+
+	public IEnumerable<IEntity> GetAttackerEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity)
+	{
+        return collisionSubSystem.GetAttackerEntities(entityGuid, pos, size, offset, velocity);
+	}
+
+	public IEnumerable<IEntity> GetOverlapEnemies(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity)
+	{
+        return collisionSubSystem.GetOverlapEnemies(entityGuid, pos, size, offset, velocity);
 	}
 
 	public void ToPlayerControl()
@@ -140,7 +148,7 @@ public class EntitySystem : MonoSystem
         {
             ownerGuid = GameConfig.PlayerGuid;
             layerType = ENUM_LAYER_TYPE.Friendly;
-        }
+		}
         else if(isBoss)
         {
             layerType = ENUM_LAYER_TYPE.Boss;
@@ -151,7 +159,7 @@ public class EntitySystem : MonoSystem
 		entityBehaviour.Initialize(ownerGuid, entityGuid, entityType, isPlayer);
         entityBehaviour.SetEntityLayer(layerType);
 
-        this.SetChildObject(entityBehaviour);
+		this.SetChildObject(entityBehaviour);
 
 		entityDictionary[entityGuid] = entityBehaviour;
 		return entityBehaviour;
