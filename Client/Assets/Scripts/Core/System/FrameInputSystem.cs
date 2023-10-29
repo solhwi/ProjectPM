@@ -140,7 +140,7 @@ public class FrameInputSystem : MonoSystem
 	public FrameInputMessage FlushInput(int targetFrameCount)
 	{
 		// 같은 프레임에 두 번 호출한 경우
-		if (currentInputMessage.frameCount == targetFrameCount)
+		if (currentInputMessage.frameCount >= targetFrameCount)
 			return currentInputMessage;
 
 		currentInputMessage = MakeCurrentFrameMessage(targetFrameCount);

@@ -108,16 +108,16 @@ public class PhysicsComponent : MonoComponent
 		}
 	}
 
-	public bool CheckGrounded()
-    {
+	private Vector2 GetGroundNormal()
+	{
 		Vector2 groundNormal = Vector2.zero;
 		int hitCount = 0;
 
-		for (int i = 0; i < m_FoundHits.Length; i++)
+		foreach(var foundHit in m_FoundHits)
 		{
-			if (m_FoundHits[i].collider != null)
+			if (foundHit.collider != null)
 			{
-				groundNormal += m_FoundHits[i].normal;
+				groundNormal += foundHit.normal;
 				hitCount++;
 			}
 		}
@@ -126,9 +126,15 @@ public class PhysicsComponent : MonoComponent
 		{
 			groundNormal.Normalize();
 		}
+		
+		return groundNormal;
+	}
 
+	public bool CheckGrounded()
+    {
+		Vector2 groundNormal = GetGroundNormal();
 		bool isGrounded = false;
-
+		
 		if (Mathf.Approximately(groundNormal.x, 0f) && Mathf.Approximately(groundNormal.y, 0f))
 		{
 			isGrounded = false;

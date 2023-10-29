@@ -302,6 +302,66 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce68cd790ece18d47a30747973377018
+    m_Address: Assets/Bundle/System/TimelineSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dba4f0b71c56f5c42bbe02bfdd306272
+    m_Address: Assets/Bundle/System/ScriptParsingSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb02330b6794c954ca2bfc135feb6ac2
+    m_Address: Assets/Bundle/System/PhysicsSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba7c83978fc9e444d9ad6565cdb655ad
+    m_Address: Assets/Bundle/System/PhysicsGravitySubSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac918eb1d4a74554c933e94eafb56a21
+    m_Address: Assets/Bundle/System/MapSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d2a2985fe51b964886f5f520cc58dfa
+    m_Address: Assets/Bundle/System/MapSpawnSubSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d328ad139b7832040bc80682bbfa9bd1
+    m_Address: Assets/Bundle/System/FrameInputSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46e1695760ae42f40881ae95a30aaf5c
+    m_Address: Assets/Bundle/System/EntitySystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6554335db1a5ff4e919e6a8c5edb156
+    m_Address: Assets/Bundle/System/EntityControlSubSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1167e7e167870d42a9f47ae48678336
+    m_Address: Assets/Bundle/System/EntityCollisionSubSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e3d20b7cd0d70f4986fd815428668a6
+    m_Address: Assets/Bundle/System/CommandSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bca2213f93713d64fbdea0c92a750d2d
+    m_Address: Assets/Bundle/System/AddressableResourceSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 2fbff68df76c9b84baff54fbac5ef644, type: 2}
   m_SchemaSet:
