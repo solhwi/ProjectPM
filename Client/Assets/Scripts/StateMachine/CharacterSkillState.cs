@@ -5,7 +5,22 @@ namespace StateMachine
 {
 	public class CharacterSkillState : CharacterAnimatorState
     {
+		private ENUM_SKILL_TYPE skillType = ENUM_SKILL_TYPE.None;
 
+		public override void OnSLStateEnter(CharacterBehaviour owner, FrameCommandMessage command)
+		{
+			skillType = characterSkillTable.GetSkillType(owner.EntityType, ENUM_ATTACK_KEY.SKILL);
+		}
+
+		public override void OnSLStateNoTransitionUpdate(CharacterBehaviour owner, FrameCommandMessage command)
+		{
+			base.OnSLStateNoTransitionUpdate(owner, command);
+		}
+
+		public override void OnSLStateExit(CharacterBehaviour owner, FrameCommandMessage command)
+		{
+			base.OnSLStateExit(owner, command);
+		}
 	}
 
 }

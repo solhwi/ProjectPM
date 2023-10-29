@@ -6,15 +6,16 @@ using System.Linq;
 
 public class FindEnemy : ActionNode
 {
-    List<ENUM_SKILL_TYPE> hasSkillTypes = new List<ENUM_SKILL_TYPE>();
+    CharacterSkillTable skillTable = null;
+	List<ENUM_SKILL_TYPE> hasSkillTypes = new List<ENUM_SKILL_TYPE>();
 
     protected override void OnStart() 
     {
-		var characterSkillTable = context.scriptParsingSystem.GetTable<CharacterSkillTable>();
-        if (characterSkillTable == null)
+		skillTable = context.scriptParsingSystem.GetTable<CharacterSkillTable>();
+        if (skillTable == null)
             return;
 
-		hasSkillTypes = characterSkillTable.GetSkillTypes(context.entityComponent.EntityType).ToList();
+		hasSkillTypes = skillTable.GetSkillTypes(context.entityComponent.EntityType).ToList();
 	}
 
 	protected override void OnStop() 
@@ -26,13 +27,9 @@ public class FindEnemy : ActionNode
     {
         blackboard.searchedEnemieDictionary.Clear();
 
-		var skillTable = context.scriptParsingSystem.GetTable<CharacterSkillTable>();
-		if (skillTable == null)
-			return State.Success;
-
 		foreach (var skillType in hasSkillTypes)
         {
-            var skillInfo = skillTable.GetSkillInfo(skillType);
+            var skillInfo = skillTable.GetSkillConditionInfo(skillType);
             if (skillInfo == null)
                 continue;
 

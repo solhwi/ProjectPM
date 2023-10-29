@@ -42,11 +42,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e137da44421689a4d9abe1ecb4e5dbba
-    m_Address: Assets/Bundle/Sprites/Object/Friendly/NormalCharacter.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ec536a7718376554185e4a856d5ae230
     m_Address: Assets/Bundle/Prefabs/UI/Joystick/Variable Joystick.prefab
     m_ReadOnly: 0
@@ -359,6 +354,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bca2213f93713d64fbdea0c92a750d2d
     m_Address: Assets/Bundle/System/AddressableResourceSystemAsset.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4f1fca2dacd5c549a0c71683c5d78d5
+    m_Address: Assets/Bundle/Prefabs/Entity/Attackable/Normal.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3f82f2e582817648985b869d9030340
+    m_Address: Assets/Bundle/Prefabs/Entity/Attackable/Bullet.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

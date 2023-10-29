@@ -11,20 +11,35 @@ public partial class CharacterSkillTable : ScriptParser
 {
 	public override void Parser()
 	{
-		skillInfoDictionary.Clear();
-		foreach(var value in skillInfoList)
+		skillConditionInfoDictionary.Clear();
+		foreach(var value in skillConditionInfoList)
 		{
-			skillInfoDictionary.Add(value.key, value);
+			skillConditionInfoDictionary.Add(value.key, value);
 		}
-		characterSkillMapInfoDictionary.Clear();
-		foreach(var value in characterSkillMapInfoList)
+		entitySkillMappingInfoDictionary.Clear();
+		foreach(var value in entitySkillMappingInfoList)
 		{
-			characterSkillMapInfoDictionary.Add(value.key, value);
+			entitySkillMappingInfoDictionary.Add(value.key, value);
+		}
+		skillKeyMappingInfoDictionary.Clear();
+		foreach(var value in skillKeyMappingInfoList)
+		{
+			skillKeyMappingInfoDictionary.Add(value.key, value);
+		}
+		skillTagInfoDictionary.Clear();
+		foreach(var value in skillTagInfoList)
+		{
+			skillTagInfoDictionary.Add(value.key, value);
+		}
+		skillActionInfoDictionary.Clear();
+		foreach(var value in skillActionInfoList)
+		{
+			skillActionInfoDictionary.Add(value.key, value);
 		}
 	}
 
 	[Serializable]
-	public class SkillInfo
+	public class SkillConditionInfo
 	{
 		public ENUM_SKILL_TYPE key;
 		public float searchBoxX;
@@ -32,25 +47,61 @@ public partial class CharacterSkillTable : ScriptParser
 		public float searchOffsetX;
 		public float searchOffsetY;
 		public int useMana;
-		public ENUM_ATTACK_KEY attackKeyType;
+		public float cooltime;
 	}
 
-	public List<SkillInfo> skillInfoList = new List<SkillInfo>();
+	public List<SkillConditionInfo> skillConditionInfoList = new List<SkillConditionInfo>();
 	[System.Serializable]
-	public class SkillInfoDictionary : SerializableDictionary<ENUM_SKILL_TYPE, SkillInfo> {}
-	public SkillInfoDictionary skillInfoDictionary = new SkillInfoDictionary();
+	public class SkillConditionInfoDictionary : SerializableDictionary<ENUM_SKILL_TYPE, SkillConditionInfo> {}
+	public SkillConditionInfoDictionary skillConditionInfoDictionary = new SkillConditionInfoDictionary();
 
 	[Serializable]
-	public class CharacterSkillMapInfo
+	public class EntitySkillMappingInfo
 	{
 		public ENUM_SKILL_TYPE key;
 		public ENUM_ENTITY_TYPE entityType;
 	}
 
-	public List<CharacterSkillMapInfo> characterSkillMapInfoList = new List<CharacterSkillMapInfo>();
+	public List<EntitySkillMappingInfo> entitySkillMappingInfoList = new List<EntitySkillMappingInfo>();
 	[System.Serializable]
-	public class CharacterSkillMapInfoDictionary : SerializableDictionary<ENUM_SKILL_TYPE, CharacterSkillMapInfo> {}
-	public CharacterSkillMapInfoDictionary characterSkillMapInfoDictionary = new CharacterSkillMapInfoDictionary();
+	public class EntitySkillMappingInfoDictionary : SerializableDictionary<ENUM_SKILL_TYPE, EntitySkillMappingInfo> {}
+	public EntitySkillMappingInfoDictionary entitySkillMappingInfoDictionary = new EntitySkillMappingInfoDictionary();
+
+	[Serializable]
+	public class SkillKeyMappingInfo
+	{
+		public ENUM_SKILL_TYPE key;
+		public ENUM_ATTACK_KEY attackKeyType;
+	}
+
+	public List<SkillKeyMappingInfo> skillKeyMappingInfoList = new List<SkillKeyMappingInfo>();
+	[System.Serializable]
+	public class SkillKeyMappingInfoDictionary : SerializableDictionary<ENUM_SKILL_TYPE, SkillKeyMappingInfo> {}
+	public SkillKeyMappingInfoDictionary skillKeyMappingInfoDictionary = new SkillKeyMappingInfoDictionary();
+
+	[Serializable]
+	public class SkillTagInfo
+	{
+		public string key;
+		public string parameter;
+	}
+
+	public List<SkillTagInfo> skillTagInfoList = new List<SkillTagInfo>();
+	[System.Serializable]
+	public class SkillTagInfoDictionary : SerializableDictionary<string, SkillTagInfo> {}
+	public SkillTagInfoDictionary skillTagInfoDictionary = new SkillTagInfoDictionary();
+
+	[Serializable]
+	public class SkillActionInfo
+	{
+		public ENUM_SKILL_TYPE key;
+		public string skillTag;
+	}
+
+	public List<SkillActionInfo> skillActionInfoList = new List<SkillActionInfo>();
+	[System.Serializable]
+	public class SkillActionInfoDictionary : SerializableDictionary<ENUM_SKILL_TYPE, SkillActionInfo> {}
+	public SkillActionInfoDictionary skillActionInfoDictionary = new SkillActionInfoDictionary();
 
 
 }

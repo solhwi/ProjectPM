@@ -18,7 +18,7 @@ namespace StateMachine
 {
     public class CharacterAnimatorState : EntityAnimatorState<CharacterBehaviour, FrameCommandMessage>
     {
-
+        [SerializeField] protected CharacterSkillTable characterSkillTable = null;
     }
 
 	public class EntityAnimatorState<TOwner, TCommand> : SealedStateMachineBehaviour

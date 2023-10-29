@@ -12,22 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d1abfe271e39844cb858d3f6bcfc972, type: 3}
   m_Name: CharacterSkillTable
   m_EditorClassIdentifier: 
-  skillInfoList:
+  skillConditionInfoList:
   - key: 1
     searchBoxX: 3
     searchBoxY: 5
     searchOffsetX: 0
     searchOffsetY: 0
     useMana: 0
-    attackKeyType: 1
+    cooltime: 3
   - key: 2
     searchBoxX: 10
     searchBoxY: 5
     searchOffsetX: 0
     searchOffsetY: 0
     useMana: 10
-    attackKeyType: 2
-  skillInfoDictionary:
+    cooltime: 5
+  skillConditionInfoDictionary:
     m_keys: 0100000002000000
     m_values:
     - key: 1
@@ -36,23 +36,61 @@ MonoBehaviour:
       searchOffsetX: 0
       searchOffsetY: 0
       useMana: 0
-      attackKeyType: 1
+      cooltime: 3
     - key: 2
       searchBoxX: 10
       searchBoxY: 5
       searchOffsetX: 0
       searchOffsetY: 0
       useMana: 10
-      attackKeyType: 2
-  characterSkillMapInfoList:
+      cooltime: 5
+  entitySkillMappingInfoList:
   - key: 1
     entityType: 3
   - key: 2
     entityType: 3
-  characterSkillMapInfoDictionary:
+  entitySkillMappingInfoDictionary:
     m_keys: 0100000002000000
     m_values:
     - key: 1
       entityType: 3
     - key: 2
       entityType: 3
+  skillKeyMappingInfoList:
+  - key: 1
+    attackKeyType: 1
+  - key: 2
+    attackKeyType: 2
+  skillKeyMappingInfoDictionary:
+    m_keys: 0100000002000000
+    m_values:
+    - key: 1
+      attackKeyType: 1
+    - key: 2
+      attackKeyType: 2
+  skillTagInfoList:
+  - key: '[Instantiate]'
+    parameter: Normal
+  - key: '[PencilInstantiate]'
+    parameter: '[Instantiate]:Pencil'
+  skillTagInfoDictionary:
+    m_keys:
+    - '[Instantiate]'
+    - '[PencilInstantiate]'
+    m_values:
+    - key: '[Instantiate]'
+      parameter: Normal
+    - key: '[PencilInstantiate]'
+      parameter: '[Instantiate]:Pencil'
+  skillActionInfoList:
+  - key: 1
+    skillTag: '[Instantiate]'
+  - key: 2
+    skillTag: '[PencilInstantiate]'
+  skillActionInfoDictionary:
+    m_keys: 0100000002000000
+    m_values:
+    - key: 1
+      skillTag: '[Instantiate]'
+    - key: 2
+      skillTag: '[PencilInstantiate]'

@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3700a90157777bc45b926c6ad4fa478f, type: 3}
   m_Name: FindEnemy
   m_EditorClassIdentifier: 
-  state: 0
+  state: 2
   started: 0
   guid: 7a8563e9c67f82346828f851c7d2aab8
   position: {x: -242.4, y: 41.599995}
   blackboard:
     searchedEnemieDictionary:
-      m_keys: 
+      m_keys: 02000000
   description: 
   drawGizmos: 0
 --- !u!114 &-6892600704063241379
@@ -34,12 +34,12 @@ MonoBehaviour:
   m_Name: RootNode
   m_EditorClassIdentifier: 
   state: 0
-  started: 0
+  started: 1
   guid: 320522e842849324c99a17c13dc819c5
   position: {x: -123.200005, y: -339.5035}
   blackboard:
     searchedEnemieDictionary:
-      m_keys: 
+      m_keys: 02000000
   description: 
   drawGizmos: 0
   child: {fileID: 1478156662560699581}
@@ -55,13 +55,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 460be9e34c566ea45b9e282b1adcb028, type: 3}
   m_Name: Selector
   m_EditorClassIdentifier: 
-  state: 0
+  state: 2
   started: 0
   guid: f26104bd0f905694887b0ffb22075af4
   position: {x: -16.399963, y: 41.599995}
   blackboard:
     searchedEnemieDictionary:
-      m_keys: 
+      m_keys: 02000000
   description: 
   drawGizmos: 0
   children:
@@ -93,7 +93,7 @@ MonoBehaviour:
   - {fileID: 3319446566328676507}
   blackboard:
     searchedEnemieDictionary:
-      m_keys: 
+      m_keys: 02000000
 --- !u!114 &1478156662560699581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,12 +107,12 @@ MonoBehaviour:
   m_Name: Repeat
   m_EditorClassIdentifier: 
   state: 0
-  started: 0
+  started: 1
   guid: 85cb6b9be1eba7444a5ed0a47c6513d8
   position: {x: -123.20001, y: -205.4016}
   blackboard:
     searchedEnemieDictionary:
-      m_keys: 
+      m_keys: 02000000
   description: 
   drawGizmos: 0
   child: {fileID: 5071213805824063082}
@@ -130,13 +130,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 460be9e34c566ea45b9e282b1adcb028, type: 3}
   m_Name: Selector
   m_EditorClassIdentifier: 
-  state: 0
+  state: 2
   started: 0
   guid: 3b72d4e0ac5589249857dc64acd82f50
   position: {x: -92.000046, y: 174.39996}
   blackboard:
     searchedEnemieDictionary:
-      m_keys: 
+      m_keys: 02000000
   description: 
   drawGizmos: 0
   children:
@@ -154,13 +154,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4489e3e257543504c8fc9f891246af6c, type: 3}
   m_Name: MoveToPosition
   m_EditorClassIdentifier: 
-  state: 0
+  state: 2
   started: 0
   guid: 49dbdca7ed2861545a818b04ecf412a5
   position: {x: 112.44542, y: 198.39996}
   blackboard:
     searchedEnemieDictionary:
-      m_keys: 
+      m_keys: 02000000
   description: 
   drawGizmos: 0
 --- !u!114 &4769768450768927020
@@ -175,13 +175,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c315e0ba2eb07c4a8f16a8493863a0b, type: 3}
   m_Name: AttackToEnemy
   m_EditorClassIdentifier: 
-  state: 0
+  state: 1
   started: 0
   guid: f6e2f37e6a5258741b15a7efb1ab70db
   position: {x: 27.200054, y: 369.6}
   blackboard:
     searchedEnemieDictionary:
-      m_keys: 
+      m_keys: 02000000
   description: 
   drawGizmos: 0
 --- !u!114 &5071213805824063082
@@ -196,13 +196,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61431bba79d7d7843b82bf1de71703f5, type: 3}
   m_Name: Sequencer
   m_EditorClassIdentifier: 
-  state: 0
+  state: 2
   started: 0
   guid: 7cd2bc24c02523f46ac5fa778a982bc8
   position: {x: -123.200005, y: -90.399994}
   blackboard:
     searchedEnemieDictionary:
-      m_keys: 
+      m_keys: 02000000
   description: 
   drawGizmos: 1
   children:
@@ -220,12 +220,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dd50e87ccf84fd48b7e2cd1f5995f3f, type: 3}
   m_Name: SkillToEnemy
   m_EditorClassIdentifier: 
-  state: 0
+  state: 2
   started: 0
   guid: 04ab7877f06542d4fbb48737cfd3805f
   position: {x: -198.40004, y: 369.60004}
   blackboard:
     searchedEnemieDictionary:
-      m_keys: 
+      m_keys: 02000000
   description: 
   drawGizmos: 0

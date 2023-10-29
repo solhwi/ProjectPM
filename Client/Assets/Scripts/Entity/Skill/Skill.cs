@@ -11,19 +11,29 @@ public enum ENUM_SKILL_TYPE
 
 public abstract class Skill
 {
-    private float coolTime;
+    private CharacterSkillTable skillTable;
+	private ENUM_SKILL_TYPE skillType;
+
+	private float maxCoolTime;
     private float currentCoolTime;
 
-    protected CharacterBehaviour owner;
-
-    public void SetOwner(CharacterBehaviour owner)
+    public Skill(ENUM_SKILL_TYPE type, CharacterSkillTable table)
     {
-        this.owner = owner;
+        this.skillTable = table;
+		this.skillType = type;
+
+        var conditionInfo = skillTable.GetSkillConditionInfo(type);
+        if (conditionInfo != null)
+        {
+            maxCoolTime = conditionInfo.cooltime;
+		}
+
+        currentCoolTime = 0.0f;
     }
 
     private bool IsCoolTime()
     {
-        return coolTime > currentCoolTime;
+        return maxCoolTime > currentCoolTime;
     }
 
     public virtual bool IsSatisfied()
@@ -42,15 +52,16 @@ public abstract class Skill
     }
 }
 
-public class ThrowSkill : Skill
+public class ThrowPencil : Skill
 {
-    public override void Trigger()
-    {
-        base.Trigger();
-    }
+	public ThrowPencil(ENUM_SKILL_TYPE type, CharacterSkillTable table) : base(type, table)
+	{
+	}
 }
 
-public class ThrowPencil : ThrowSkill
+public class SlashPencil : Skill
 {
-    
+	public SlashPencil(ENUM_SKILL_TYPE type, CharacterSkillTable table) : base(type, table)
+	{
+	}
 }

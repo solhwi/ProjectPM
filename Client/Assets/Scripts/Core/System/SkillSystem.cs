@@ -2,20 +2,70 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public static class SkillHelper
+{
+    
+}
+
 public class SkillSystem : MonoSystem
 {
-    [System.Serializable]
-    private class SkillDictionary : SerializableDictionary<ENUM_SKILL_TYPE, Skill> {}
+    [SerializeField] private CharacterSkillTable skillTable = null;
 
-    [SerializeField] private SkillDictionary skillDictionary = new SkillDictionary();
+    private Dictionary<int, List<Skill>> entitySkillDictionary = new Dictionary<int, List<Skill>>();
 
-    // 스킬 인포 테이블을 통하여 실제 스킬 딕셔너리를 제작한다.
+    public void Register(IEntity entity)
+    {
+        if (entity == null)
+            return;
 
-    // 스킬 인포는 스킬의 타입, 쿨타임, 적 서치 박스, 스킬 액션 태그 등으로 이루어져 있다.
+        var skillTypes = skillTable.GetSkillTypes(entity.EntityType);
+        if (skillTypes == null)
+            return;
 
-    // 스킬은 태그를 통해 제작된 스킬 액션 컴포넌트의 집합체이다.
+		List<Skill> hasSkills = new();
 
-    // 스킬 스테이트 머신에선 자신의 ATTACK_1와 ENTITY TYPE을 통해 실제 스킬을 가져올 수 있다.
+		foreach (var skillType in skillTypes)
+		{
+			hasSkills.Add(MakeSkill(skillType));
+		}
 
-    // 특정 앤티티는 자신을 시스템에 등록하여, 시스템이 자신의 스킬의 쿨타임 등 체크를 할 수 있도록 한다.
+		entitySkillDictionary[entity.EntityGuid] = hasSkills;
+	}
+
+    public void Unregister(IEntity entity)
+    {
+        if(entity == null) 
+            return;
+
+        if(entitySkillDictionary.ContainsKey(entity.EntityGuid))
+            entitySkillDictionary.Remove(entity.EntityGuid);
+    }
+
+	public Skill MakeSkill(ENUM_SKILL_TYPE skillType)
+	{
+		switch (skillType)
+		{
+			case ENUM_SKILL_TYPE.SlashPencil:
+				return new SlashPencil(skillType, skillTable);
+
+			case ENUM_SKILL_TYPE.ThrowPencil:
+				return new ThrowPencil(skillType, skillTable);
+		}
+
+		Debug.LogError($"정의되지 않은 스킬 타입 : {skillType}");
+		return null;
+	}
+
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
+	{
+		base.OnUpdate(deltaFrameCount, deltaTime);
+
+		foreach (var skills in entitySkillDictionary.Values)
+		{
+			foreach (var skill in skills)
+			{
+				skill.OnUpdate(deltaTime);
+			}
+		}
+	}
 }
