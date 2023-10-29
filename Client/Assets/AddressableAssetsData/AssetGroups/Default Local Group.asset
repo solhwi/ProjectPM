@@ -363,7 +363,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e3f82f2e582817648985b869d9030340
-    m_Address: Assets/Bundle/Prefabs/Entity/Attackable/Bullet.prefab
+    m_Address: Assets/Bundle/Prefabs/Entity/Attackable/Pencil.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
