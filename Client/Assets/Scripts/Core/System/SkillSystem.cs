@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public static class SkillHelper
@@ -9,9 +10,18 @@ public static class SkillHelper
 
 public class SkillSystem : MonoSystem
 {
+	[SerializeField] private AddressableResourceSystem resourceSystem = null;
     [SerializeField] private CharacterSkillTable skillTable = null;
 
     private Dictionary<int, List<Skill>> entitySkillDictionary = new Dictionary<int, List<Skill>>();
+
+    protected override void OnReset()
+    {
+        base.OnReset();
+
+        resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
+        skillTable = AssetDatabase.LoadAssetAtPath<CharacterSkillTable>("Assets/Bundle/Datas/Parser/CharacterSkillTable.asset");
+    }
 
     public void Register(IEntity entity)
     {
@@ -26,7 +36,12 @@ public class SkillSystem : MonoSystem
 
 		foreach (var skillType in skillTypes)
 		{
-			hasSkills.Add(MakeSkill(skillType));
+			var skill = MakeSkill(skillType);
+			if( skill == null) 
+				continue;
+
+            skill.SetOwner(entity);
+            hasSkills.Add(skill);
 		}
 
 		entitySkillDictionary[entity.EntityGuid] = hasSkills;
@@ -43,18 +58,8 @@ public class SkillSystem : MonoSystem
 
 	public Skill MakeSkill(ENUM_SKILL_TYPE skillType)
 	{
-		switch (skillType)
-		{
-			case ENUM_SKILL_TYPE.SlashPencil:
-				return new SlashPencil(skillType, skillTable);
-
-			case ENUM_SKILL_TYPE.ThrowPencil:
-				return new ThrowPencil(skillType, skillTable);
-		}
-
-		Debug.LogError($"정의되지 않은 스킬 타입 : {skillType}");
-		return null;
-	}
+        return new Skill(skillType, skillTable, resourceSystem);
+    }
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{

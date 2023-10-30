@@ -16,25 +16,25 @@ public partial class CharacterSkillTable : ScriptParser
 		{
 			skillConditionInfoDictionary.Add(value.key, value);
 		}
-		entitySkillMappingInfoDictionary.Clear();
-		foreach(var value in entitySkillMappingInfoList)
+		skillTagActionInfoDictionary.Clear();
+		foreach(var value in skillTagActionInfoList)
 		{
-			entitySkillMappingInfoDictionary.Add(value.key, value);
+			skillTagActionInfoDictionary.Add(value.key, value);
+		}
+		skillEntityMappingInfoDictionary.Clear();
+		foreach(var value in skillEntityMappingInfoList)
+		{
+			skillEntityMappingInfoDictionary.Add(value.key, value);
 		}
 		skillKeyMappingInfoDictionary.Clear();
 		foreach(var value in skillKeyMappingInfoList)
 		{
 			skillKeyMappingInfoDictionary.Add(value.key, value);
 		}
-		skillTagInfoDictionary.Clear();
-		foreach(var value in skillTagInfoList)
+		skillTagActionMappingInfoDictionary.Clear();
+		foreach(var value in skillTagActionMappingInfoList)
 		{
-			skillTagInfoDictionary.Add(value.key, value);
-		}
-		skillActionInfoDictionary.Clear();
-		foreach(var value in skillActionInfoList)
-		{
-			skillActionInfoDictionary.Add(value.key, value);
+			skillTagActionMappingInfoDictionary.Add(value.key, value);
 		}
 	}
 
@@ -56,16 +56,28 @@ public partial class CharacterSkillTable : ScriptParser
 	public SkillConditionInfoDictionary skillConditionInfoDictionary = new SkillConditionInfoDictionary();
 
 	[Serializable]
-	public class EntitySkillMappingInfo
+	public class SkillTagActionInfo
+	{
+		public string key;
+		public string parameter;
+	}
+
+	public List<SkillTagActionInfo> skillTagActionInfoList = new List<SkillTagActionInfo>();
+	[System.Serializable]
+	public class SkillTagActionInfoDictionary : SerializableDictionary<string, SkillTagActionInfo> {}
+	public SkillTagActionInfoDictionary skillTagActionInfoDictionary = new SkillTagActionInfoDictionary();
+
+	[Serializable]
+	public class SkillEntityMappingInfo
 	{
 		public ENUM_SKILL_TYPE key;
 		public ENUM_ENTITY_TYPE entityType;
 	}
 
-	public List<EntitySkillMappingInfo> entitySkillMappingInfoList = new List<EntitySkillMappingInfo>();
+	public List<SkillEntityMappingInfo> skillEntityMappingInfoList = new List<SkillEntityMappingInfo>();
 	[System.Serializable]
-	public class EntitySkillMappingInfoDictionary : SerializableDictionary<ENUM_SKILL_TYPE, EntitySkillMappingInfo> {}
-	public EntitySkillMappingInfoDictionary entitySkillMappingInfoDictionary = new EntitySkillMappingInfoDictionary();
+	public class SkillEntityMappingInfoDictionary : SerializableDictionary<ENUM_SKILL_TYPE, SkillEntityMappingInfo> {}
+	public SkillEntityMappingInfoDictionary skillEntityMappingInfoDictionary = new SkillEntityMappingInfoDictionary();
 
 	[Serializable]
 	public class SkillKeyMappingInfo
@@ -80,28 +92,16 @@ public partial class CharacterSkillTable : ScriptParser
 	public SkillKeyMappingInfoDictionary skillKeyMappingInfoDictionary = new SkillKeyMappingInfoDictionary();
 
 	[Serializable]
-	public class SkillTagInfo
-	{
-		public string key;
-		public string parameter;
-	}
-
-	public List<SkillTagInfo> skillTagInfoList = new List<SkillTagInfo>();
-	[System.Serializable]
-	public class SkillTagInfoDictionary : SerializableDictionary<string, SkillTagInfo> {}
-	public SkillTagInfoDictionary skillTagInfoDictionary = new SkillTagInfoDictionary();
-
-	[Serializable]
-	public class SkillActionInfo
+	public class SkillTagActionMappingInfo
 	{
 		public ENUM_SKILL_TYPE key;
 		public string skillTag;
 	}
 
-	public List<SkillActionInfo> skillActionInfoList = new List<SkillActionInfo>();
+	public List<SkillTagActionMappingInfo> skillTagActionMappingInfoList = new List<SkillTagActionMappingInfo>();
 	[System.Serializable]
-	public class SkillActionInfoDictionary : SerializableDictionary<ENUM_SKILL_TYPE, SkillActionInfo> {}
-	public SkillActionInfoDictionary skillActionInfoDictionary = new SkillActionInfoDictionary();
+	public class SkillTagActionMappingInfoDictionary : SerializableDictionary<ENUM_SKILL_TYPE, SkillTagActionMappingInfo> {}
+	public SkillTagActionMappingInfoDictionary skillTagActionMappingInfoDictionary = new SkillTagActionMappingInfoDictionary();
 
 
 }

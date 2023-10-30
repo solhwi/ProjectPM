@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f833dba70776884438b015a118d67f35, type: 3}
   m_Name: SkillSystemAsset
   m_EditorClassIdentifier: 
-  skillDictionary:
-    m_keys: 
+  resourceSystem: {fileID: 11400000, guid: bca2213f93713d64fbdea0c92a750d2d, type: 2}
+  skillTable: {fileID: 11400000, guid: 68b969ccb01ef8440a5a01f7a8024cf2, type: 2}

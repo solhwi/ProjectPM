@@ -9,16 +9,22 @@ public enum ENUM_SKILL_TYPE
     ThrowPencil = 2,
 }
 
-public abstract class Skill
+public class Skill
 {
-    private CharacterSkillTable skillTable;
-	private ENUM_SKILL_TYPE skillType;
+    protected AddressableResourceSystem resourceSystem;
 
-	private float maxCoolTime;
-    private float currentCoolTime;
+    protected CharacterSkillTable skillTable;
+    protected ENUM_SKILL_TYPE skillType;
 
-    public Skill(ENUM_SKILL_TYPE type, CharacterSkillTable table)
+    protected float maxCoolTime;
+    protected float currentCoolTime;
+
+    protected IEntity ownerEntity;
+    protected ISkillTagAction skillTagAction;
+
+    public Skill(ENUM_SKILL_TYPE type, CharacterSkillTable table, AddressableResourceSystem resourceSystem)
     {
+        this.resourceSystem = resourceSystem;
         this.skillTable = table;
 		this.skillType = type;
 
@@ -28,7 +34,13 @@ public abstract class Skill
             maxCoolTime = conditionInfo.cooltime;
 		}
 
+        skillTagAction = skillTable.GetSkillTagAction(type);
         currentCoolTime = 0.0f;
+    }
+
+    public void SetOwner(IEntity ownerEntity)
+    {
+        this.ownerEntity = ownerEntity;
     }
 
     private bool IsCoolTime()
@@ -49,19 +61,6 @@ public abstract class Skill
     public virtual void Trigger()
     {
         currentCoolTime = default;
+        skillTagAction?.Trigger(resourceSystem);
     }
-}
-
-public class ThrowPencil : Skill
-{
-	public ThrowPencil(ENUM_SKILL_TYPE type, CharacterSkillTable table) : base(type, table)
-	{
-	}
-}
-
-public class SlashPencil : Skill
-{
-	public SlashPencil(ENUM_SKILL_TYPE type, CharacterSkillTable table) : base(type, table)
-	{
-	}
 }

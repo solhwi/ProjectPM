@@ -5,9 +5,48 @@ using UnityEngine;
 
 public partial class CharacterSkillTable : ScriptParser
 {
+    private readonly Dictionary<string, ISkillTagAction> skillTagActionDictionary = new Dictionary<string, ISkillTagAction>();
+    private const char ParameterSeparator = ':';
+
+    public override void RuntimeParser()
+    {
+        MakeSkillTagInfos();
+    }
+
+    public void MakeSkillTagInfos()
+    {
+        foreach (var skillTagInfo in skillTagActionInfoList)
+        {
+            var skillTagType = skillTagInfo.key.Trim();
+            var skillTagAction = MakeSkillTagAction(skillTagType, out string[] parameters);
+            if (skillTagAction != null)
+            {
+                skillTagAction.Parse(skillTagInfo.parameter);
+                skillTagActionDictionary.Add(skillTagType, skillTagAction);
+            }
+        }
+    }
+
+    private ISkillTagAction MakeSkillTagAction(string skillTagType, out string[] parameters)
+    {
+        string[] rawConditions = skillTagType.Split(ParameterSeparator);
+
+        string inputRawConditionType = rawConditions[0];
+        parameters = rawConditions.Where(raw => raw.Equals(inputRawConditionType) == false).ToArray();
+
+        switch (skillTagType)
+        {
+            case "[Instantiate]":
+                return new InstantiateTagAction();
+        }
+
+        Debug.LogError($"정의되지 않은 스킬 액션 타입 : {skillTagType}");
+        return null;
+    }
+
     public IEnumerable<ENUM_SKILL_TYPE> GetSkillTypes(ENUM_ENTITY_TYPE entityType)
     {
-        return entitySkillMappingInfoList.Where(m => m.entityType == entityType).Select(m => m.key);
+        return skillEntityMappingInfoList.Where(m => m.entityType == entityType).Select(m => m.key);
 	}
 
 	public ENUM_SKILL_TYPE GetSkillType(ENUM_ENTITY_TYPE entityType, ENUM_ATTACK_KEY keyType)
@@ -37,11 +76,21 @@ public partial class CharacterSkillTable : ScriptParser
             return skillConditionInfoDictionary[skillType];
         }
 
-        Debug.LogError($"존재하지 않는 스킬 타입 : {skillType}");
+        Debug.LogError($"존재하지 않는 스킬 컨디션 타입 : {skillType}");
         return null;
     }
 
-    public bool IsUseMana(ENUM_SKILL_TYPE skillType)
+    public SkillTagActionMappingInfo GetSkillActionInfo(ENUM_SKILL_TYPE skillType)
+    {
+        if (skillTagActionMappingInfoDictionary.ContainsKey(skillType)) 
+        {
+            return skillTagActionMappingInfoDictionary[skillType];
+        }
+
+        return null;
+    }
+
+    public bool IsUseManaSkill(ENUM_SKILL_TYPE skillType)
     {
         return GetUseMana(skillType) > 0;
     }
@@ -85,4 +134,15 @@ public partial class CharacterSkillTable : ScriptParser
 
 		return skillInfo;
 	}
+
+    public ISkillTagAction GetSkillTagAction(ENUM_SKILL_TYPE skillType)
+    {
+        if (skillTagActionMappingInfoDictionary.TryGetValue(skillType, out var skillActionInfo) == false)
+            return null;
+
+        if (skillTagActionDictionary.TryGetValue(skillActionInfo.skillTag, out var skillTagAction) == false)
+            return null;
+
+        return skillTagAction;
+    }
 }

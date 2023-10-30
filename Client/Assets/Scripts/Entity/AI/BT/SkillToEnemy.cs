@@ -27,7 +27,7 @@ public class SkillToEnemy : ActionNode
 			return ENUM_SKILL_TYPE.None;
 
 		return skillTypes
-            .Where(characterSkillTable.IsUseMana) // 마나를 쓰는 스킬 중에
+            .Where(characterSkillTable.IsUseManaSkill) // 마나를 쓰는 스킬 중에
             .OrderByDescending(characterSkillTable.GetUseMana) // 제일 큰 것
             .FirstOrDefault();
     }

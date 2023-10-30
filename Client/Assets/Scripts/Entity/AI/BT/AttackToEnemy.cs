@@ -25,7 +25,7 @@ public class AttackToEnemy : ActionNode
 		if (characterSkillTable == null)
 			return false;
 
-		return characterSkillTable.IsUseMana(skillType) == false;
+		return characterSkillTable.IsUseManaSkill(skillType) == false;
     }
 
     protected override State OnUpdate() 

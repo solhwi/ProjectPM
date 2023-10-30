@@ -44,12 +44,21 @@ MonoBehaviour:
       searchOffsetY: 0
       useMana: 10
       cooltime: 5
-  entitySkillMappingInfoList:
+  skillTagActionInfoList:
+  - key: '[Instantiate]'
+    parameter: Assets/Bundle/Prefabs/Entity/Attackable/Normal.prefab
+  skillTagActionInfoDictionary:
+    m_keys:
+    - '[Instantiate]'
+    m_values:
+    - key: '[Instantiate]'
+      parameter: Assets/Bundle/Prefabs/Entity/Attackable/Normal.prefab
+  skillEntityMappingInfoList:
   - key: 1
     entityType: 3
   - key: 2
     entityType: 3
-  entitySkillMappingInfoDictionary:
+  skillEntityMappingInfoDictionary:
     m_keys: 0100000002000000
     m_values:
     - key: 1
@@ -68,29 +77,15 @@ MonoBehaviour:
       attackKeyType: 1
     - key: 2
       attackKeyType: 2
-  skillTagInfoList:
-  - key: '[Instantiate]'
-    parameter: Normal
-  - key: '[PencilInstantiate]'
-    parameter: '[Instantiate]:Pencil'
-  skillTagInfoDictionary:
-    m_keys:
-    - '[Instantiate]'
-    - '[PencilInstantiate]'
-    m_values:
-    - key: '[Instantiate]'
-      parameter: Normal
-    - key: '[PencilInstantiate]'
-      parameter: '[Instantiate]:Pencil'
-  skillActionInfoList:
+  skillTagActionMappingInfoList:
   - key: 1
     skillTag: '[Instantiate]'
   - key: 2
-    skillTag: '[PencilInstantiate]'
-  skillActionInfoDictionary:
+    skillTag: '[Instantiate]'
+  skillTagActionMappingInfoDictionary:
     m_keys: 0100000002000000
     m_values:
     - key: 1
       skillTag: '[Instantiate]'
     - key: 2
-      skillTag: '[PencilInstantiate]'
+      skillTag: '[Instantiate]'

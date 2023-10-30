@@ -85,7 +85,7 @@ public class AddressableResourceSystem : MonoSystem
 		if (resourceDictionary.TryGetValue(typeof(T).Name, out var objectPathData))
 			return objectPathData.FirstOrDefault().Obj as T;
 
-        var go = await InstantiateAsync<T>(path, parent);
+        var go = await InstantiateAsync(path, parent);
 		return go.GetComponent<T>();
     }
 
@@ -99,7 +99,7 @@ public class AddressableResourceSystem : MonoSystem
 		return await LoadAsync<T>(resourceType, path);
     }
 	
-	private async UniTask<GameObject> InstantiateAsync<T>(string path, Transform parent = null) where T : Object
+	public async UniTask<GameObject> InstantiateAsync(string path, Transform parent = null)
 	{
         var handle = Addressables.InstantiateAsync(path, parent);
 

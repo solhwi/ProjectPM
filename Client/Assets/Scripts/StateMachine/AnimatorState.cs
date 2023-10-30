@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations;
 
@@ -19,6 +20,11 @@ namespace StateMachine
     public class CharacterAnimatorState : EntityAnimatorState<CharacterBehaviour, FrameCommandMessage>
     {
         [SerializeField] protected CharacterSkillTable characterSkillTable = null;
+
+        private void Reset()
+        {
+            characterSkillTable = AssetDatabase.LoadAssetAtPath<CharacterSkillTable>("Assets/Bundle/Datas/Parser/CharacterSkillTable.asset");
+        }
     }
 
 	public class EntityAnimatorState<TOwner, TCommand> : SealedStateMachineBehaviour
