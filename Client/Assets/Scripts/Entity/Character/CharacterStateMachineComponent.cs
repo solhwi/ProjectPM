@@ -7,20 +7,21 @@ using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class CharacterStateMachineComponent : MonoComponent
+public class CharacterStateMachineComponent : EntityComponent
 {
 	private Animator animator;
 	private CharacterAnimatorState[] animatorStates;
 
 	[SerializeField] private AddressableResourceSystem resourceSystem = null;
-    [SerializeField] private EntityTransitionTable transitionTable = null;
-	[SerializeField] private EntityConditionTable conditionTable = null;
+    [SerializeField] private CharacterTransitionTable transitionTable = null;
+	[SerializeField] private CharacterConditionTable conditionTable = null;
 
-	private void Reset()
+	protected override void Reset()
 	{
+		base.Reset();
 		resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
-        transitionTable = AssetDatabase.LoadAssetAtPath<EntityTransitionTable>("Assets/Bundle/Datas/Parser/EntityTransitionTable.asset");
-		conditionTable = AssetDatabase.LoadAssetAtPath<EntityConditionTable>("Assets/Bundle/Datas/Parser/EntityConditionTable.asset");
+        transitionTable = AssetDatabase.LoadAssetAtPath<CharacterTransitionTable>("Assets/Bundle/Datas/Parser/CharacterTransitionTable.asset");
+		conditionTable = AssetDatabase.LoadAssetAtPath<CharacterConditionTable>("Assets/Bundle/Datas/Parser/CharacterConditionTable.asset");
 	}
 
 	public ENUM_CHARACTER_STATE CurrentState
@@ -75,7 +76,7 @@ public class CharacterStateMachineComponent : MonoComponent
     {
 		if (CurrentState != nextState)
 		{
-			Debug.Log($"{Time.frameCount}에 스테이트 변경 : {CurrentState} => {nextState}");
+			Debug.Log($"{Entity}의 스테이트 변경 : {CurrentState} => {nextState}");
 			animator.Play(nextState.ToString());
 			CurrentState = nextState;
 		}

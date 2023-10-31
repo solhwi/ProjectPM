@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RenderingComponent : MonoComponent
+public class RenderingComponent : EntityComponent
 {
 	public bool IsLeftDirection
 	{
@@ -12,8 +12,9 @@ public class RenderingComponent : MonoComponent
 
 	[SerializeField] private SpriteRenderer spriteRenderer = null;
 
-	private void Reset()
+	protected override void Reset()
 	{
+		base.Reset();
 		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 

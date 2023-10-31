@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
-public class PhysicsComponent : MonoComponent
+public class PhysicsComponent : EntityComponent
 {
 	[SerializeField] private PhysicsSystem system;
 
@@ -14,7 +14,9 @@ public class PhysicsComponent : MonoComponent
     [Tooltip("The distance down to check for ground.")]
     [SerializeField] private float groundedRaycastDistance = 0.1f;
 
-	Rigidbody2D m_Rigidbody2D;
+    public bool UseGravity = true;
+
+    Rigidbody2D m_Rigidbody2D;
     BoxCollider2D m_BoxColider2D;
     Vector2 m_PreviousPosition;
     Vector2 m_CurrentPosition;
@@ -31,8 +33,9 @@ public class PhysicsComponent : MonoComponent
 
     public Vector2 Velocity => m_NextMovement;
 
-    private void Reset()
+    protected override void Reset()
     {
+		base.Reset();
 		system = SystemHelper.GetSystemAsset<PhysicsSystem>();
     }
 

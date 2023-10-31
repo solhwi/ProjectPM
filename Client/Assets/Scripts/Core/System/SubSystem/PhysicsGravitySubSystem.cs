@@ -27,7 +27,8 @@ public class PhysicsGravitySubSystem : MonoSystem
 			if (physicsAirborneTimeDictionary.TryGetValue(component, out float airborneDeltaTime))
 			{
 				bool isGrounded = component.CheckGrounded();
-				if (isGrounded)
+				bool useGravity = component.UseGravity;
+				if (isGrounded || !useGravity)
 				{
 					// 여기에 y축 위치를 초기화하는 코드가 필요합니다.
 

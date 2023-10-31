@@ -6,7 +6,9 @@ using UnityEngine;
 public partial class CharacterSkillTable : ScriptParser
 {
     private readonly Dictionary<string, ISkillTagAction> skillTagActionDictionary = new Dictionary<string, ISkillTagAction>();
+    
     private const char ParameterSeparator = ':';
+    private const char ParameterOrSeparator = '+';
 
     public override void RuntimeParser()
     {
@@ -29,15 +31,18 @@ public partial class CharacterSkillTable : ScriptParser
 
     private ISkillTagAction MakeSkillTagAction(string skillTagType, out string[] parameters)
     {
-        string[] rawConditions = skillTagType.Split(ParameterSeparator);
+        string[] rawSkillTags = skillTagType.Split(ParameterSeparator);
 
-        string inputRawConditionType = rawConditions[0];
-        parameters = rawConditions.Where(raw => raw.Equals(inputRawConditionType) == false).ToArray();
+        string rawSkillTagType = rawSkillTags[0];
+        parameters = rawSkillTags.Where(raw => raw.Equals(rawSkillTagType) == false).ToArray();
 
-        switch (skillTagType)
+        switch (rawSkillTagType)
         {
             case "[Instantiate]":
                 return new InstantiateTagAction();
+
+            case "[Pencil Instantiate]":
+                return new CompositeSkillTagAction(this);
         }
 
         Debug.LogError($"정의되지 않은 스킬 액션 타입 : {skillTagType}");
@@ -144,5 +149,16 @@ public partial class CharacterSkillTable : ScriptParser
             return null;
 
         return skillTagAction;
+    }
+
+    public IEnumerable<ISkillTagAction> ParseSkillTagActions(string compositeRawSkillTagAction)
+    {
+        foreach (var orSeparatedSkillTagAction in compositeRawSkillTagAction.Split(ParameterOrSeparator))
+        {
+            var skillTagAction = MakeSkillTagAction(orSeparatedSkillTagAction, out string[] parameters);
+            skillTagAction.Parse(parameters);
+
+            yield return skillTagAction;
+        }
     }
 }

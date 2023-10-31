@@ -21,7 +21,7 @@ namespace StateMachine
     {
         [SerializeField] protected CharacterSkillTable characterSkillTable = null;
 
-        private void Reset()
+        protected virtual void Reset()
         {
             characterSkillTable = AssetDatabase.LoadAssetAtPath<CharacterSkillTable>("Assets/Bundle/Datas/Parser/CharacterSkillTable.asset");
         }

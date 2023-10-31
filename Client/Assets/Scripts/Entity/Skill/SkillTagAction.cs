@@ -11,6 +11,35 @@ public interface ISkillTagAction
     public void Trigger(AddressableResourceSystem resourceSystem);
 }
 
+public class CompositeSkillTagAction : ISkillTagAction
+{
+    private CharacterSkillTable skillTable = null;
+    private List<ISkillTagAction> skillTagActions = new List<ISkillTagAction>();
+
+    public CompositeSkillTagAction(CharacterSkillTable table)
+    {
+        skillTable = table;
+    }
+
+    public bool Parse(params string[] compositeRawCondition)
+    {
+        if (compositeRawCondition.Any() == false)
+            return false;
+
+        skillTagActions = skillTable.ParseSkillTagActions(compositeRawCondition[0]).ToList();
+        return true;
+    }
+
+    public void Trigger(AddressableResourceSystem resourceSystem)
+    {
+        foreach (var skillTagAction in skillTagActions)
+        {
+            skillTagAction.Trigger(resourceSystem);
+        }
+    }
+}
+
+
 public abstract class StringTagAction : ISkillTagAction
 {
     protected string value = string.Empty;

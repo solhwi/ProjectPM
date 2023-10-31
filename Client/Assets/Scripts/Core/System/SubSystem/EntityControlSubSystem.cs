@@ -56,7 +56,14 @@ public class EntityControlSubSystem : MonoSystem
     public void ToPlayerControl(IEntity entity)
     {
 		playerEntity = entity;
-	}
+		IsPlayerControl = true;
+    }
+
+	public void ReleasePlayerControl()
+	{
+		playerEntity = null;
+		IsPlayerControl = false;
+    }
 
 	public void ToAIControl(IEntity entity)
 	{
@@ -69,6 +76,11 @@ public class EntityControlSubSystem : MonoSystem
 
 		runner.OnStart(entity, resourceSystem, commandSystem, entitySystem, scriptParsingSystem);
 		enemyBehaviourTrees[entity.EntityGuid] = runner;
+	}
+
+	public void ReleaseAIControl()
+	{
+
 	}
 
 	private void UpdatePlayerControl()

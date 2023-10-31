@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -56,7 +57,32 @@ public class SkillSystem : MonoSystem
             entitySkillDictionary.Remove(entity.EntityGuid);
     }
 
-	public Skill MakeSkill(ENUM_SKILL_TYPE skillType)
+    public bool UseSkill(IEntity owner, ENUM_SKILL_TYPE skillType)
+    {
+        if (entitySkillDictionary.TryGetValue(owner.EntityGuid, out var skillList) == false)
+        {
+            Debug.LogError($"{owner.OwnerGuid}는 스킬 시스템에 등록되지 않은 앤티티입니다.");
+            return false;
+        }
+
+        var skill = skillList.FirstOrDefault(skill => skill.skillType == skillType);
+        if (skill == null)
+        {
+            Debug.LogError($"{owner.OwnerGuid}가 가지지 않은 스킬 타입 : {skillType}");
+            return false;
+        }
+
+        if (skill.IsSatisfied() == false)
+        {
+            Debug.LogError($"{skillType} 현재 사용할 수 없는 스킬입니다.");
+            return false;
+        }
+
+        skill.Trigger();
+        return true;
+    }
+
+	private Skill MakeSkill(ENUM_SKILL_TYPE skillType)
 	{
         return new Skill(skillType, skillTable, resourceSystem);
     }

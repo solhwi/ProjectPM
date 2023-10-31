@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a6d390744a04694ab02afba92d9860a, type: 3}
-  m_Name: EntityConditionTable
+  m_Script: {fileID: 11500000, guid: 971104fea683a23448d3b8e5bf8596d5, type: 3}
+  m_Name: CharacterConditionTable
   m_EditorClassIdentifier: 
-  characterRawconditionList:
+  rawConditionList:
   - key: '[PressDash]'
     condition: 0
   - key: '[PressGuard]'
@@ -45,7 +45,7 @@ MonoBehaviour:
     condition: '[PressAttack]:Skill'
   - key: '[PressUltimate]'
     condition: '[PressAttack]:Ultimate'
-  characterRawconditionDictionary:
+  rawConditionDictionary:
     m_keys:
     - '[PressDash]'
     - '[PressGuard]'

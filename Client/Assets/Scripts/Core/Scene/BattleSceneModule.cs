@@ -7,6 +7,7 @@ public class BattleSceneModule : SceneModule
     [SerializeField] protected MapSystem mapSystem = null;
     [SerializeField] protected PhysicsSystem physicsSystem = null;
     [SerializeField] protected EntitySystem entitySystem = null;
+    [SerializeField] protected SkillSystem skillSystem = null;
 
     protected override void Reset()
     {
@@ -15,5 +16,6 @@ public class BattleSceneModule : SceneModule
         mapSystem = SystemHelper.GetSystemAsset<MapSystem>();
         physicsSystem = SystemHelper.GetSystemAsset<PhysicsSystem>();  
         entitySystem = SystemHelper.GetSystemAsset<EntitySystem>();
+        skillSystem = SystemHelper.GetSystemAsset<SkillSystem>();
     }
 }

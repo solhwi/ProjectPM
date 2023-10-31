@@ -23,14 +23,24 @@ public class BossSceneModule : BattleSceneModule
 		mapSystem.Spawn(entitySystem.Player);
         entitySystem.ToPlayerControl();
 		entitySystem.ToAIControl();
-	}
+
+		foreach(var enemy in entitySystem.Enemies)
+		{
+			skillSystem.Register(enemy);
+		}
+
+        skillSystem.Register(entitySystem.Boss);
+        skillSystem.Register(entitySystem.Player);
+    }
 
 	public override void OnExit()
 	{
-		
-	}
+		base.OnExit();
 
-	public async override UniTask OnPrepareEnterRoutine(SceneModuleParam param)
+        skillSystem.Unregister(entitySystem.Player);
+    }
+
+    public async override UniTask OnPrepareEnterRoutine(SceneModuleParam param)
 	{
 		var _param = param as Param;
 		if (_param == null)

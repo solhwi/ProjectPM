@@ -68,6 +68,7 @@ public class EntitySystem : MonoSystem
     [SerializeField] private AddressableResourceSystem resourceSystem;
     [SerializeField] private EntityCollisionSubSystem collisionSubSystem;
     [SerializeField] private EntityControlSubSystem controlSubSystem;
+    [SerializeField] private EntityComponentSystem componentSystem;
 
     protected override void OnReset()
     {
@@ -76,12 +77,15 @@ public class EntitySystem : MonoSystem
         resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
         collisionSubSystem = SystemHelper.GetSystemAsset<EntityCollisionSubSystem>();
         controlSubSystem = SystemHelper.GetSystemAsset<EntityControlSubSystem>();
+        componentSystem = SystemHelper.GetSystemAsset<EntityComponentSystem>();
     }
 
     public override void OnUpdate(int deltaFrameCount, float deltaTime)
 	{
 		controlSubSystem.UpdateControl();
-	}
+        componentSystem.OnUpdate(deltaFrameCount, deltaTime);
+
+    }
 
 	public IEnumerable<IEntity> GetDamagerEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity)
 	{
@@ -103,6 +107,11 @@ public class EntitySystem : MonoSystem
 		controlSubSystem.ToPlayerControl(Player);
 	}
 
+    public void ReleasePlayerControl()
+    {
+        controlSubSystem.ReleasePlayerControl();
+    }
+
 	public void ToAIControl()
 	{
         foreach (var enemy in Enemies)
@@ -112,6 +121,11 @@ public class EntitySystem : MonoSystem
 
         controlSubSystem.ToAIControl(Boss);
 	}
+
+    public void ReleaseAIControl()
+    {
+        controlSubSystem.ReleaseAIControl();
+    }
 
 	public void OnDrawGizmos()
 	{

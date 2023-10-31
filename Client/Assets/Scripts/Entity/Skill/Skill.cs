@@ -11,16 +11,16 @@ public enum ENUM_SKILL_TYPE
 
 public class Skill
 {
-    protected AddressableResourceSystem resourceSystem;
+    protected readonly AddressableResourceSystem resourceSystem;
 
-    protected CharacterSkillTable skillTable;
-    protected ENUM_SKILL_TYPE skillType;
+    protected readonly CharacterSkillTable skillTable;
+    public readonly ENUM_SKILL_TYPE skillType;
+    protected readonly ISkillTagAction skillTagAction;
 
-    protected float maxCoolTime;
+    protected readonly float maxCoolTime;
     protected float currentCoolTime;
 
     protected IEntity ownerEntity;
-    protected ISkillTagAction skillTagAction;
 
     public Skill(ENUM_SKILL_TYPE type, CharacterSkillTable table, AddressableResourceSystem resourceSystem)
     {
@@ -45,7 +45,7 @@ public class Skill
 
     private bool IsCoolTime()
     {
-        return maxCoolTime > currentCoolTime;
+        return maxCoolTime < currentCoolTime;
     }
 
     public virtual bool IsSatisfied()

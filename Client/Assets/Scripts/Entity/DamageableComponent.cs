@@ -10,7 +10,7 @@ public interface IDamager
 }
 
 [RequireComponent(typeof(Collider2D))]
-public class DamageableComponent : MonoComponent, IDamager
+public class DamageableComponent : EntityComponent, IDamager
 {
 	public bool Invincible = false;
 

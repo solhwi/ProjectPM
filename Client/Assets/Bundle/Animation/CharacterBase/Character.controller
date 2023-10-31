@@ -797,6 +797,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterSkillTable: {fileID: 11400000, guid: 68b969ccb01ef8440a5a01f7a8024cf2, type: 2}
+  skillSystem: {fileID: 11400000, guid: d716c65d6dedf5941a8763ebcf8ca644, type: 2}
 --- !u!1102 &6580277411518209060
 AnimatorState:
   serializedVersion: 6
