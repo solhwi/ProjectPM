@@ -80,11 +80,8 @@ public class SkillSystem : MonoSystem
 
     public bool IsUsableSkillState(IEntity entity, ENUM_CHARACTER_STATE characterState)
     {
-        var states = GetUsableSkillStates(entity).ToList();
-
 		return GetUsableSkillStates(entity).Any(state => state == characterState);
-	}
-    
+	}    
 
     public bool UseSkill(IEntity owner, ENUM_SKILL_TYPE skillType)
     {
