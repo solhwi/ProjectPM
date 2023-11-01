@@ -36,10 +36,10 @@ public class PhysicsComponent : EntityComponent
     protected override void Reset()
     {
 		base.Reset();
-		system = SystemHelper.GetSystemAsset<PhysicsSystem>();
+		system = AssetLoadHelper.GetSystemAsset<PhysicsSystem>();
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
         m_BoxColider2D = GetComponent<BoxCollider2D>();
@@ -56,8 +56,9 @@ public class PhysicsComponent : EntityComponent
         system.Register(this);
     }
 
-	private void OnDisable()
+	protected override void OnDisable()
 	{
+		base.OnDisable();
 		if (system)
         {
             system.UnRegister(this);

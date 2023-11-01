@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2621561593280489439}
   - component: {fileID: -3449957509202249967}
   - component: {fileID: -4464512148307342100}
+  - component: {fileID: 2485414947995756710}
   m_Layer: 0
   m_Name: Pencil
   m_TagString: Untagged
@@ -186,6 +187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   componentSystem: {fileID: 11400000, guid: 6324d669e2d4b7d4d9762d292d75aae1, type: 2}
+  renderingComponent: {fileID: 2485414947995756710}
   physicsComponent: {fileID: -4464512148307342100}
 --- !u!114 &-4464512148307342100
 MonoBehaviour:
@@ -205,4 +207,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   groundedRaycastDistance: 0.1
-  UseGravity: 1
+  UseGravity: 0
+--- !u!114 &2485414947995756710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288317721780269147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28f8de7e0cb503945909d8fb99e78e21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  componentSystem: {fileID: 11400000, guid: 6324d669e2d4b7d4d9762d292d75aae1, type: 2}
+  spriteRenderer: {fileID: 606715847011736886}

@@ -38,15 +38,15 @@ public abstract class EntityComponent : MonoBehaviour, IEntityComponent
 
     protected virtual void Reset()
     {
-        componentSystem = SystemHelper.GetSystemAsset<EntityComponentSystem>();
+        componentSystem = AssetLoadHelper.GetSystemAsset<EntityComponentSystem>();
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         componentSystem.Register(this);
     }
 
-    private void OnDisable()
+	protected virtual void OnDisable()
     {
         componentSystem.UnRegister(this);
     }

@@ -21,7 +21,7 @@ public class PrefabLinkedUISystem : MonoSystem
     {
         base.OnReset();
 
-        resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
+        resourceSystem = AssetLoadHelper.GetSystemAsset<AddressableResourceSystem>();
     }
 
     public override void OnEnter()

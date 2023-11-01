@@ -20,6 +20,7 @@ MonoBehaviour:
     searchOffsetY: 0
     useMana: 0
     cooltime: 3
+    characterState: 12
   - key: 2
     searchBoxX: 10
     searchBoxY: 5
@@ -27,6 +28,7 @@ MonoBehaviour:
     searchOffsetY: 0
     useMana: 10
     cooltime: 5
+    characterState: 17
   skillConditionInfoDictionary:
     m_keys: 0100000002000000
     m_values:
@@ -37,6 +39,7 @@ MonoBehaviour:
       searchOffsetY: 0
       useMana: 0
       cooltime: 3
+      characterState: 12
     - key: 2
       searchBoxX: 10
       searchBoxY: 5
@@ -44,6 +47,7 @@ MonoBehaviour:
       searchOffsetY: 0
       useMana: 10
       cooltime: 5
+      characterState: 17
   skillTagActionInfoList:
   - key: '[Instantiate]'
     parameter: Assets/Bundle/Prefabs/Entity/Attackable/Normal.prefab

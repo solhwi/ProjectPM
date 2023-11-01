@@ -13,9 +13,9 @@ public class BattleSceneModule : SceneModule
     {
         base.Reset();
 
-        mapSystem = SystemHelper.GetSystemAsset<MapSystem>();
-        physicsSystem = SystemHelper.GetSystemAsset<PhysicsSystem>();  
-        entitySystem = SystemHelper.GetSystemAsset<EntitySystem>();
-        skillSystem = SystemHelper.GetSystemAsset<SkillSystem>();
+        mapSystem = AssetLoadHelper.GetSystemAsset<MapSystem>();
+        physicsSystem = AssetLoadHelper.GetSystemAsset<PhysicsSystem>();  
+        entitySystem = AssetLoadHelper.GetSystemAsset<EntitySystem>();
+        skillSystem = AssetLoadHelper.GetSystemAsset<SkillSystem>();
     }
 }

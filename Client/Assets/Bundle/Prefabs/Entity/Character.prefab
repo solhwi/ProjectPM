@@ -246,6 +246,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   componentSystem: {fileID: 11400000, guid: 6324d669e2d4b7d4d9762d292d75aae1, type: 2}
   resourceSystem: {fileID: 11400000, guid: bca2213f93713d64fbdea0c92a750d2d, type: 2}
+  skillSystem: {fileID: 11400000, guid: d716c65d6dedf5941a8763ebcf8ca644, type: 2}
   transitionTable: {fileID: 11400000, guid: 854775c64b5682f4cac2f3320744a2b2, type: 2}
   conditionTable: {fileID: 11400000, guid: dbf6cf0c2d7079d44909146ea88b964d, type: 2}
 --- !u!114 &3577131548055984871

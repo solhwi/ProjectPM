@@ -13,7 +13,7 @@ public class UIWindow : MonoBehaviour
 
     private void Reset()
 	{
-        uiSystem = SystemHelper.GetSystemAsset<PrefabLinkedUISystem>();
+        uiSystem = AssetLoadHelper.GetSystemAsset<PrefabLinkedUISystem>();
         canvas = GetComponent<Canvas>();
 		scaler = GetComponent<CanvasScaler>();
 

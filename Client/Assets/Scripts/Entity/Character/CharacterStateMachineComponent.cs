@@ -13,15 +13,20 @@ public class CharacterStateMachineComponent : EntityComponent
 	private CharacterAnimatorState[] animatorStates;
 
 	[SerializeField] private AddressableResourceSystem resourceSystem = null;
-    [SerializeField] private CharacterTransitionTable transitionTable = null;
+	[SerializeField] private SkillSystem skillSystem = null;
+
+	[SerializeField] private CharacterTransitionTable transitionTable = null;
 	[SerializeField] private CharacterConditionTable conditionTable = null;
 
 	protected override void Reset()
 	{
 		base.Reset();
-		resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
-        transitionTable = AssetDatabase.LoadAssetAtPath<CharacterTransitionTable>("Assets/Bundle/Datas/Parser/CharacterTransitionTable.asset");
-		conditionTable = AssetDatabase.LoadAssetAtPath<CharacterConditionTable>("Assets/Bundle/Datas/Parser/CharacterConditionTable.asset");
+
+		resourceSystem = AssetLoadHelper.GetSystemAsset<AddressableResourceSystem>();
+		skillSystem = AssetLoadHelper.GetSystemAsset<SkillSystem>();
+
+		transitionTable = AssetLoadHelper.GetDataAsset<CharacterTransitionTable>();
+		conditionTable = AssetLoadHelper.GetDataAsset<CharacterConditionTable>();
 	}
 
 	public ENUM_CHARACTER_STATE CurrentState
@@ -82,22 +87,37 @@ public class CharacterStateMachineComponent : EntityComponent
 		}
 	}
 
+	private bool IsSkillState(ENUM_CHARACTER_STATE characterState)
+	{
+		return characterState == ENUM_CHARACTER_STATE.Skill ||
+			characterState == ENUM_CHARACTER_STATE.DashSkill ||
+			characterState == ENUM_CHARACTER_STATE.JumpSkill ||
+			characterState == ENUM_CHARACTER_STATE.Attack1 ||
+			characterState == ENUM_CHARACTER_STATE.Attack2 ||
+			characterState == ENUM_CHARACTER_STATE.Attack3 ||
+			characterState == ENUM_CHARACTER_STATE.Ultimate;
+	}
+
 	public ENUM_CHARACTER_STATE GetSimulatedNextState(FrameCommandMessage snapShotMessage, ENUM_CHARACTER_STATE currentState = ENUM_CHARACTER_STATE.None)
 	{
 		currentState = currentState == ENUM_CHARACTER_STATE.None ? CurrentState : currentState;
+		ENUM_CHARACTER_STATE nextState = currentState;
 
-        foreach (var transition in transitionTable.transitionList)
+		foreach (var transition in transitionTable.transitionList)
 		{
 			if (transition.prevState == currentState)
 			{
 				var condition = conditionTable.GetCondition(transition.conditionType);
 				if (condition.IsSatisfied(snapShotMessage))
 				{
-					return transition.nextState;
+					if (IsSkillState(transition.nextState) == false || skillSystem.IsUsableSkillState(Entity, transition.nextState))
+					{
+						nextState = transition.nextState;
+					}
 				}
 			}
 		}
 
-		return currentState;
+		return nextState;
 	}
 }

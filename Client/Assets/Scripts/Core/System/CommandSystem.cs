@@ -12,8 +12,8 @@ public class CommandSystem : MonoSystem
     {
         base.OnReset();
 
-        inputSystem = SystemHelper.GetSystemAsset<FrameInputSystem>();
-        entitySystem = SystemHelper.GetSystemAsset<EntitySystem>();
+        inputSystem = AssetLoadHelper.GetSystemAsset<FrameInputSystem>();
+        entitySystem = AssetLoadHelper.GetSystemAsset<EntitySystem>();
     }
 
     public FrameSnapShotMessage MakeSnapShot(int ownerGuid, int tickCount)

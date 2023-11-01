@@ -19,9 +19,9 @@ public class OnlineBattleSceneModule : NetworkSceneModule
     {
         base.Reset();
 
-        mapSystem = SystemHelper.GetSystemAsset<MapSystem>();
-        physicsSystem = SystemHelper.GetSystemAsset<PhysicsSystem>();
-        entitySystem = SystemHelper.GetSystemAsset<EntitySystem>();
+        mapSystem = AssetLoadHelper.GetSystemAsset<MapSystem>();
+        physicsSystem = AssetLoadHelper.GetSystemAsset<PhysicsSystem>();
+        entitySystem = AssetLoadHelper.GetSystemAsset<EntitySystem>();
     }
     protected override NetworkManager CreateNetworkManager()
 	{

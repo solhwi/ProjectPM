@@ -48,6 +48,7 @@ public partial class CharacterSkillTable : ScriptParser
 		public float searchOffsetY;
 		public int useMana;
 		public float cooltime;
+		public ENUM_CHARACTER_STATE characterState;
 	}
 
 	public List<SkillConditionInfo> skillConditionInfoList = new List<SkillConditionInfo>();

@@ -11,7 +11,7 @@ public class InputKeyComponent : MonoBehaviour, IPointerDownHandler, IDragHandle
 
     private void Reset()
     {
-        inputSystem = SystemHelper.GetSystemAsset<FrameInputSystem>();
+        inputSystem = AssetLoadHelper.GetSystemAsset<FrameInputSystem>();
     }
 
     public virtual void OnDrag(PointerEventData eventData)

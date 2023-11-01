@@ -15,33 +15,33 @@ public class Skill
 
     protected readonly CharacterSkillTable skillTable;
     public readonly ENUM_SKILL_TYPE skillType;
+    public readonly ENUM_CHARACTER_STATE characterState;
     protected readonly ISkillTagAction skillTagAction;
 
     protected readonly float maxCoolTime;
-    protected float currentCoolTime;
+	protected readonly IEntity ownerEntity;
 
-    protected IEntity ownerEntity;
+    public ENUM_ATTACK_KEY AttackKey => skillTable.GetAttackKey(skillType);
 
-    public Skill(ENUM_SKILL_TYPE type, CharacterSkillTable table, AddressableResourceSystem resourceSystem)
-    {
-        this.resourceSystem = resourceSystem;
+	protected float currentCoolTime;
+
+    public Skill(IEntity owner, ENUM_SKILL_TYPE type, CharacterSkillTable table, AddressableResourceSystem resourceSystem)
+	{
+		this.ownerEntity = owner;
+
+		this.resourceSystem = resourceSystem;
         this.skillTable = table;
 		this.skillType = type;
 
         var conditionInfo = skillTable.GetSkillConditionInfo(type);
         if (conditionInfo != null)
-        {
-            maxCoolTime = conditionInfo.cooltime;
-		}
+			maxCoolTime = conditionInfo.cooltime;
 
-        skillTagAction = skillTable.GetSkillTagAction(type);
-        currentCoolTime = 0.0f;
-    }
+		currentCoolTime = 0.0f;
 
-    public void SetOwner(IEntity ownerEntity)
-    {
-        this.ownerEntity = ownerEntity;
-    }
+		skillTagAction = skillTable.GetSkillTagAction(type);
+		characterState = skillTable.GetCharacterState(type);
+	}
 
     private bool IsCoolTime()
     {

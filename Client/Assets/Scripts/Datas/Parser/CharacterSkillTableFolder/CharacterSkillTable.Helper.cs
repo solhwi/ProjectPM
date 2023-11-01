@@ -49,6 +49,25 @@ public partial class CharacterSkillTable : ScriptParser
         return null;
     }
 
+    public ENUM_CHARACTER_STATE GetCharacterState(ENUM_SKILL_TYPE skillType)
+    {
+		if (skillConditionInfoDictionary.TryGetValue(skillType, out var conditionInfo))
+		{
+			return conditionInfo.characterState;
+		}
+
+        return ENUM_CHARACTER_STATE.None;
+	}
+
+    public ENUM_ATTACK_KEY GetAttackKey(ENUM_SKILL_TYPE skillType)
+    {
+        if (skillKeyMappingInfoDictionary.TryGetValue(skillType, out var mappingInfo))
+        {
+            return mappingInfo.attackKeyType;
+        }
+
+        return ENUM_ATTACK_KEY.NONE;
+    }
     public IEnumerable<ENUM_SKILL_TYPE> GetSkillTypes(ENUM_ENTITY_TYPE entityType)
     {
         return skillEntityMappingInfoList.Where(m => m.entityType == entityType).Select(m => m.key);
@@ -140,15 +159,21 @@ public partial class CharacterSkillTable : ScriptParser
 		return skillInfo;
 	}
 
-    public ISkillTagAction GetSkillTagAction(ENUM_SKILL_TYPE skillType)
+	public ISkillTagAction GetSkillTagAction(string skillTag)
     {
-        if (skillTagActionMappingInfoDictionary.TryGetValue(skillType, out var skillActionInfo) == false)
-            return null;
-
-        if (skillTagActionDictionary.TryGetValue(skillActionInfo.skillTag, out var skillTagAction) == false)
-            return null;
+		if (skillTagActionDictionary.TryGetValue(skillTag, out var skillTagAction) == false)
+			return null;
 
         return skillTagAction;
+	}
+
+    public ISkillTagAction GetSkillTagAction(ENUM_SKILL_TYPE skillType)
+    {
+        var skillActionInfo = GetSkillActionInfo(skillType);
+        if (skillActionInfo == null)
+            return null;
+
+        return GetSkillTagAction(skillActionInfo.skillTag);
     }
 
     public IEnumerable<ISkillTagAction> ParseSkillTagActions(string compositeRawSkillTagAction)

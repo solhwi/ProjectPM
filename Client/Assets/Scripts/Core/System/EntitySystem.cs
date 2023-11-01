@@ -74,10 +74,10 @@ public class EntitySystem : MonoSystem
     {
         base.OnReset();
 
-        resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
-        collisionSubSystem = SystemHelper.GetSystemAsset<EntityCollisionSubSystem>();
-        controlSubSystem = SystemHelper.GetSystemAsset<EntityControlSubSystem>();
-        componentSystem = SystemHelper.GetSystemAsset<EntityComponentSystem>();
+        resourceSystem = AssetLoadHelper.GetSystemAsset<AddressableResourceSystem>();
+        collisionSubSystem = AssetLoadHelper.GetSystemAsset<EntityCollisionSubSystem>();
+        controlSubSystem = AssetLoadHelper.GetSystemAsset<EntityControlSubSystem>();
+        componentSystem = AssetLoadHelper.GetSystemAsset<EntityComponentSystem>();
     }
 
     public override void OnUpdate(int deltaFrameCount, float deltaTime)

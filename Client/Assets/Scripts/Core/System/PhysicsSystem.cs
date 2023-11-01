@@ -25,7 +25,7 @@ public class PhysicsSystem : MonoSystem
     {
         base.OnReset();
 
-        gravitySubSystem = SystemHelper.GetSystemAsset<PhysicsGravitySubSystem>();
+        gravitySubSystem = AssetLoadHelper.GetSystemAsset<PhysicsGravitySubSystem>();
     }
 
     public void Register(PhysicsComponent physicsComponent)

@@ -39,8 +39,8 @@ public abstract class SceneModule : MonoBehaviour
                 break;
         }
 
-        resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
-        scriptParsingSystem = SystemHelper.GetSystemAsset<ScriptParsingSystem>();
+        resourceSystem = AssetLoadHelper.GetSystemAsset<AddressableResourceSystem>();
+        scriptParsingSystem = AssetLoadHelper.GetSystemAsset<ScriptParsingSystem>();
     }
 
     public Transform RequestSystemGameObject(MonoSystem system)

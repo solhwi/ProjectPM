@@ -46,10 +46,10 @@ public class EntityControlSubSystem : MonoSystem
     {
         base.OnReset();
 
-        resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
-		commandSystem = SystemHelper.GetSystemAsset<CommandSystem>();
-		entitySystem = SystemHelper.GetSystemAsset<EntitySystem>();
-		scriptParsingSystem = SystemHelper.GetSystemAsset<ScriptParsingSystem>();
+        resourceSystem = AssetLoadHelper.GetSystemAsset<AddressableResourceSystem>();
+		commandSystem = AssetLoadHelper.GetSystemAsset<CommandSystem>();
+		entitySystem = AssetLoadHelper.GetSystemAsset<EntitySystem>();
+		scriptParsingSystem = AssetLoadHelper.GetSystemAsset<ScriptParsingSystem>();
 
 	}
 

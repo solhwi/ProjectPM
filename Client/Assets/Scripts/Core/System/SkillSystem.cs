@@ -20,8 +20,8 @@ public class SkillSystem : MonoSystem
     {
         base.OnReset();
 
-        resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
-        skillTable = AssetDatabase.LoadAssetAtPath<CharacterSkillTable>("Assets/Bundle/Datas/Parser/CharacterSkillTable.asset");
+        resourceSystem = AssetLoadHelper.GetSystemAsset<AddressableResourceSystem>();
+        skillTable = AssetLoadHelper.GetDataAsset<CharacterSkillTable>();
     }
 
     public void Register(IEntity entity)
@@ -37,11 +37,10 @@ public class SkillSystem : MonoSystem
 
 		foreach (var skillType in skillTypes)
 		{
-			var skill = MakeSkill(skillType);
-			if( skill == null) 
+			var skill = MakeSkill(skillType, entity);
+			if (skill == null) 
 				continue;
 
-            skill.SetOwner(entity);
             hasSkills.Add(skill);
 		}
 
@@ -56,6 +55,36 @@ public class SkillSystem : MonoSystem
         if(entitySkillDictionary.ContainsKey(entity.EntityGuid))
             entitySkillDictionary.Remove(entity.EntityGuid);
     }
+
+    private IEnumerable<Skill> GetUsableSkills(IEntity entity)
+    {
+		if (entitySkillDictionary.TryGetValue(entity.EntityGuid, out var skillList) == false)
+		{
+			Debug.LogError($"{entity.OwnerGuid}는 스킬 시스템에 등록되지 않은 앤티티입니다.");
+            yield break;
+		}
+
+		foreach (var skill in skillList)
+		{
+			if (skill.IsSatisfied())
+			{
+				yield return skill;
+			}
+		}
+	}
+    
+    private IEnumerable<ENUM_CHARACTER_STATE> GetUsableSkillStates(IEntity entity)
+    {
+        return GetUsableSkills(entity).Select(skill => skill.characterState);
+    }
+
+    public bool IsUsableSkillState(IEntity entity, ENUM_CHARACTER_STATE characterState)
+    {
+        var states = GetUsableSkillStates(entity).ToList();
+
+		return GetUsableSkillStates(entity).Any(state => state == characterState);
+	}
+    
 
     public bool UseSkill(IEntity owner, ENUM_SKILL_TYPE skillType)
     {
@@ -82,9 +111,9 @@ public class SkillSystem : MonoSystem
         return true;
     }
 
-	private Skill MakeSkill(ENUM_SKILL_TYPE skillType)
+	private Skill MakeSkill(ENUM_SKILL_TYPE skillType, IEntity entity)
 	{
-        return new Skill(skillType, skillTable, resourceSystem);
+        return new Skill(entity, skillType, skillTable, resourceSystem);
     }
 
 	public override void OnUpdate(int deltaFrameCount, float deltaTime)

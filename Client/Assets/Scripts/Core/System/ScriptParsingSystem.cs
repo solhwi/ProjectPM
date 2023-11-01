@@ -14,7 +14,7 @@ public class ScriptParsingSystem : MonoSystem
     {
         base.OnReset();
 
-		resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
+		resourceSystem = AssetLoadHelper.GetSystemAsset<AddressableResourceSystem>();
     }
 
     public T GetTable<T> () where T : ScriptParser

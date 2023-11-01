@@ -13,7 +13,7 @@ public class EntityCollisionSubSystem : MonoSystem
     {
         base.OnReset();
 
-        entitySystem = SystemHelper.GetSystemAsset<EntitySystem>();
+        entitySystem = AssetLoadHelper.GetSystemAsset<EntitySystem>();
     }
 
     private Collider2D[] OverlapBoxAll(Vector2 point, Vector2 size)

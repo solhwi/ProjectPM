@@ -12,7 +12,7 @@ namespace StateMachine
         {
             base.Reset();
 
-            skillSystem = SystemHelper.GetSystemAsset<SkillSystem>();
+            skillSystem = AssetLoadHelper.GetSystemAsset<SkillSystem>();
         }
 
         public override void OnSLStateEnter(CharacterBehaviour owner, FrameCommandMessage command)

@@ -14,8 +14,8 @@ public class MapSystem : MonoSystem
     {
         base.OnReset();
 
-        resourceSystem = SystemHelper.GetSystemAsset<AddressableResourceSystem>();
-        mapSpawnSubSystem = SystemHelper.GetSystemAsset<MapSpawnSubSystem>();
+        resourceSystem = AssetLoadHelper.GetSystemAsset<AddressableResourceSystem>();
+        mapSpawnSubSystem = AssetLoadHelper.GetSystemAsset<MapSpawnSubSystem>();
     }
 
     public async UniTask CreateMap(ENUM_MAP_TYPE mapType)
