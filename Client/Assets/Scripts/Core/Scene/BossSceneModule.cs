@@ -64,6 +64,12 @@ public class BossSceneModule : BattleSceneModule
 		entitySystem.OnUpdate(deltaFrameCount, deltaTime);
 	}
 
+	public override void OnUpdate(int deltaFrameCount, float deltaTime)
+	{
+		base.OnUpdate(deltaFrameCount, deltaTime);
+		skillSystem.OnUpdate(deltaFrameCount, deltaTime);
+	}
+
 	protected override void OnDrawGizmos()
     {
 		entitySystem.OnDrawGizmos();

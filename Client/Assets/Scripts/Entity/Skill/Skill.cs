@@ -45,7 +45,7 @@ public class Skill
 
     private bool IsCoolTime()
     {
-        return maxCoolTime < currentCoolTime;
+        return 0.0f < currentCoolTime;
     }
 
     public virtual bool IsSatisfied()
@@ -55,12 +55,13 @@ public class Skill
 
     public virtual void OnUpdate(float deltaTime)
     {
-        currentCoolTime += deltaTime;
-    }
+        currentCoolTime -= deltaTime;
+		currentCoolTime = Mathf.Max(currentCoolTime, 0.0f);
+	}
 
     public virtual void Trigger()
     {
-        currentCoolTime = default;
-        skillTagAction?.Trigger(resourceSystem);
+        currentCoolTime = maxCoolTime;
+        skillTagAction?.Trigger(ownerEntity);
     }
 }

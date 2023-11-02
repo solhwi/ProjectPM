@@ -8,7 +8,7 @@ using UnityEngine;
 public interface ISkillTagAction
 {
     public bool Parse(params string[] rawParameters);
-    public void Trigger(AddressableResourceSystem resourceSystem);
+    public void Trigger(IEntity skillOwner);
 }
 
 public class CompositeSkillTagAction : ISkillTagAction
@@ -30,7 +30,7 @@ public class CompositeSkillTagAction : ISkillTagAction
         return true;
     }
 
-    public void Trigger(AddressableResourceSystem resourceSystem)
+    public void Trigger(IEntity resourceSystem)
     {
         foreach (var skillTagAction in skillTagActions)
         {
@@ -53,13 +53,13 @@ public abstract class StringTagAction : ISkillTagAction
         return true;
     }
 
-    public abstract void Trigger(AddressableResourceSystem resourceSystem);
+    public abstract void Trigger(IEntity skillOwner);
 }
 
 public class InstantiateTagAction : StringTagAction
 {
-    public override void Trigger(AddressableResourceSystem resourceSystem)
+    public override void Trigger(IEntity skillOwner)
     {
-        resourceSystem.InstantiateAsync(value).Forget();
+        skillOwner?.Instantiate(value);
     }
 }

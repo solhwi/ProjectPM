@@ -92,7 +92,7 @@ public interface IEntity
 	//}
 
 	bool IsDamageable(IEntity entity);
-
+	void Instantiate(string path);
 	void SetPosition(Vector2 position);
 	void PushCommand(ICommand command);
 }

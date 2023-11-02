@@ -84,7 +84,6 @@ public class EntitySystem : MonoSystem
 	{
 		controlSubSystem.UpdateControl();
         componentSystem.OnUpdate(deltaFrameCount, deltaTime);
-
     }
 
 	public IEnumerable<IEntity> GetDamagerEntities(int entityGuid, Vector3 pos, Vector3 size, Vector3 offset, Vector3 velocity)

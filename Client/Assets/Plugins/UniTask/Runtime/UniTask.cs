@@ -477,7 +477,12 @@ namespace Cysharp.Threading.Tasks
                  : "(" + this.source.UnsafeGetStatus() + ")";
         }
 
-        sealed class IsCanceledSource : IUniTaskSource<(bool, T)>
+		public void Forget()
+		{
+			
+		}
+
+		sealed class IsCanceledSource : IUniTaskSource<(bool, T)>
         {
             readonly IUniTaskSource<T> source;
 

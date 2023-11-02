@@ -261,6 +261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 947edf45f17f02d41a5f534c87cdbd5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resourceSystem: {fileID: 11400000, guid: bca2213f93713d64fbdea0c92a750d2d, type: 2}
   renderingComponent: {fileID: 2111098085485975088}
   physicsComponent: {fileID: 2725238379644671886}
   stateMachineComponent: {fileID: 2207896231629970980}

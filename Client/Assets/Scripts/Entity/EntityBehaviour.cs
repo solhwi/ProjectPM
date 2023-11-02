@@ -28,6 +28,8 @@ public enum ENUM_TEAM_TYPE
 
 public abstract class EntityBehaviour : MonoBehaviour, IEntity
 {
+	[SerializeField] private AddressableResourceSystem resourceSystem = null;
+
 	public virtual int CurrentState => 0;
 
 	public virtual bool IsAttackable => false;
@@ -76,6 +78,11 @@ public abstract class EntityBehaviour : MonoBehaviour, IEntity
 	private ENUM_ENTITY_TYPE entityType = ENUM_ENTITY_TYPE.None;
 	private ENUM_LAYER_TYPE layerType = ENUM_LAYER_TYPE.Object;
 
+	protected virtual void Reset()
+	{
+		resourceSystem = AssetLoadHelper.GetSystemAsset<AddressableResourceSystem>();
+	}
+
 	public virtual void Initialize(int ownerGuid, int entityGuid, ENUM_ENTITY_TYPE type, bool isPlayer)
 	{
 		this.isPlayer = isPlayer;
@@ -107,6 +114,11 @@ public abstract class EntityBehaviour : MonoBehaviour, IEntity
 	public void SetPosition(Vector2 position)
 	{
 		transform.position = position;
+	}
+
+	public void Instantiate(string assetPath)
+	{
+		resourceSystem.InstantiateAsync(assetPath, transform).Forget();
 	}
 
 	public virtual void PushCommand(ICommand command)

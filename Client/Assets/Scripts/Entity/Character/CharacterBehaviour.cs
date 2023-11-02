@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using StateMachine;
 using System;
 using System.Collections;
@@ -68,6 +69,16 @@ public class CharacterBehaviour : EntityBehaviour
 	public override float CurrentStateNormalizedTime => stateMachineComponent.CurrentStateNormalizedTime;
 
 	private bool isAttackable = false;
+
+	protected override void Reset()
+	{
+		base.Reset();
+		renderingComponent = GetComponent<RenderingComponent>();
+		physicsComponent = GetComponent<PhysicsComponent>();
+		stateMachineComponent = GetComponent<CharacterStateMachineComponent>();
+		damageableComponent = GetComponent<DamageableComponent>();
+		statTable = AssetLoadHelper.GetDataAsset<CharacterStatTable>();
+	}
 
 
     public override void Initialize(int ownerGuid, int entityGuid, ENUM_ENTITY_TYPE type, bool isPlayer)
