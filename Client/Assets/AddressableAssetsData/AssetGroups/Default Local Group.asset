@@ -32,23 +32,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d3fcaa925fb7e824299ec82da69b3eac
-    m_Address: Assets/Bundle/Prefabs/Map/CityMap.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ffea75aa23a1f734c9d0ff4100dae656
-    m_Address: Assets/Bundle/Prefabs/Entity/Character.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ec536a7718376554185e4a856d5ae230
     m_Address: Assets/Bundle/Prefabs/UI/Joystick/Variable Joystick.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 265958cf6db97314d8fbc27c7612248c
-    m_Address: Assets/Bundle/Datas/Parser/CharacterStatTable.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -277,11 +262,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 41262e3f51a4eb74e9f3800294572fdb
-    m_Address: Assets/Bundle/AI/PencilMan.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 181f3718c97c5ef489914acea48535db
     m_Address: Assets/Bundle/Physics/FullFriction.physicsMaterial2D
     m_ReadOnly: 0
@@ -294,11 +274,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 74a77502e4dd084459eb8a8eae04bcf8
     m_Address: Assets/Bundle/Prefabs/UI/Popup/LoadingPopup.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ce68cd790ece18d47a30747973377018
-    m_Address: Assets/Bundle/System/TimelineSystemAsset.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -317,53 +292,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ac918eb1d4a74554c933e94eafb56a21
-    m_Address: Assets/Bundle/System/MapSystemAsset.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1d2a2985fe51b964886f5f520cc58dfa
-    m_Address: Assets/Bundle/System/MapSpawnSubSystemAsset.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d328ad139b7832040bc80682bbfa9bd1
     m_Address: Assets/Bundle/System/FrameInputSystemAsset.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 46e1695760ae42f40881ae95a30aaf5c
-    m_Address: Assets/Bundle/System/EntitySystemAsset.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d6554335db1a5ff4e919e6a8c5edb156
-    m_Address: Assets/Bundle/System/EntityControlSubSystemAsset.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a1167e7e167870d42a9f47ae48678336
-    m_Address: Assets/Bundle/System/EntityCollisionSubSystemAsset.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0e3d20b7cd0d70f4986fd815428668a6
-    m_Address: Assets/Bundle/System/CommandSystemAsset.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bca2213f93713d64fbdea0c92a750d2d
     m_Address: Assets/Bundle/System/AddressableResourceSystemAsset.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a4f1fca2dacd5c549a0c71683c5d78d5
-    m_Address: Assets/Bundle/Prefabs/Entity/Attackable/Normal.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e3f82f2e582817648985b869d9030340
-    m_Address: Assets/Bundle/Prefabs/Entity/Attackable/Pencil.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -8,7 +8,7 @@ public class TitleMainWindow : UIMainWindow
 {
 	public void OnClickStart()
 	{
-		SceneModuleSystemManager.Instance.TryEnterSceneModule(SceneType.Lobby);
+		SceneModuleSystemManager.Instance.TryEnterSceneModule(SceneType.Match);
 	}
 
 	public void OnClickSetting()

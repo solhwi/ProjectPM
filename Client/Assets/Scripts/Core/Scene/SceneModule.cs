@@ -22,22 +22,13 @@ public abstract class SceneModule : MonoBehaviour
 			case TitleSceneModule:
 				mySceneType = SceneType.Title;
                 break;
-            case LobbySceneModule:
-                mySceneType = SceneType.Lobby;
-                break;
-            case OnlineBattleSceneModule:
-                mySceneType = SceneType.Battle;
-                break;
             case MatchSceneModule:
                 mySceneType = SceneType.Match;
                 break;
-            case BossSceneModule:
-                mySceneType = SceneType.Boss;
-                break;
-            case TrainingSceneModule:
-                mySceneType = SceneType.Training;
-                break;
-        }
+			case BattleSceneModule:
+				mySceneType = SceneType.Battle;
+				break;
+		}
 
         resourceSystem = AssetLoadHelper.GetSystemAsset<AddressableResourceSystem>();
         scriptParsingSystem = AssetLoadHelper.GetSystemAsset<ScriptParsingSystem>();

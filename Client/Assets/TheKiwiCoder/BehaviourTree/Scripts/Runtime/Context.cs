@@ -14,13 +14,9 @@ namespace TheKiwiCoder {
         public GameObject gameObject;
         public Transform transform;
         public Animator animator;
-        public EntityBehaviour entityComponent;
 
         public AddressableResourceSystem resourceSystem;
 		public ScriptParsingSystem scriptParsingSystem;
-        public EntitySystem entitySystem;
-        public CommandSystem commandSystem;
-        // Add other game specific systems here
 
         public static Context CreateFromGameObject(GameObject gameObject) 
         {
@@ -29,21 +25,16 @@ namespace TheKiwiCoder {
             context.gameObject = gameObject;
             context.transform = gameObject.transform;
             context.animator = gameObject.GetComponent<Animator>();
-            context.entityComponent = gameObject.GetComponent<EntityBehaviour>();
 			// Add whatever else you need here...
 
 			return context;
         }
 
         public void AddSystem(
-            AddressableResourceSystem resourceSystem, 
-		    CommandSystem commandSystem, 
-		    EntitySystem entitySystem,
+            AddressableResourceSystem resourceSystem,
 		    ScriptParsingSystem scriptParsingSystem)
         {
             this.resourceSystem = resourceSystem;
-            this.commandSystem = commandSystem;
-            this.entitySystem = entitySystem;
             this.scriptParsingSystem = scriptParsingSystem;
         }
     }

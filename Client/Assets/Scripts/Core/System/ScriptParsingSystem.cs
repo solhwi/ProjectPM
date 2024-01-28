@@ -29,7 +29,7 @@ public class ScriptParsingSystem : MonoSystem
 
 	public async UniTask<IEnumerable<ScriptParser>> LoadAsyncScriptParsers()
 	{
-		var types = FMUtil.GetSubClassTypes<ScriptParser>();
+		var types = Utility.GetSubClassTypes<ScriptParser>();
 		dictionary.Clear();
 
         foreach (var type in types)

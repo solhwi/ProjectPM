@@ -46,11 +46,11 @@ public class AddressableResourceSystem : MonoSystem
 
 	public async UniTask<TParentClass> LoadAsync<TParentClass>(Type subclassType) where TParentClass : Object
 	{
-		string path = FMUtil.GetResourcePath(subclassType);
+		string path = Utility.GetResourcePath(subclassType);
 		if (string.IsNullOrEmpty(path))
 			return default;
 
-		var resourceType = FMUtil.GetResourceType(subclassType);
+		var resourceType = Utility.GetResourceType(subclassType);
         return await LoadAsync<TParentClass>(resourceType, path);
     }
 
@@ -78,7 +78,7 @@ public class AddressableResourceSystem : MonoSystem
 
 	public async UniTask<T> InstantiateAsync<T>(Transform parent = null) where T : MonoBehaviour
 	{
-        string path = FMUtil.GetResourcePath<T>();
+        string path = Utility.GetResourcePath<T>();
         if (string.IsNullOrEmpty(path))
             return default;
 
@@ -91,11 +91,11 @@ public class AddressableResourceSystem : MonoSystem
 
 	public async UniTask<T> LoadAsync<T>() where T : Object
 	{
-		string path = FMUtil.GetResourcePath<T>();
+		string path = Utility.GetResourcePath<T>();
 		if (string.IsNullOrEmpty(path))
 			return default;
 
-		var resourceType = FMUtil.GetResourceType<T>();
+		var resourceType = Utility.GetResourceType<T>();
 		return await LoadAsync<T>(resourceType, path);
     }
 	

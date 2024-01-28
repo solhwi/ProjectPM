@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Mono.CecilX;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,11 +11,8 @@ public enum SceneType
 {
     Start = -1,
     Title = 0,
-    Lobby = 1,
-    Boss = 2,
-    Match = 3,
-    Battle = 4,
-    Training = 5,
+    Match = 1,
+    Battle = 2,
 }
 
 public class SceneModuleParam
@@ -39,7 +35,7 @@ public class SceneModuleSystemManager : Singleton<SceneModuleSystemManager>
 
     private Dictionary<string, Transform> systemTransformDictionary = new Dictionary<string, Transform>();
 
-    protected override void OnInitialize()
+    protected override void OnAwakeInstance()
     {
         currentSceneModule = UnityEngine.Object.FindObjectOfType<SceneModule>();
         if (currentSceneModule != null)

@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Match.unity
     guid: 0dcd13b51759eb44aaacf67a212a90be
   - enabled: 1
-    path: Assets/Scenes/Boss.unity
+    path: Assets/Scenes/Start.unity
     guid: 30b6b3d8a7bf11b478016f146a57a570
   - enabled: 1
     path: Assets/Scenes/Training.unity

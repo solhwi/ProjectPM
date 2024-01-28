@@ -16,20 +16,20 @@ public class Singleton
 		this.behaviour = behaviour;
         behaviour.RegisterSingleton(this);
 
-        OnInitialize();
+        OnAwakeInstance();
 	}
 
 	public void Release()
 	{
 		OnRelease();
 
-		if(behaviour)
+		if (behaviour)
 			behaviour.UnRegisterSingleton(this);
         
 		isReleased = true;
 	}
 
-	protected virtual void OnInitialize()
+	protected virtual void OnAwakeInstance()
 	{
 
 	}

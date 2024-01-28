@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class LayerHelper
 {
-    public static int GetSortingLayer(ENUM_LAYER_TYPE layerType, int orderIndex)
+    public static int GetSortingLayer(GameObject obj, int orderIndex)
     {
-        int layerNumber = (int)layerType;
+        int layerNumber = obj.layer;
         return layerNumber * 1000 + Mathf.Abs(orderIndex % 1000);
-    }
-
-    public static LayerMask GetLayerMask(ENUM_LAYER_TYPE layerType)
-    {
-        return LayerMask.NameToLayer(layerType.ToString());
     }
 }

@@ -1,4 +1,3 @@
-using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -77,6 +76,13 @@ public class GuardInputData : PressInputData
 	}
 }
 
+public class FrameOutputData 
+{
+	public FrameOutputData(Vector2 moveVec, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int targetFrameCount) 
+	{
+	}
+}
+
 public class FrameInputSystem : MonoSystem
 {
 	public static float MoveThreshold { get; private set; } = 1;
@@ -88,8 +94,7 @@ public class FrameInputSystem : MonoSystem
 	public static bool SnapY { get; private set; } = true;
 
 	private Queue<FrameInputData> inputDataQueue = new Queue<FrameInputData>();
-	private FrameInputMessage currentInputMessage = new FrameInputMessage();
-		
+
 	public override void OnEnter()
 	{
 		SceneModuleSystemManager.Instance.onSceneChanged += SetJoystick;
@@ -137,28 +142,27 @@ public class FrameInputSystem : MonoSystem
 		inputDataQueue.Enqueue(inputData);
 	}
 
-	public FrameInputMessage FlushInput(int targetFrameCount)
-	{
-		// 같은 프레임에 두 번 호출한 경우
-		if (currentInputMessage.frameCount >= targetFrameCount)
-			return currentInputMessage;
+	/// <summary>
+	/// 여기를 바로 REQ로 보낸다.
+	/// RES로 받은 Output 데이터를 캐릭터에게 보냅니다.
+	/// </summary>
+	/// <param name="targetFrameCount"></param>
+	/// <returns></returns>
 
-		currentInputMessage = MakeCurrentFrameMessage(targetFrameCount);
-		return currentInputMessage;
+	public FrameOutputData FlushInput(int targetFrameCount)
+	{
+		return MakeCurrentFrameMessage(targetFrameCount);
 	}
 
-	private FrameInputMessage MakeCurrentFrameMessage(int targetFrameCount)
+	private FrameOutputData MakeCurrentFrameMessage(int targetFrameCount)
 	{
-		Vector2 moveVec = currentInputMessage.moveInput;
+		Vector2 moveVec = Vector2.zero;
 		ENUM_ATTACK_KEY pressedAttackKey = ENUM_ATTACK_KEY.MAX;
 		bool isDash = false;
 		bool isGuard = false;
 
 		while (inputDataQueue.TryDequeue(out var result))
 		{
-			//if (result.frameCount < targetFrameCount)
-			//	continue;
-
 			if (result is MoveInputData moveInputResult)
 			{
 				moveVec = moveInputResult.moveVector;
@@ -180,7 +184,7 @@ public class FrameInputSystem : MonoSystem
 			}
 		}
 
-		return new FrameInputMessage(moveVec, pressedAttackKey, isDash, isGuard, targetFrameCount);
+		return new FrameOutputData(moveVec, pressedAttackKey, isDash, isGuard, targetFrameCount);
 	}
 
 	private float SnapFloat(Vector2 input, float value, AxisOptions snapAxis)

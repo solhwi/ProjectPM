@@ -17,12 +17,6 @@ public class MoveToPosition : ActionNode
 
     protected override State OnUpdate() 
     {
-        float distance = context.entitySystem.GetDistanceXWithPlayer(context.entityComponent);
-        var commandType = distance > Mathf.Epsilon ? ENUM_COMMAND_TYPE.RightMove : ENUM_COMMAND_TYPE.LeftMove;
-
-        var command = context.commandSystem.MakeCommand(commandType, context.entityComponent);
-        context.entityComponent.PushCommand(command);
-
         return State.Success;
     }
 }

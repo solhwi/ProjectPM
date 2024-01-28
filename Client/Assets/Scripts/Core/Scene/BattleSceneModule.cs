@@ -2,20 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleSceneModule : SceneModule
+public class BattleSceneModule : NetworkSceneModule
 {
-    [SerializeField] protected MapSystem mapSystem = null;
-    [SerializeField] protected PhysicsSystem physicsSystem = null;
-    [SerializeField] protected EntitySystem entitySystem = null;
-    [SerializeField] protected SkillSystem skillSystem = null;
+	public class Param : SceneModuleParam
+	{
+		public readonly bool isOwner = false;
 
-    protected override void Reset()
-    {
-        base.Reset();
-
-        mapSystem = AssetLoadHelper.GetSystemAsset<MapSystem>();
-        physicsSystem = AssetLoadHelper.GetSystemAsset<PhysicsSystem>();  
-        entitySystem = AssetLoadHelper.GetSystemAsset<EntitySystem>();
-        skillSystem = AssetLoadHelper.GetSystemAsset<SkillSystem>();
-    }
+		public Param(bool isOwner)
+		{
+			this.isOwner = isOwner;
+		}
+	}
 }
