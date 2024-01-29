@@ -76,10 +76,22 @@ public class GuardInputData : PressInputData
 	}
 }
 
-public class FrameOutputData 
+public class REQ_FRAME_INPUT : IPacket
 {
-	public FrameOutputData(Vector2 moveVec, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int targetFrameCount) 
+	public REQ_FRAME_INPUT(Vector2 moveVec, ENUM_ATTACK_KEY pressedAttackKey, bool isDash, bool isGuard, int targetFrameCount) 
 	{
+	}
+
+	public ushort Protocol => throw new NotImplementedException();
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		throw new NotImplementedException();
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		throw new NotImplementedException();
 	}
 }
 
@@ -148,13 +160,13 @@ public class FrameInputSystem : MonoSystem
 	/// </summary>
 	/// <param name="targetFrameCount"></param>
 	/// <returns></returns>
-
-	public FrameOutputData FlushInput(int targetFrameCount)
+	/// 
+	public void SendPacket()
 	{
-		return MakeCurrentFrameMessage(targetFrameCount);
+		var packet = MakeFrameInputPacket(Time.frameCount);
 	}
 
-	private FrameOutputData MakeCurrentFrameMessage(int targetFrameCount)
+	private REQ_FRAME_INPUT MakeFrameInputPacket(int targetFrameCount)
 	{
 		Vector2 moveVec = Vector2.zero;
 		ENUM_ATTACK_KEY pressedAttackKey = ENUM_ATTACK_KEY.MAX;
@@ -184,7 +196,7 @@ public class FrameInputSystem : MonoSystem
 			}
 		}
 
-		return new FrameOutputData(moveVec, pressedAttackKey, isDash, isGuard, targetFrameCount);
+		return new REQ_FRAME_INPUT(moveVec, pressedAttackKey, isDash, isGuard, targetFrameCount);
 	}
 
 	private float SnapFloat(Vector2 input, float value, AxisOptions snapAxis)
@@ -198,26 +210,44 @@ public class FrameInputSystem : MonoSystem
 			if (snapAxis == AxisOptions.Horizontal)
 			{
 				if (angle < 22.5f || angle > 157.5f)
+				{
 					return 0;
+				}
 				else
+				{
 					return (value > 0) ? 1 : -1;
+				}
 			}
 			else if (snapAxis == AxisOptions.Vertical)
 			{
 				if (angle > 67.5f && angle < 112.5f)
+				{
 					return 0;
+				}
 				else
+				{
 					return (value > 0) ? 1 : -1;
+				}
 			}
-			return value;
+			else
+			{
+				return value;
+			}
 		}
 		else
 		{
 			if (value > 0)
+			{
 				return 1;
-			if (value < 0)
+			}
+			else if (value < 0)
+			{
 				return -1;
+			}
+			else
+			{
+				return 0;
+			}
 		}
-		return 0;
 	}
 }
